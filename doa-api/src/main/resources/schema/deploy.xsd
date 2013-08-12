@@ -1,0 +1,421 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema targetNamespace="http://doaplatform.org/deploy"
+	elementFormDefault="qualified" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns="http://doaplatform.org/deploy">
+
+	<xsd:complexType name="DeployType">
+		<xsd:choice minOccurs="0" maxOccurs="unbounded">
+			<xsd:element name="container" type="ContainerType">
+			</xsd:element>
+			<xsd:element name="agent" type="AgentType"></xsd:element>
+			<xsd:element name="load" type="LoadType"></xsd:element>
+			<xsd:element name="documentAligner" type="AlignerType">
+			</xsd:element>
+			<xsd:element name="definition"
+				type="DocumentDefinitionType">
+			</xsd:element>
+			<xsd:element name="document" type="DocumentType">
+			</xsd:element>
+			<xsd:element name="lookup" type="LookupType"></xsd:element>
+			<xsd:element name="renderer" type="RendererType">
+			</xsd:element>
+			<xsd:element name="service" type="ServiceDefinitionType">
+			</xsd:element>
+			<xsd:element name="resource" type="StaticResourceType">
+			</xsd:element>
+			<xsd:element name="channel" type="ChannelType">
+			</xsd:element>
+			<xsd:element name="reference" type="ReferenceType"></xsd:element>
+			<xsd:element name="doa" type="DOAType"></xsd:element>
+            <xsd:element name="deploy-processor" type="DeployProcessorType"></xsd:element>
+		</xsd:choice>
+		<xsd:attribute name="defaultContainer" type="xsd:string"></xsd:attribute>
+	</xsd:complexType>
+
+	<xsd:complexType name="ContainerType">
+		<xsd:complexContent>
+			<xsd:extension base="EntityType">
+				<xsd:choice minOccurs="0" maxOccurs="unbounded">
+					<xsd:element name="container"
+						type="ContainerType">
+					</xsd:element>
+					<xsd:element name="agent" type="AgentType">
+					</xsd:element>
+					<xsd:element name="load" type="LoadType"></xsd:element>
+					<xsd:element name="documentAligner"
+						type="AlignerType">
+					</xsd:element>
+					<xsd:element name="definition"
+						type="DocumentDefinitionType">
+					</xsd:element>
+					<xsd:element name="document" type="DocumentType">
+					</xsd:element>
+					<xsd:element name="lookup" type="LookupType">
+					</xsd:element>
+					<xsd:element name="renderer" type="RendererType">
+					</xsd:element>
+					<xsd:element name="service"
+						type="ServiceDefinitionType">
+					</xsd:element>
+					<xsd:element name="resource"
+						type="StaticResourceType">
+					</xsd:element>
+					<xsd:element name="channel" type="ChannelType">
+					</xsd:element>
+					<xsd:element name="reference"
+						type="ReferenceType">
+					</xsd:element>
+					<xsd:element name="doa" type="DOAType"></xsd:element>
+				</xsd:choice>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+	<xsd:complexType name="DocumentType">
+		<xsd:complexContent>
+			<xsd:extension base="EntityType">
+				<xsd:sequence>
+					<xsd:element name="fieldValue" type="FieldValueType"
+						maxOccurs="unbounded" minOccurs="0">
+					</xsd:element>
+				</xsd:sequence>
+				<xsd:attribute name="definition" type="xsd:string"
+					use="required"></xsd:attribute>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+	<xsd:complexType name="AgentType">
+		<xsd:complexContent>
+			<xsd:extension base="EntityType">
+
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+	<xsd:complexType name="AttributeType" mixed="true">
+		<xsd:attribute name="name" type="xsd:string"></xsd:attribute>
+		<xsd:attribute name="value" type="xsd:string"></xsd:attribute>
+	</xsd:complexType>
+
+	<xsd:complexType name="LookupType">
+		<xsd:attribute name="name" type="xsd:string" use="required"></xsd:attribute>
+		<xsd:attribute name="location" type="xsd:string" use="required">
+		</xsd:attribute>
+		<xsd:attribute name="doa" type="xsd:string"></xsd:attribute>
+		<xsd:attribute name="var" type="xsd:string"></xsd:attribute>
+	</xsd:complexType>
+
+	<xsd:complexType name="RendererType">
+		<xsd:complexContent>
+			<xsd:extension base="EntityType">
+				<xsd:attribute name="logicClass" type="xsd:string"
+					use="required">
+				</xsd:attribute>
+
+				<xsd:attribute name="mimetype" type="xsd:string" use="required">
+				</xsd:attribute>
+
+				<xsd:attribute name="autostart" type="xsd:boolean"></xsd:attribute>
+
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+	<xsd:complexType name="ServiceDefinitionType">
+		<xsd:complexContent>
+			<xsd:extension base="EntityType">
+				<xsd:sequence>
+					<xsd:element name="possibleOutput" type="PossibleOutputType"
+						maxOccurs="unbounded" minOccurs="0"></xsd:element>
+				</xsd:sequence>
+				<xsd:attribute name="logicClass" type="xsd:string">
+				</xsd:attribute>
+				<xsd:attribute name="inputDefinition" type="xsd:string">
+				</xsd:attribute>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+	<xsd:complexType name="PossibleOutputType">
+		<xsd:attribute name="doa" type="xsd:string"></xsd:attribute>
+		<xsd:attribute name="definition" type="xsd:string"></xsd:attribute>
+	</xsd:complexType>
+
+	<xsd:complexType name="StaticResourceType">
+		<xsd:complexContent>
+			<xsd:extension base="EntityType">
+				<xsd:attribute name="file" type="xsd:string"></xsd:attribute>
+				<xsd:attribute name="url" type="xsd:string"></xsd:attribute>
+				<xsd:attribute name="mimetype" type="xsd:string"
+					use="required">
+				</xsd:attribute>
+				<xsd:attribute name="path" type="xsd:string"></xsd:attribute>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+	<xsd:complexType name="AlignerType">
+		<xsd:complexContent>
+			<xsd:extension base="EntityType">
+				<xsd:attribute name="logicClass" type="xsd:string"
+					use="required"></xsd:attribute>
+				<xsd:attribute name="fromDefinition" type="xsd:string"></xsd:attribute>
+				<xsd:attribute name="toDefinition" type="xsd:string"></xsd:attribute>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+	<xsd:complexType name="DocumentDefinitionType">
+		<xsd:complexContent>
+			<xsd:extension base="EntityType">
+
+				<xsd:choice minOccurs="0" maxOccurs="unbounded">
+					<xsd:element name="stringField" type="StringFieldType">
+					</xsd:element>
+					<xsd:element name="booleanField" type="BooleanFieldType">
+					</xsd:element>
+					<xsd:element name="doubleField" type="DoubleFieldType"></xsd:element>
+					<xsd:element name="integerField" type="IntegerFieldType">
+					</xsd:element>
+					<xsd:element name="longField" type="LongFieldType">
+					</xsd:element>
+					<xsd:element name="bigdecimalField" type="BigDecimalFieldType">
+					</xsd:element>
+					<xsd:element name="dateField" type="DateFieldType">
+					</xsd:element>
+					<xsd:element name="passwordField" type="PasswordFieldType">
+					</xsd:element>
+					<xsd:element name="referenceField" type="ReferenceFieldType">
+					</xsd:element>
+					<xsd:element name="listField" type="ListFieldType">
+					</xsd:element>
+					<xsd:element name="fieldType" type="FieldTypeType"></xsd:element>
+				</xsd:choice>
+
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+	<xsd:simpleType name="DocumentFieldDataType">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="string"></xsd:enumeration>
+			<xsd:enumeration value="bool"></xsd:enumeration>
+			<xsd:enumeration value="doubleprec"></xsd:enumeration>
+			<xsd:enumeration value="integer"></xsd:enumeration>
+			<xsd:enumeration value="longinteger"></xsd:enumeration>
+			<xsd:enumeration value="bigdecimal"></xsd:enumeration>
+			<xsd:enumeration value="date"></xsd:enumeration>
+			<xsd:enumeration value="password"></xsd:enumeration>
+			<xsd:enumeration value="reference"></xsd:enumeration>
+			<xsd:enumeration value="list"></xsd:enumeration>
+		</xsd:restriction>
+	</xsd:simpleType>
+
+	<xsd:complexType name="FieldTypeType">
+		<xsd:sequence>
+			<xsd:element name="fieldValidator" type="FieldValidatorType"
+				maxOccurs="1" minOccurs="0"></xsd:element>
+		</xsd:sequence>
+		<xsd:attribute name="name" type="xsd:string" use="required"></xsd:attribute>
+		<xsd:attribute name="dataType" use="required"
+			type="DocumentFieldDataType">
+		</xsd:attribute>
+		<xsd:attribute name="var" type="xsd:string"></xsd:attribute>
+		<xsd:attribute name="required" type="xsd:boolean"></xsd:attribute>
+		<xsd:attribute name="authorizable" type="xsd:boolean"></xsd:attribute>
+	</xsd:complexType>
+
+	<xsd:complexType name="FieldValidatorType">
+		<xsd:attribute name="name" type="xsd:string" use="required"></xsd:attribute>
+		<xsd:attribute name="validatorClass" type="xsd:string"
+			use="required">
+		</xsd:attribute>
+		<xsd:attribute name="var" type="xsd:string"></xsd:attribute>
+	</xsd:complexType>
+
+	<xsd:complexType name="FieldValueType" mixed="true">
+		<xsd:sequence>
+			<xsd:element name="fieldValue" type="FieldValueType"
+				maxOccurs="unbounded" minOccurs="0"></xsd:element>
+		</xsd:sequence>
+		<xsd:attribute name="name" type="xsd:string" use="required"></xsd:attribute>
+		<xsd:attribute name="value" type="xsd:string"></xsd:attribute>
+		<xsd:attribute name="var" type="xsd:string"></xsd:attribute>
+		<xsd:attribute name="dataType" type="DocumentFieldDataType" />
+	</xsd:complexType>
+
+	<xsd:complexType name="EntityType" abstract="true">
+		<xsd:sequence>
+			<xsd:element name="attr" type="AttributeType" maxOccurs="unbounded"
+				minOccurs="0">
+			</xsd:element>
+		</xsd:sequence>
+		<xsd:attribute name="name" type="xsd:string" use="required"></xsd:attribute>
+		<xsd:attribute name="doa" type="xsd:string"></xsd:attribute>
+		<xsd:attribute name="location" type="xsd:string"></xsd:attribute>
+		<xsd:attribute name="var" type="xsd:string"></xsd:attribute>
+		<xsd:attribute name="ancestor" type="xsd:string"></xsd:attribute>
+	</xsd:complexType>
+
+	<xsd:element name="deploy" type="DeployType"></xsd:element>
+
+	<xsd:complexType name="ChannelType">
+		<xsd:complexContent>
+			<xsd:extension base="EventReceiverEntityType">
+				<xsd:attribute name="logicClass" type="xsd:string"
+					use="required">
+				</xsd:attribute>
+				<xsd:attribute name="autostart" type="xsd:boolean"></xsd:attribute>
+				<xsd:attribute name="type" type="ChannelTypeEnum"></xsd:attribute>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+	<xsd:complexType name="ReferenceType">
+		<xsd:complexContent>
+			<xsd:extension base="EntityType">
+				<xsd:attribute name="referencedEntity" type="xsd:string"></xsd:attribute>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+	<xsd:complexType name="LoadType">
+		<xsd:attribute name="directory" type="xsd:string"></xsd:attribute>
+		<xsd:attribute name="location" type="xsd:string"></xsd:attribute>
+	</xsd:complexType>
+
+    <xsd:complexType name="DeployProcessorType">
+        <xsd:attribute name="processor" type="xsd:string"></xsd:attribute>
+    </xsd:complexType>
+
+
+	<xsd:complexType name="StringFieldType">
+		<xsd:complexContent>
+			<xsd:extension base="DocumentFieldType">
+
+				<xsd:attribute name="minLength" type="xsd:int">
+				</xsd:attribute>
+				<xsd:attribute name="maxLength" type="xsd:int"></xsd:attribute>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+	<xsd:complexType name="DocumentFieldType">
+		<xsd:attribute name="name" type="xsd:string" use="required"></xsd:attribute>
+		<xsd:attribute name="var" type="xsd:string"></xsd:attribute>
+		<xsd:attribute name="required" type="xsd:boolean"></xsd:attribute>
+		<xsd:attribute name="authorizable" type="xsd:boolean"></xsd:attribute>
+	</xsd:complexType>
+
+	<xsd:complexType name="BooleanFieldType">
+		<xsd:complexContent>
+			<xsd:extension base="DocumentFieldType"></xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+	<xsd:complexType name="DoubleFieldType">
+		<xsd:complexContent>
+			<xsd:extension base="DocumentFieldType"></xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+	<xsd:complexType name="IntegerFieldType">
+		<xsd:complexContent>
+			<xsd:extension base="DocumentFieldType"></xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+	<xsd:complexType name="LongFieldType">
+		<xsd:complexContent>
+			<xsd:extension base="DocumentFieldType"></xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+	<xsd:complexType name="BigDecimalFieldType">
+		<xsd:complexContent>
+			<xsd:extension base="DocumentFieldType"></xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+	<xsd:complexType name="DateFieldType">
+		<xsd:complexContent>
+			<xsd:extension base="DocumentFieldType">
+				<xsd:attribute name="format" type="xsd:string"></xsd:attribute>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+	<xsd:complexType name="PasswordFieldType">
+		<xsd:complexContent>
+			<xsd:extension base="DocumentFieldType">
+				<xsd:attribute name="cipherAlgorithm" type="xsd:string"></xsd:attribute>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+	<xsd:complexType name="ReferenceFieldType">
+		<xsd:complexContent>
+			<xsd:extension base="DocumentFieldType">
+				<xsd:attribute name="entityType" type="xsd:string"></xsd:attribute>
+				<xsd:attribute name="definition" type="xsd:string"></xsd:attribute>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+	<xsd:complexType name="ListFieldType">
+		<xsd:complexContent>
+			<xsd:extension base="DocumentFieldType">
+				<xsd:attribute name="dataType" type="DocumentFieldDataType"></xsd:attribute>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+
+	<xsd:complexType name="EventReceiverEntityType"
+		abstract="true">
+		<xsd:complexContent>
+			<xsd:extension base="EntityType">
+				<xsd:sequence>
+					<xsd:element name="eventListener" type="EventListenerType"
+						maxOccurs="unbounded" minOccurs="0">
+					</xsd:element>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+	<xsd:complexType name="EventListenerType">
+		<xsd:complexContent>
+			<xsd:extension base="EntityType">
+				<xsd:attribute name="sourceEntity" type="xsd:string"></xsd:attribute>
+
+				<xsd:attribute name="eventType" type="EventType"></xsd:attribute>
+
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+	<xsd:simpleType name="EventType">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="ENTITY_CREATED"></xsd:enumeration>
+			<xsd:enumeration value="SERVICE_EXECUTED"></xsd:enumeration>
+		</xsd:restriction>
+	</xsd:simpleType>
+
+	<xsd:complexType name="DOAType">
+		<xsd:complexContent>
+			<xsd:extension base="EntityType">
+				<xsd:attribute name="logicClass" type="xsd:string" use="required"></xsd:attribute>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+	<xsd:simpleType name="ChannelTypeEnum">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="INCOMING"></xsd:enumeration>
+			<xsd:enumeration value="OUTGOING"></xsd:enumeration>
+			<xsd:enumeration value="TWOWAY"></xsd:enumeration>
+		</xsd:restriction>
+	</xsd:simpleType>
+</xsd:schema>
