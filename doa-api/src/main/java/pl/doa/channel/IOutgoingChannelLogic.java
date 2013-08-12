@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package pl.doa.channel;
 
@@ -11,17 +11,16 @@ import java.io.Serializable;
 
 /**
  * @author Damian
- *
  */
 public interface IOutgoingChannelLogic extends IStartableEntityLogic, Serializable {
 
-	/**
-	 * TODO opis metody
-	 * 
-	 * @param out
-	 * @return
-	 */
-	public abstract IDocument handleOutgoing(IDocument out)
-			throws GeneralDOAException;
+    /**
+     * TODO opis metody
+     *
+     * @param out
+     * @return
+     */
+    public abstract IDocument handleOutgoing(IDocument out)
+            throws GeneralDOAException;
 
 }
