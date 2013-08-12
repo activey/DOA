@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package pl.doa.channel;
 
@@ -9,10 +9,9 @@ import pl.doa.entity.startable.IStartableEntity;
 
 /**
  * @author damian
- * 
  */
 public interface IOutgoingChannel extends IStartableEntity {
 
-	public abstract IDocument handleOutgoing(IDocument document)
-			throws GeneralDOAException;
+    public abstract IDocument handleOutgoing(IDocument document)
+            throws GeneralDOAException;
 }

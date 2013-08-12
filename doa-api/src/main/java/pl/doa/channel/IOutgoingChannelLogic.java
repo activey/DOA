@@ -3,12 +3,11 @@
  */
 package pl.doa.channel;
 
-import java.io.Serializable;
-
 import pl.doa.GeneralDOAException;
 import pl.doa.document.IDocument;
-import pl.doa.entity.startable.IStartableEntity;
 import pl.doa.entity.startable.IStartableEntityLogic;
+
+import java.io.Serializable;
 
 /**
  * @author Damian

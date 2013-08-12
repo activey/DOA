@@ -40,7 +40,7 @@
  *    Inhibi Ltd - initial API and implementation
  *******************************************************************************/
 /**
- * 
+ *
  */
 package pl.doa.entity.event.source;
 
@@ -53,13 +53,13 @@ import pl.doa.entity.event.IEntityEventDescription;
  * zaleznosci od implementacji, oczekiwany dokument moze byc zwracany
  * natychmiastowo, moze tez nastapic oczekiwanie, az oczekiwany dokument
  * zostanie uzyskany.
- * 
+ *
  * @author activey
  */
 public interface SynchronousEventSource<T extends IEntityEventDescription> {
 
-	/**
-	 * 
-	 */
-	public abstract T waitForEvent(IDOA doa) throws GeneralDOAException;
+    /**
+     *
+     */
+    public abstract T waitForEvent(IDOA doa) throws GeneralDOAException;
 }

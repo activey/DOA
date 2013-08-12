@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package pl.doa.channel;
 
@@ -11,11 +11,10 @@ import pl.doa.service.IRunningService;
 
 /**
  * @author damian
- * 
  */
 public interface IIncomingChannel extends IStartableEntity,
-		IEntityEventReceiver {
-	
-	public abstract IRunningService handleIncoming(IDocument document)
-			throws GeneralDOAException;
+        IEntityEventReceiver {
+
+    public abstract IRunningService handleIncoming(IDocument document)
+            throws GeneralDOAException;
 }
