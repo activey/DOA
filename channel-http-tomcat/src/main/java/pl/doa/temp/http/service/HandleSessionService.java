@@ -40,7 +40,7 @@
  *    Inhibi Ltd - initial API and implementation
  *******************************************************************************/
 /**
- * 
+ *
  */
 package pl.doa.temp.http.service;
 
@@ -56,66 +56,65 @@ import pl.doa.service.annotation.EntityRef;
 
 /**
  * @author activey
- * 
  */
 public class HandleSessionService extends AbstractServiceDefinitionLogic {
 
-	@EntityRef(location = "/channels/http/auth/authFacadeService")
-	private IServiceDefinition authService;
+    @EntityRef(location = "/channels/http/auth/authFacadeService")
+    private IServiceDefinition authService;
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see pl.doa.temp.service.DOAServiceDefinitionLogic#align()
-	 */
-	@Override
-	public void align() throws GeneralDOAException {
-		IDocument input = getInput();
-		// pobieranie dokumentu aplikacji
-		IDocument applicationDocument = (IDocument) input
-				.getFieldValue("applicationDocument");
-		// sprawdzanie, czy zostalo ustawione pole mechanizmu autentykacji
-		final String authentication = applicationDocument
-				.getFieldValueAsString("authentication");
-		IAgent authenticated = getAgent();
-		if (authentication != null && authenticated == null) {
-			ServiceExecutedEvent event = doa
-					.doInTransaction(new ITransactionCallback<ServiceExecutedEvent>() {
+    /*
+     * (non-Javadoc)
+     *
+     * @see pl.doa.temp.service.DOAServiceDefinitionLogic#align()
+     */
+    @Override
+    public void align() throws GeneralDOAException {
+        IDocument input = getInput();
+        // pobieranie dokumentu aplikacji
+        IDocument applicationDocument = (IDocument) input
+                .getFieldValue("applicationDocument");
+        // sprawdzanie, czy zostalo ustawione pole mechanizmu autentykacji
+        final String authentication = applicationDocument
+                .getFieldValueAsString("authentication");
+        IAgent authenticated = getAgent();
+        if (authentication != null && authenticated == null) {
+            ServiceExecutedEvent event = doa
+                    .doInTransaction(new ITransactionCallback<ServiceExecutedEvent>() {
 
-						private IDocument input;
+                        private IDocument input;
 
-						@Override
-						public ServiceExecutedEvent performOperation()
-								throws Exception {
-							ServiceExecutedEvent event = waitForEvent(new ServiceOutputProducedSource(
-									authService, input));
-							return event;
-						}
+                        @Override
+                        public ServiceExecutedEvent performOperation()
+                                throws Exception {
+                            ServiceExecutedEvent event = waitForEvent(new ServiceOutputProducedSource(
+                                    authService, input));
+                            return event;
+                        }
 
-						public ITransactionCallback<ServiceExecutedEvent> setInput(
-								IDocument input) {
-							this.input = input;
-							return this;
-						}
-					}.setInput(input));
+                        public ITransactionCallback<ServiceExecutedEvent> setInput(
+                                IDocument input) {
+                            this.input = input;
+                            return this;
+                        }
+                    }.setInput(input));
 
-			IDocument authResult = event.getServiceOutput();
-			if (authResult.isDefinedBy("/channels/http/auth/auth_output")) {
-				authenticated = (IAgent) authResult
-						.getFieldValue("authenticated");
-				if (authenticated == null) {
-					setOutput(authResult);
-					return;
-				}
-			} else {
-				setOutput(authResult);
-				return;
-			}
+            IDocument authResult = event.getServiceOutput();
+            if (authResult.isDefinedBy("/channels/http/auth/auth_output")) {
+                authenticated = (IAgent) authResult
+                        .getFieldValue("authenticated");
+                if (authenticated == null) {
+                    setOutput(authResult);
+                    return;
+                }
+            } else {
+                setOutput(authResult);
+                return;
+            }
 
-		}
-		IDocument httpResponseDoc = createOutputDocument("http_response_definition");
-		httpResponseDoc.setFieldValue("httpCode", 200);
-		httpResponseDoc.setFieldValue("agent", authenticated);
-		setOutput(httpResponseDoc);
-	}
+        }
+        IDocument httpResponseDoc = createOutputDocument("http_response_definition");
+        httpResponseDoc.setFieldValue("httpCode", 200);
+        httpResponseDoc.setFieldValue("agent", authenticated);
+        setOutput(httpResponseDoc);
+    }
 }

@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package pl.doa.temp.http.resource;
 
@@ -15,41 +15,40 @@ import pl.doa.resource.IStaticResource;
 
 /**
  * @author activey
- * 
  */
 public class StaticResource extends Resource {
 
-	private String resourceLocation;
-	private IDOA doa;
+    private String resourceLocation;
+    private IDOA doa;
 
-	public StaticResource(IStaticResource resource, IDOA doa) {
-		this.doa = doa;
-		this.resourceLocation = resource.getLocation();
-	}
+    public StaticResource(IStaticResource resource, IDOA doa) {
+        this.doa = doa;
+        this.resourceLocation = resource.getLocation();
+    }
 
-	@Override
-	public InputStream streamContent() throws IOException {
-		try {
-			return getStaticResource().getContentStream();
-		} catch (GeneralDOAException e) {
-			return null;
-		}
-	}
+    @Override
+    public InputStream streamContent() throws IOException {
+        try {
+            return getStaticResource().getContentStream();
+        } catch (GeneralDOAException e) {
+            return null;
+        }
+    }
 
-	@Override
-	public byte[] getContent() {
-		try {
-			return getStaticResource().getContent();
-		} catch (GeneralDOAException e) {
-			return null;
-		}
-	}
+    @Override
+    public byte[] getContent() {
+        try {
+            return getStaticResource().getContent();
+        } catch (GeneralDOAException e) {
+            return null;
+        }
+    }
 
-	private IStaticResource getStaticResource() {
-		IEntity entity = doa.lookupEntityByLocation(resourceLocation);
-		if (!(entity instanceof IStaticResource)) {
-			return null;
-		}
-		return (IStaticResource) entity;
-	}
+    private IStaticResource getStaticResource() {
+        IEntity entity = doa.lookupEntityByLocation(resourceLocation);
+        if (!(entity instanceof IStaticResource)) {
+            return null;
+        }
+        return (IStaticResource) entity;
+    }
 }

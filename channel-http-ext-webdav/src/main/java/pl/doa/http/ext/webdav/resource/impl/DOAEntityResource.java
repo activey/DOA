@@ -244,7 +244,7 @@ public class DOAEntityResource<T extends IEntity> implements GetableResource,
     @Override
     public void copyTo(CollectionResource toCollection, String name) {
         /*DOAEntitiesContainerResource containerRes =
-				(DOAEntitiesContainerResource) toCollection;
+                (DOAEntitiesContainerResource) toCollection;
 		DOAEntitiesContainer destCont =
 				(DOAEntitiesContainer) containerRes.entity;
 		entity.setContainer(destCont);*/
