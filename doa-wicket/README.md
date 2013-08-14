@@ -1,4 +1,4 @@
-doa-wicket
+DOA - Apache Wicket integration
 ===
 
 [TODO]
