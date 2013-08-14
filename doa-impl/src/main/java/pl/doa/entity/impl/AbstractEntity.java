@@ -317,10 +317,23 @@ public abstract class AbstractEntity implements IEntity {
         return getLocation();
     }
 
+    /**
+     * Verifies if entity represented by this class derives some properties from @ancestor.
+     *
+     * @param ancestor An object from properties are derived.
+     * @return Flag determines if given this object derives from @ancestor
+     */
     public final boolean isDescendantOf(IEntity ancestor) {
         return AbstractEntity.isDescendantOf(ancestor, this);
     }
 
+    /**
+     * Verifies if given @descendant derives some properties from @ancestor.
+     *
+     * @param ancestor   An object from properties are derived.
+     * @param descendant An object that derives properties from @ancestor.
+     * @return Flag determines if given @descendant derives from @ancestor
+     */
     public final static boolean isDescendantOf(IEntity ancestor,
                                                IEntity descendant) {
         IEntity thisAncestor = descendant.getAncestor();
