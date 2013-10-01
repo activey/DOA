@@ -15,7 +15,7 @@
 	<version>${org.doa.persistence.neo4j.version}</version>
 	<name>DOA Neo4j</name>
 	<url>http://maven.apache.org</url>
-	<build>
+	<!-- <build>
 		<plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -45,7 +45,7 @@
 				<version>2.2</version>
 			</plugin>
 		</plugins>
-	</build>
+	</build> -->
 	<dependencies>
 		<dependency>
 			<groupId>org.slf4j</groupId>

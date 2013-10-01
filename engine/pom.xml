@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org</groupId>
 		<artifactId>doa</artifactId>
-		<version>1</version>
+		<version>${org.doa.version}</version>
 	</parent>
 
 	<groupId>org.doa</groupId>
@@ -14,7 +14,7 @@
 	<packaging>pom</packaging>
 	<name>DOA Engine</name>
 	<description>This is where most of the logic shall reside.</description>
-	
+
 	<modules>
 		<module>core</module>
 	</modules>

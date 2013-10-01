@@ -4,9 +4,10 @@
 	
 
 	<parent>
-		<groupId>org.doa</groupId>
-		<artifactId>environment</artifactId>
-		<version>${org.doa.environment.version}</version>
+		<groupId>org</groupId>
+		<artifactId>doa</artifactId>
+		<version>${org.doa.version}</version>
+		<relativePath>../../</relativePath>
 	</parent>
 
 	<groupId>org.doa.environment</groupId>

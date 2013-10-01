@@ -69,11 +69,4 @@
 
 	</dependencies>
 
-	<repositories>
-		<repository>
-			<id>doa-repo</id>
-			<url>http://nexus.doaplatform.org/content/repositories/doa-test/</url>
-		</repository>
-	</repositories>
-
 </project>

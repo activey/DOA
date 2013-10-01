@@ -5,9 +5,9 @@
 	<parent>
 		<groupId>org</groupId>
 		<artifactId>doa</artifactId>
-		<version>1</version>
+		<version>${org.doa.version}</version>
 	</parent>
-
+	
 	<groupId>org.doa</groupId>
 	<artifactId>support</artifactId>
 	<version>${org.doa.support.version}</version>
