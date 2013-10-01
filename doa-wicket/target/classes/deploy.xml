@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<deploy xmlns="http://doaplatform.org/deploy" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://doaplatform.org/deploy http://doaplatform.org/schema/deploy.xsd"
+	defaultContainer="/channels/http/extensions">
+
+	<!-- wicket extension container -->
+	<container name="wicket">
+		<definition name="wicketApplication" var="wicketApplication">
+			<stringField name="applicationClassName" required="true" />
+		</definition>
+
+		<documentAligner logicClass="pl.doa.wicket.ext.WicketApplicationAligner"
+			name="wicketAligner" fromDefinition="#wicketApplication"
+			toDefinition="/channels/http/http_filter_definition" />
+	</container>
+</deploy>

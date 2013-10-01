@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?><!-- Copyright 2011 Inhibi Ltd. All 
+	rights reserved. Redistribution and use in source and binary forms, with 
+	or without modification, are permitted provided that the following conditions 
+	are met: 1. Redistributions of source code must retain the above copyright 
+	notice, this list of conditions and the following disclaimer. 2. Redistributions 
+	in binary form must reproduce the above copyright notice, this list of conditions 
+	and the following disclaimer in the documentation and/or other materials 
+	provided with the distribution. THIS SOFTWARE IS PROVIDED BY INHIBI LTD ``AS 
+	IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, 
+	THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE 
+	ARE DISCLAIMED. IN NO EVENT SHALL INHIBI LTD OR CONTRIBUTORS BE LIABLE FOR 
+	ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES 
+	(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; 
+	LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND 
+	ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT 
+	(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF 
+	THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. The views 
+	and conclusions contained in the software and documentation are those of 
+	the authors and should not be interpreted as representing official policies, 
+	either expressed or implied, of Inhibi Ltd. Contributors: Inhibi Ltd - initial 
+	API and implementation -->
+
+<deploy xmlns="http://doaplatform.org/deploy" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://doaplatform.org/deploy http://doaplatform.org/schema/deploy.xsd"
+        defaultContainer="/channels">
+
+    <container name="http">
+        <definition name="http_request_definition" var="http_request_definition">
+            <fieldType name="asynchronous" dataType="bool" required="true"/>
+            <stringField name="method" required="true"/>
+            <stringField name="remoteAddress" authorizable="true"/>
+            <fieldType name="uri" dataType="string" required="true"/>
+            <fieldType name="rootUri" dataType="string" required="true"/>
+            <fieldType name="applicationUri" dataType="string"/>
+            <fieldType name="url" dataType="string" required="true"/>
+            <fieldType name="sessionId" dataType="string" authorizable="true"/>
+            <referenceField name="body"/>
+            <fieldType name="applicationContext" dataType="string"
+                       required="true"/>
+            <fieldType name="parameters" dataType="list"/>
+            <fieldType name="cookies" dataType="list"/>
+            <fieldType name="headers" dataType="list"/>
+
+            <referenceField name="applicationDocument" entityType="pl.doa.document.IDocument"
+                            definition="/channels/http/application_context_definition"/>
+        </definition>
+
+        <definition name="http_response_definition" var="http_response_definition">
+            <fieldType name="cookies" dataType="list"/>
+            <fieldType name="headers" dataType="list"/>
+            <fieldType name="httpCode" dataType="integer"/>
+            <fieldType name="contentType" dataType="string"/>
+            <fieldType name="response" dataType="reference"/>
+            <fieldType name="agent" dataType="reference"/>
+        </definition>
+
+        <definition name="http_error_definition" var="http_error_definition">
+            <fieldType name="errorCode" dataType="integer"/>
+        </definition>
+
+        <definition name="http_filter_definition">
+            <stringField name="filterClass"/>
+            <stringField name="filterMapping"/>
+            <listField name="initParams"/>
+        </definition>
+
+        <service name="handle_session" inputDefinition="#http_request_definition"
+                 logicClass="pl.doa.temp.http.service.HandleSessionService">
+            <possibleOutput definition="#http_response_definition"/>
+        </service>
+
+        <definition name="application_context_definition" var="application_context_definition">
+            <fieldType name="applicationName" dataType="string"
+                       required="true"/>
+            <fieldType name="authentication" dataType="string"/>
+            <fieldType name="authenticationService" dataType="reference"/>
+            <fieldType name="templateFinder" dataType="string"/>
+            <fieldType name="defaultUri" dataType="string"/>
+            <booleanField name="cacheEnabled"/>
+        </definition>
+
+        <container name="extensions"/>
+
+        <container name="auth">
+            <service name="authFacadeService"
+                     logicClass="pl.doa.temp.http.service.auth.AuthenticationFacadeService"
+                     inputDefinition="#http_request_definition">
+                <possibleOutput definition="#http_response_definition"/>
+            </service>
+
+            <definition name="auth_output" var="auth_output">
+                <fieldType name="authenticated" dataType="reference"/>
+            </definition>
+
+            <definition name="basic_auth_input" var="basic_auth_input">
+                <fieldType name="login" dataType="string"/>
+                <fieldType name="password" dataType="password"/>
+                <fieldType name="applicationDocument" dataType="reference"/>
+            </definition>
+
+            <documentAligner name="basic_auth_aligner"
+                             fromDefinition="#http_request_definition" toDefinition="#basic_auth_input"
+                             logicClass="pl.doa.temp.http.service.auth.aligner.BasicAuthenticationAligner"/>
+
+            <service name="BASIC" inputDefinition="#basic_auth_input"
+                     logicClass="pl.doa.temp.http.service.auth.BasicAuthenticationService">
+                <possibleOutput definition="#auth_output"/>
+                <possibleOutput definition="#http_response_definition"/>
+            </service>
+        </container>
+
+        <!-- definicja kanalu -->
+        <channel name="http_channel" autostart="true"
+                 logicClass="pl.doa.temp.http.HTTPChannelLogic" type="INCOMING">
+            <attr name="port" value="9080"/>
+            <attr name="developmentMode" value="true"/>
+            <attr name="use.cache.2ndlevel" value="false"/>
+            <attr name="max-age" value="3600"/>
+
+            <eventListener name="deployListener" location="/tmp"
+                           sourceEntity="/applications" eventType="ENTITY_CREATED"/>
+        </channel>
+
+    </container>
+</deploy>
