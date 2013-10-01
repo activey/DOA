@@ -1,36 +1,37 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>org</groupId>
-		<artifactId>doa</artifactId>
-		<version>${org.doa.version}</version>
-		<relativePath>../../</relativePath>
-	</parent>
+    <parent>
+        <groupId>org</groupId>
+        <artifactId>doa</artifactId>
+        <version>${org.doa.version}</version>
+        <relativePath>../../pom.xml</relativePath>
+    </parent>
 
-	<groupId>org.doa.integration</groupId>
-	<artifactId>wicket</artifactId>
-	<version>${org.doa.integration.wicket.version}</version>
-	
-	<dependencies>
+    <groupId>org.doa.integration</groupId>
+    <artifactId>wicket</artifactId>
+    <version>${org.doa.integration.wicket.version}</version>
 
-		<dependency>
-			<groupId>org.doa.engine</groupId>
-			<artifactId>core</artifactId>
-			<scope>provided</scope>
-		</dependency>
+    <dependencies>
 
-		<dependency>
-			<groupId>org.doa.config</groupId>
-			<artifactId>annotation</artifactId>
-		</dependency>
+        <dependency>
+            <groupId>org.doa</groupId>
+            <artifactId>api</artifactId>
+        </dependency>
 
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<scope>provided</scope>
-		</dependency>
+        <dependency>
+            <groupId>org.doa.engine</groupId>
+            <artifactId>core</artifactId>
+            <version>${org.doa.engine.core.version}</version>
+            <scope>provided</scope>
+        </dependency>
 
-	</dependencies>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+    </dependencies>
 </project>

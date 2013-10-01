@@ -1,26 +1,27 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>org</groupId>
-		<artifactId>doa</artifactId>
-		<version>${org.doa.version}</version>
-	</parent>
-	
-	<groupId>org.doa</groupId>
-	<artifactId>support</artifactId>
-	<version>${org.doa.support.version}</version>
-	<packaging>pom</packaging>
-	<name>DOA Support</name>
-	<description>This is where all supportive to the framework modules reside.</description>
+    <parent>
+        <groupId>org</groupId>
+        <artifactId>doa</artifactId>
+        <version>${org.doa.version}</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
 
-	<modules>
-		<module>servlet</module>
-		<module>http-tomcat-channel</module>
-		<module>http-ext-webdav-channel</module>
-		<module>json-entity-mapper</module>
-		<module>xml-templates</module>
-	</modules>
+    <groupId>org.doa</groupId>
+    <artifactId>support</artifactId>
+    <version>${org.doa.support.version}</version>
+    <packaging>pom</packaging>
+    <name>DOA Support</name>
+    <description>This is where all supportive to the framework modules reside.</description>
+
+    <modules>
+        <module>servlet</module>
+        <module>http-tomcat-channel</module>
+        <module>http-ext-webdav-channel</module>
+        <module>json-entity-mapper</module>
+        <module>xml-templates</module>
+    </modules>
 
 </project>

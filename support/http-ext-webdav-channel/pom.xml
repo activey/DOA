@@ -1,111 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>org</groupId>
-		<artifactId>doa</artifactId>
-		<version>${org.doa.version}</version>
-		<relativePath>../../</relativePath>
-	</parent>
+    <parent>
+        <groupId>org</groupId>
+        <artifactId>doa</artifactId>
+        <version>${org.doa.version}</version>
+        <relativePath>../../pom.xml</relativePath>
+    </parent>
 
-	<groupId>org.doa.support</groupId>
-	<artifactId>http-ext-webdav-channel</artifactId>
-	<version>${org.doa.support.http-ext-webdav-channel.version}</version>
-	<name>DOA HTTP-ext-webdav-channel</name>
-	<description>
-		Rozszerzenie kanalu komunikacyjnego HTTP - obsluga subprotokolu WEBDAV.
-	</description>
-	<build>
-		<plugins>
-			<plugin>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.0.2</version>
-				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
-				</configuration>
-			</plugin>
+    <groupId>org.doa.support</groupId>
+    <artifactId>http-ext-webdav-channel</artifactId>
+    <version>${org.doa.support.http-ext-webdav-channel.version}</version>
+    <name>DOA HTTP-ext-webdav-channel</name>
+    <description>
+        Rozszerzenie kanalu komunikacyjnego HTTP - obsluga subprotokolu WEBDAV.
+    </description>
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.0.2</version>
+                <configuration>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                </configuration>
+            </plugin>
 
-		</plugins>
-	</build>
-	<dependencies>
+        </plugins>
+    </build>
+    <dependencies>
 
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>log4j-over-slf4j</artifactId>
-			<scope>provided</scope>
-		</dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+        </dependency>
 
-		<dependency>
-			<groupId>org.doa</groupId>
-			<artifactId>api</artifactId>
-			<scope>provided</scope>
-		</dependency>
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+        </dependency>
 
-		<dependency>
-			<groupId>commons-fileupload</groupId>
-			<artifactId>commons-fileupload</artifactId>
-			<scope>runtime</scope>
-		</dependency>
+        <dependency>
+            <groupId>org.doa</groupId>
+            <artifactId>api</artifactId>
+            <scope>provided</scope>
+        </dependency>
 
-		<dependency>
-			<groupId>com.ettrema</groupId>
-			<artifactId>milton-api</artifactId>
-			<exclusions>
-				<exclusion>
-					<artifactId>slf4j-api</artifactId>
-					<groupId>org.slf4j</groupId>
-				</exclusion>
-			</exclusions>
-		</dependency>
+        <dependency>
+            <groupId>commons-fileupload</groupId>
+            <artifactId>commons-fileupload</artifactId>
+            <scope>runtime</scope>
+        </dependency>
 
-		<dependency>
-			<groupId>com.ettrema</groupId>
-			<artifactId>milton-servlet</artifactId>
-			<exclusions>
-				<exclusion>
-					<artifactId>spring-webmvc</artifactId>
-					<groupId>org.springframework</groupId>
-				</exclusion>
-				<exclusion>
-					<artifactId>slf4j-api</artifactId>
-					<groupId>org.slf4j</groupId>
-				</exclusion>
-				<exclusion>
-					<artifactId>spring</artifactId>
-					<groupId>org.springframework</groupId>
-				</exclusion>
-			</exclusions>
-		</dependency>
+        <dependency>
+            <groupId>com.ettrema</groupId>
+            <artifactId>milton-api</artifactId>
+            <exclusions>
+                <exclusion>
+                    <artifactId>slf4j-api</artifactId>
+                    <groupId>org.slf4j</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
 
-		<dependency>
-			<groupId>org.doa.support</groupId>
-			<artifactId>http-tomcat-channel</artifactId>
-		</dependency>
+        <dependency>
+            <groupId>com.ettrema</groupId>
+            <artifactId>milton-servlet</artifactId>
+            <exclusions>
+                <exclusion>
+                    <artifactId>spring-webmvc</artifactId>
+                    <groupId>org.springframework</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>slf4j-api</artifactId>
+                    <groupId>org.slf4j</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>spring</artifactId>
+                    <groupId>org.springframework</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
 
-		<dependency>
-			<groupId>org.doa.engine</groupId>
-			<artifactId>core</artifactId>
-			<scope>provided</scope>
-		</dependency>
+        <dependency>
+            <groupId>org.doa.support</groupId>
+            <artifactId>http-tomcat-channel</artifactId>
+            <version>${org.doa.support.http-tomcat-channel.version}</version>
+        </dependency>
 
-	</dependencies>
+        <dependency>
+            <groupId>org.doa.engine</groupId>
+            <artifactId>core</artifactId>
+            <version>${org.doa.engine.core.version}</version>
+            <scope>provided</scope>
+        </dependency>
 
-	<repositories>
-		<repository>
-			<id>doa-repo</id>
-			<url>http://nexus.doaplatform.org/content/repositories/doa-test/</url>
-		</repository>
-		<repository>
-			<id>codehaus-release-repo</id>
-			<name>Codehaus Release Repo</name>
-			<url>http://repository.codehaus.org</url>
-		</repository>
-		<repository>
-			<id>milton</id>
-			<name>Milton Repo</name>
-			<url>http://tools.softwaremill.pl/nexus/content/repositories/snapshots/</url>
-		</repository>
-	</repositories>
+    </dependencies>
+
+    <repositories>
+        <repository>
+            <id>doa-repo</id>
+            <url>http://nexus.doaplatform.org/content/repositories/doa-test/</url>
+        </repository>
+        <repository>
+            <id>codehaus-release-repo</id>
+            <name>Codehaus Release Repo</name>
+            <url>http://repository.codehaus.org</url>
+        </repository>
+        <repository>
+            <id>milton</id>
+            <name>Milton Repo</name>
+            <url>http://tools.softwaremill.pl/nexus/content/repositories/snapshots/</url>
+        </repository>
+    </repositories>
 </project>

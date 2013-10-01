@@ -1,50 +1,52 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="">
-	<modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>org</groupId>
-		<artifactId>doa</artifactId>
-		<version>1</version>
-		<relativePath>../../</relativePath>
-	</parent>
+    <parent>
+        <groupId>org</groupId>
+        <artifactId>doa</artifactId>
+        <version>${org.doa.version}</version>
+        <relativePath>../../pom.xml</relativePath>
+    </parent>
 
-	<groupId>org.doa.engine</groupId>
-	<artifactId>core</artifactId>
-	<packaging>jar</packaging>
-	<version>${org.doa.engine.core.version}</version>
-	<name>DOA Core</name>
+    <groupId>org.doa.engine</groupId>
+    <artifactId>core</artifactId>
+    <packaging>jar</packaging>
+    <name>DOA Core</name>
 
-	<dependencies>
+    <dependencies>
+        <dependency>
+            <groupId>org.doa</groupId>
+            <artifactId>api</artifactId>
+        </dependency>
 
-		<dependency>
-			<groupId>org.doa</groupId>
-			<artifactId>api</artifactId>
-		</dependency>
+        <dependency>
+            <groupId>rhino</groupId>
+            <artifactId>js</artifactId>
+        </dependency>
 
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<scope>provided</scope>
-		</dependency>
+        <dependency>
+            <groupId>org.lightwolf</groupId>
+            <artifactId>lightwolf-continuations</artifactId>
+        </dependency>
 
-		<dependency>
-			<groupId>rhino</groupId>
-			<artifactId>js</artifactId>
-		</dependency>
+        <dependency>
+            <groupId>asm</groupId>
+            <artifactId>asm-all</artifactId>
+        </dependency>
 
-		<dependency>
-			<groupId>org.lightwolf</groupId>
-			<artifactId>lightwolf-continuations</artifactId>
-		</dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+        </dependency>
+    </dependencies>
 
-		<dependency>
-			<groupId>asm</groupId>
-			<artifactId>asm-all</artifactId>
-		</dependency>
-
-	</dependencies>
-
+    <repositories>
+        <repository>
+            <id>doa-repo</id>
+            <url>http://nexus.doaplatform.org/content/repositories/doa-test/
+            </url>
+        </repository>
+    </repositories>
 </project>
