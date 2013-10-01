@@ -31,38 +31,39 @@
     </build>
 
     <dependencies>
+        
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>1.4.3</version>
             <scope>provided</scope>
         </dependency>
+        
         <dependency>
-            <groupId>pl.doa</groupId>
-            <artifactId>doa-impl</artifactId>
-            <version>0.0.1</version>
+            <groupId>org.doa.engine</groupId>
+            <artifactId>core</artifactId>
             <scope>provided</scope>
         </dependency>
+        
         <dependency>
             <groupId>commons-fileupload</groupId>
             <artifactId>commons-fileupload</artifactId>
-            <version>1.2.1</version>
         </dependency>
+        
         <dependency>
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
-            <version>20090211</version>
         </dependency>
+        
         <dependency>
-            <groupId>pl.doa</groupId>
-            <artifactId>doa-entity-mapper-json</artifactId>
-            <version>0.0.1</version>
+            <groupId>org.doa.support</groupId>
+            <artifactId>json-entity-mapper</artifactId>
         </dependency>
+        
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
-            <version>3.0.1</version>
         </dependency>
+        
     </dependencies>
 
     <repositories>

@@ -18,9 +18,16 @@
 	    <org.doa.support.version>0.0.1</org.doa.support.version>
 	    
 	    <org.doa.config.xml.version>0.0.1</org.doa.config.xml.version>
+	    <org.doa.support.json-entity-mapper.version>0.0.1</org.doa.support.json-entity-mapper.version>
 	    
 	    <!-- EXTERNAL VERSIONING -->
 	    
+	    <com.skyrails.skyrails-neo4j>0.0.1</com.skyrails.skyrails-neo4j>
+	    <aspectj.aspectjweaver.version>1.5.3</aspectj.aspectjweaver.version>
+	    <aspectj.aspectjrt.version>1.5.3</aspectj.aspectjrt.version>
+	    <com.uwyn.continuations.version>1.6.1</com.uwyn.continuations.version>
+	    <org.springframework.version>3.2.4.RELEASE</org.springframework.version>
+	    <org.apache.bcel.bcel.version>5.2</org.apache.bcel.bcel.version>
 	    <dom4j.dom4j.version>1.6.1</dom4j.dom4j.version>
 	    <commons-io.commons-io.version>1.4</commons-io.commons-io.version>
 	    <rhino.js.version>1.7R1</rhino.js.version>
@@ -103,7 +110,13 @@
 			<artifactId>xml</artifactId>
 			<version>${org.doa.config.xml.version}</version>
 			<scope>provided</scope>
-		</dependency>		
+		</dependency>
+		
+		<dependency>
+            <groupId>org.doa.support</groupId>
+            <artifactId>json-entity-mapper</artifactId>
+            <version>${org.doa.support.json-entity-mapper.version}</version>
+        </dependency>	
 		
 		<!-- xxx -->
 		
@@ -133,6 +146,14 @@
 			<groupId>org.neo4j</groupId>
 			<artifactId>neo4j-lucene-index</artifactId>
 			<version>${org.neo4j.neo4j-lucene-index.version}</version>
+		</dependency>
+		
+		<!-- SPRING -->
+		
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring</artifactId>
+			<version>${org.springframework.version}</version>
 		</dependency>
 		
 		<!-- SERVER -->
@@ -250,7 +271,37 @@
 			<version>${org.apache.wicket.version}</version>
 		</dependency>	
 		
-		<!-- OTHER -->		
+		<!-- OTHER -->	
+		
+		<dependency>
+			<groupId>com.skyrails</groupId>
+			<artifactId>skyrails-neo4j</artifactId>
+			<version>${com.skyrails.skyrails-neo4j}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>aspectj</groupId>
+			<artifactId>aspectjrt</artifactId>
+			<version>${aspectj.aspectjrt.version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>aspectj</groupId>
+			<artifactId>aspectjweaver</artifactId>
+			<version>${aspectj.aspectjweaver.version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.uwyn</groupId>
+			<artifactId>continuations</artifactId>
+			<version>${com.uwyn.continuations.version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.apache.bcel</groupId>
+			<artifactId>bcel</artifactId>
+			<version>${org.apache.bcel.bcel.version}</version>
+		</dependency>	
 		
 		<dependency>
 			<groupId>dom4j</groupId>

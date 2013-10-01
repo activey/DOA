@@ -10,11 +10,11 @@
 		<version>${org.doa.environment.version}</version>
 	</parent>
 
-	<groupId>pl.doa</groupId>
-	<artifactId>doa-standalone</artifactId>
+	<groupId>org.doa.environment</groupId>
+	<artifactId>standalone</artifactId>
 	<packaging>jar</packaging>
-	<version>0.0.1</version>
-	<name>doa-standalone</name>
+	<version>${org.doa.environment.standalone.version}</version>
+	<name>DOA Standalone environment</name>
 	<url>http://maven.apache.org</url>
 	<build>
 		<plugins>
@@ -108,108 +108,106 @@
 		</plugins>
 	</build>
 	<dependencies>
+
 		<dependency>
-			<groupId>pl.doa</groupId>
-			<artifactId>doa-api</artifactId>
-			<version>0.0.1</version>
+			<groupId>org.doa</groupId>
+			<artifactId>api</artifactId>
 		</dependency>
+
 		<dependency>
-			<groupId>pl.doa</groupId>
-			<artifactId>doa-impl</artifactId>
-			<version>0.0.1</version>
+			<groupId>org.doa.engine</groupId>
+			<artifactId>core</artifactId>
 		</dependency>
 
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>3.8.1</version>
 			<scope>test</scope>
 		</dependency>
+
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
-			<version>1.7.5</version>
 		</dependency>
+
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
-			<version>1.2.12</version>
 		</dependency>
+
 		<dependency>
 			<groupId>commons-logging</groupId>
 			<artifactId>commons-logging</artifactId>
-			<version>1.1.1</version>
 		</dependency>
+
 		<dependency>
 			<groupId>org.apache.bcel</groupId>
 			<artifactId>bcel</artifactId>
-			<version>5.2</version>
 		</dependency>
+
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring</artifactId>
-			<version>2.5.6</version>
 		</dependency>
+
 		<dependency>
 			<groupId>dom4j</groupId>
 			<artifactId>dom4j</artifactId>
-			<version>1.6.1</version>
 		</dependency>
+
 		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
-			<version>1.4</version>
 		</dependency>
+
 		<dependency>
 			<groupId>rhino</groupId>
 			<artifactId>js</artifactId>
-			<version>1.7R1</version>
 		</dependency>
+
 		<dependency>
-			<groupId>pl.doa</groupId>
+			<groupId>org.doa.environment</groupId>
 			<artifactId>xml-templates</artifactId>
-			<version>0.0.1</version>
 		</dependency>
+
 		<dependency>
 			<groupId>org.apache.ivy</groupId>
 			<artifactId>ivy</artifactId>
-			<version>2.2.0</version>
 		</dependency>
+
 		<dependency>
 			<groupId>com.uwyn</groupId>
 			<artifactId>continuations</artifactId>
-			<version>1.6.1</version>
 		</dependency>
+
 		<dependency>
 			<groupId>org.apache.maven</groupId>
 			<artifactId>maven-model</artifactId>
-			<version>3.0.3</version>
 		</dependency>
+
 		<dependency>
-			<groupId>pl.doa</groupId>
-			<artifactId>doa-impl-neo</artifactId>
-			<version>0.0.1</version>
+			<groupId>org.doa.persitence</groupId>
+			<artifactId>neo4j</artifactId>
 		</dependency>
+
 		<dependency>
 			<groupId>aspectj</groupId>
 			<artifactId>aspectjrt</artifactId>
-			<version>1.5.3</version>
 		</dependency>
+		
 		<dependency>
 			<groupId>aspectj</groupId>
 			<artifactId>aspectjweaver</artifactId>
-			<version>1.5.3</version>
 		</dependency>
+		
 		<dependency>
-			<groupId>pl.doa</groupId>
-			<artifactId>doa-bootstrap</artifactId>
-			<version>0.0.1</version>
+			<groupId>org.doa.config</groupId>
+			<artifactId>xml</artifactId>
 		</dependency>
 
 		<dependency>
 			<groupId>com.skyrails</groupId>
 			<artifactId>skyrails-neo4j</artifactId>
-			<version>0.0.1</version>
 		</dependency>
 
 	</dependencies>
