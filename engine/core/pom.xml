@@ -3,6 +3,13 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="">
 	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.doa</groupId>
+		<artifactId>engine</artifactId>
+		<version>${org.doa.engine.version}</version>
+	</parent>
+
 	<groupId>org.doa.engine</groupId>
 	<artifactId>core</artifactId>
 	<packaging>jar</packaging>

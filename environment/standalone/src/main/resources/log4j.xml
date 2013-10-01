@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?><!-- Copyright 2011 Inhibi Ltd. All 
+	rights reserved. Redistribution and use in source and binary forms, with 
+	or without modification, are permitted provided that the following conditions 
+	are met: 1. Redistributions of source code must retain the above copyright 
+	notice, this list of conditions and the following disclaimer. 2. Redistributions 
+	in binary form must reproduce the above copyright notice, this list of conditions 
+	and the following disclaimer in the documentation and/or other materials 
+	provided with the distribution. THIS SOFTWARE IS PROVIDED BY INHIBI LTD ``AS 
+	IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, 
+	THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE 
+	ARE DISCLAIMED. IN NO EVENT SHALL INHIBI LTD OR CONTRIBUTORS BE LIABLE FOR 
+	ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES 
+	(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; 
+	LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND 
+	ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT 
+	(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF 
+	THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. The views 
+	and conclusions contained in the software and documentation are those of 
+	the authors and should not be interpreted as representing official policies, 
+	either expressed or implied, of Inhibi Ltd. Contributors: Inhibi Ltd - initial 
+	API and implementation -->
+
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+	<appender name="null" class="org.apache.log4j.varia.NullAppender">
+	</appender>
+
+	<appender name="console" class="org.apache.log4j.ConsoleAppender">
+		<param name="Target" value="System.out" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="[%t] %d{ISO8601} %-5p %c %x - %m%n" />
+		</layout>
+	</appender>
+
+	<appender name="file" class="org.apache.log4j.RollingFileAppender">
+		<param name="File" value="./var/log/system.log" />
+		<param name="MaxFileSize" value="5MB" />
+		<param name="MaxBackupIndex" value="500" />
+		<param name="Append" value="true" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="[%t] %d{ISO8601} [%t] %-5p %c %x - %m%n" />
+		</layout>
+	</appender>
+
+	<appender name="performanceFile" class="org.apache.log4j.RollingFileAppender">
+		<param name="File" value="./var/log/performance.csv" />
+		<param name="MaxFileSize" value="5MB" />
+		<param name="MaxBackupIndex" value="500" />
+		<param name="Append" value="false" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%m%n" />
+		</layout>
+	</appender>
+
+	<logger name="org.apache.commons.digester.Digester" additivity="false">
+		<level value="debug" />
+		<appender-ref ref="null" />
+	</logger>
+
+	<logger name="org.apache.tomcat.util.IntrospectionUtils"
+		additivity="false">
+		<level value="debug" />
+		<appender-ref ref="null" />
+	</logger>
+
+	<logger name="org.apache.catalina.loader.WebappClassLoader"
+		additivity="false">
+		<level value="debug" />
+		<appender-ref ref="null" />
+	</logger>
+
+	<logger
+		name="org.springframework.beans.factory.support.DefaultListableBeanFactory"
+		additivity="false">
+		<level value="debug" />
+		<appender-ref ref="null" />
+	</logger>
+
+	<logger name="pl.doa" additivity="false">
+		<level value="debug" />
+		<appender-ref ref="console" />
+		<appender-ref ref="file" />
+	</logger>
+
+	<logger name="PROFILER" additivity="false">
+		<level value="debug" />
+		<appender-ref ref="performanceFile" />
+	</logger>
+
+	<root>
+		<priority value="debug" />
+		<appender-ref ref="file" />
+	</root>
+
+</log4j:configuration>

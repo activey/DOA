@@ -3,6 +3,13 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.doa</groupId>
+		<artifactId>config</artifactId>
+		<version>${org.doa.config.version}</version>
+	</parent>
+
 	<groupId>org.doa.config</groupId>
 	<artifactId>xml</artifactId>
 	<packaging>jar</packaging>
@@ -26,41 +33,37 @@
 		</plugins>
 	</build>
 	<dependencies>
+
 		<dependency>
-			<groupId>pl.doa</groupId>
-			<artifactId>doa-impl</artifactId>
-			<version>0.0.1</version>
+			<groupId>org.doa.support</groupId>
+			<artifactId>xml-templates</artifactId>
 		</dependency>
+
 		<dependency>
 			<groupId>dom4j</groupId>
 			<artifactId>dom4j</artifactId>
-			<version>1.6.1</version>
 		</dependency>
+
 		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
-			<version>1.4</version>
 		</dependency>
+
 		<dependency>
 			<groupId>rhino</groupId>
 			<artifactId>js</artifactId>
-			<version>1.7R1</version>
 		</dependency>
-		<dependency>
-			<groupId>pl.doa</groupId>
-			<artifactId>xml-templates</artifactId>
-			<version>0.0.1</version>
-		</dependency>
+
 		<dependency>
 			<groupId>org.apache.ivy</groupId>
 			<artifactId>ivy</artifactId>
-			<version>2.2.0</version>
 		</dependency>
+
 		<dependency>
 			<groupId>org.apache.maven</groupId>
 			<artifactId>maven-model</artifactId>
-			<version>3.0.3</version>
 		</dependency>
+
 	</dependencies>
 
 	<repositories>

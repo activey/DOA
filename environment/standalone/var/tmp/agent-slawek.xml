@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<deploy xmlns="http://doaplatform.org/deploy" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://doaplatform.org/deploy http://doaplatform.org/schema/deploy.xsd"
+defaultContainer="/agents">
+
+	<container name="agent-slawek">
+		<agent name="slawek" var="slawek" />
+		<container name="fingerprints">
+			<document name="olender-admin-login"
+			definition="/applications/olender-frontpage/definitions/authentication/login_input">
+				<fieldValue name="login">slavo</fieldValue>
+				<fieldValue name="password">kura13</fieldValue>
+			</document>
+		</container>
+		<container name="profile">
+			<document name="user_profile"
+			definition="/applications/olender-frontpage/definitions/authentication/profile_definition">
+				<fieldValue name="firstName">Sławek</fieldValue>
+				<fieldValue name="lastName">Śmigulec</fieldValue>
+			</document>
+		</container>
+
+	</container>
+	<container name="security">
+		<container name="roles">
+			<container name="admin">
+				<reference name="slawek" referencedEntity="#slawek" />
+			</container>
+		</container>
+	</container>
+
+</deploy>

@@ -1,21 +1,23 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>pl.doa</groupId>
-	<artifactId>doa-parent</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<groupId>org</groupId>
+	<artifactId>doa</artifactId>
+	<version>1</version>
 	<packaging>pom</packaging>
 	<name>DOA</name>
 
 	<properties>
 	    <!-- INTERNAL VERSIONING -->
 	    <org.doa.api.version>0.0.1</org.doa.api.version>
-	    <org.doa.engine.version>0.0.1</org.doa.engine.core.version>
+	    <org.doa.engine.version>0.0.1</org.doa.engine.version>
 	    <org.doa.config.version>0.0.1</org.doa.config.version>
 	    <org.doa.integration.version>0.0.1</org.doa.integration.version>
 	    <org.doa.examples.version>0.0.1</org.doa.examples.version>
 	    <org.doa.persistence.version>0.0.1</org.doa.persistence.version>
 	    <org.doa.support.version>0.0.1</org.doa.support.version>
+	    
+	    <org.doa.config.xml.version>0.0.1</org.doa.config.xml.version>
 	    
 	    <!-- EXTERNAL VERSIONING -->
 	    
@@ -96,9 +98,14 @@
 
 		<!-- FRAMEWORK LAYERS IMPLEMENTATIONS -->		
 		
-				
+		<dependency>
+			<groupId>org.doa.config</groupId>
+			<artifactId>xml</artifactId>
+			<version>${org.doa.config.xml.version}</version>
+			<scope>provided</scope>
+		</dependency>		
 		
-		<!-- ------------------- -->
+		<!-- xxx -->
 		
 		<dependency>
 			<groupId>pl.doa</groupId>
@@ -106,7 +113,7 @@
 			<version>0.0.1</version>
 		</dependency>
 		
-		<!-- ------------------- -->
+		<!-- xxx -->
 		
 		<!-- PERSISTENCE -->
 		

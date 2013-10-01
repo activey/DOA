@@ -1,8 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.doa</groupId>
+		<artifactId>persistence</artifactId>
+		<version>${org.doa.persistence.version}</version>
+	</parent>
+
 	<groupId>org.doa.persistence</groupId>
 	<artifactId>neo4j</artifactId>
 	<packaging>jar</packaging>
@@ -44,56 +50,46 @@
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
-			<version>1.5.7</version>
 		</dependency>
+
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
-			<version>1.2.12</version>
 		</dependency>
 		<dependency>
 			<groupId>dom4j</groupId>
 			<artifactId>dom4j</artifactId>
-			<version>1.6.1</version>
 		</dependency>
-		<!-- dependency>
-			<groupId>org.neo4j</groupId>
-			<artifactId>neo4j-shell</artifactId>
-			<version>1.3.M04</version>
-			<type>jar</type>
-		</dependency -->
+
 		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
-			<version>1.4</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-beanutils</groupId>
 			<artifactId>commons-beanutils</artifactId>
-			<version>1.8.3</version>
 		</dependency>
 
 		<dependency>
-			<groupId>pl.doa</groupId>
-			<artifactId>doa-impl</artifactId>
-			<version>0.0.1</version>
-			<scope>provided</scope>
+			<groupId>org.doa.engine</groupId>
+			<artifactId>core</artifactId>
 		</dependency>
+
 		<dependency>
 			<groupId>org.neo4j</groupId>
 			<artifactId>neo4j-graph-matching</artifactId>
-			<version>1.8.M06</version>
 		</dependency>
+
 		<dependency>
 			<groupId>org.neo4j</groupId>
 			<artifactId>neo4j-udc</artifactId>
-			<version>1.8.M06</version>
 		</dependency>
+
 		<dependency>
 			<groupId>org.neo4j</groupId>
 			<artifactId>neo4j-lucene-index</artifactId>
-			<version>1.8.M06</version>
 		</dependency>
+
 	</dependencies>
 
 	<repositories>
