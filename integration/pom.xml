@@ -2,16 +2,14 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.doa</groupId>
-	<artifactId>support</artifactId>
+	<artifactId>integration</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
-	<name>DOA Support</name>
-	<description>This is where all supportive to the framework modules reside.</description>
+	<name>DOA Integration</name>
+	<description>This is where all adapters reside.</description>
 
 	<modules>
-		<module>servlet</module>
-		<module>http-tomcat-channel</module>
-		<module>http-ext-webdav-channel</module>
+		<module>wicket</module>
 	</modules>
 
 </project>

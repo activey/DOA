@@ -1,0 +1,43 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.doa.integration</groupId>
+    <artifactId>wicket</artifactId>
+    <version>${org.doa.integration.wicket.version}</version>
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.0.2</version>
+                <configuration>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+    <dependencies>
+        <dependency>
+            <groupId>pl.doa</groupId>
+            <artifactId>doa-impl</artifactId>
+            <version>0.0.1</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>pl.doa</groupId>
+            <artifactId>doa-wicket</artifactId>
+            <version>0.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>pl.doa</groupId>
+            <artifactId>doa-data-wrapper</artifactId>
+            <version>0.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.5</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+</project>
