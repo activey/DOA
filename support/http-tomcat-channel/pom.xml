@@ -1,11 +1,12 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>org.doa</groupId>
-		<artifactId>support</artifactId>
-		<version>${org.doa.support.version}</version>
+		<groupId>org</groupId>
+		<artifactId>doa</artifactId>
+		<version>${org.doa.version}</version>
+		<relativePath>../../</relativePath>
 	</parent>
 
 	<groupId>org.doa.support</groupId>
@@ -15,54 +16,54 @@
         Kanal komunikacyjny HTTP - obsluga protokolu HTTP.
     </description>
 	<dependencies>
-	    
+
 		<dependency>
 			<groupId>org.doa.engine</groupId>
 			<artifactId>core</artifactId>
 			<scope>provided</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>commons-fileupload</groupId>
 			<artifactId>commons-fileupload</artifactId>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>commons-lang</groupId>
 			<artifactId>commons-lang</artifactId>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.doa.support</groupId>
 			<artifactId>servlet</artifactId>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>javax.servlet-api</artifactId>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.apache.tomcat.embed</groupId>
 			<artifactId>tomcat-embed-core</artifactId>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.apache.tomcat</groupId>
 			<artifactId>tomcat-juli</artifactId>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.apache.tomcat</groupId>
 			<artifactId>tomcat-jasper</artifactId>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>log4j-over-slf4j</artifactId>
 			<scope>provided</scope>
 		</dependency>
-		
+
 	</dependencies>
 	<build>
 		<plugins>

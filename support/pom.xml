@@ -19,6 +19,8 @@
 		<module>servlet</module>
 		<module>http-tomcat-channel</module>
 		<module>http-ext-webdav-channel</module>
+		<module>json-entity-mapper</module>
+		<module>xml-templates</module>
 	</modules>
 
 </project>

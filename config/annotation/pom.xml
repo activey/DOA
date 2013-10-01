@@ -3,14 +3,14 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>org.doa</groupId>
-		<artifactId>config</artifactId>
-		<version>${org.doa.config.version}</version>
+		<groupId>org</groupId>
+		<artifactId>doa</artifactId>
+		<version>1</version>
+		<relativePath>../../</relativePath>
 	</parent>
 
 	<groupId>org.doa.config</groupId>
 	<artifactId>annotation</artifactId>
-	<version>${org.doa.config.annotation}</version>
 	<name>DOA Annotation-based configuration</name>
 	<build>
 		<plugins>
@@ -27,9 +27,26 @@
 	<dependencies>
 
 		<dependency>
+			<groupId>org.doa</groupId>
+			<artifactId>api</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
 			<groupId>org.doa.config</groupId>
 			<artifactId>xml</artifactId>
-			<version>${org.doa.config.xml.version}</version>
 			<scope>provided</scope>
 		</dependency>
 

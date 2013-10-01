@@ -3,9 +3,10 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>org.doa</groupId>
-		<artifactId>support</artifactId>
-		<version>${org.doa.support.version}</version>
+		<groupId>org</groupId>
+		<artifactId>doa</artifactId>
+		<version>${org.doa.version}</version>
+		<relativePath>../../</relativePath>
 	</parent>
 
 	<groupId>org.doa</groupId>

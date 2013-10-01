@@ -9,11 +9,10 @@
 		<artifactId>doa</artifactId>
 		<version>1</version>
 	</parent>
-
+	
 	<groupId>org.doa</groupId>
 	<artifactId>api</artifactId>
 	<packaging>jar</packaging>
-	<version>${org.doa.api.version}</version>
 	<name>DOA API</name>
 	<url>http://maven.apache.org</url>
 	<build>
@@ -49,9 +48,5 @@
 			<url>http://download.java.net/maven/2/</url>
 		</repository>
 	</repositories>
-	<dependencyManagement>
-		<dependencies>
-		</dependencies>
-	</dependencyManagement>
 
 </project>

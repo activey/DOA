@@ -1,13 +1,14 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	
+
 	<parent>
-		<groupId>org.doa</groupId>
-		<artifactId>support</artifactId>
-		<version>${org.doa.support.version}</version>
+		<groupId>org</groupId>
+		<artifactId>doa</artifactId>
+		<version>${org.doa.version}</version>
+		<relativePath>../../</relativePath>
 	</parent>
-	
+
 	<groupId>org.doa.support</groupId>
 	<artifactId>http-ext-webdav-channel</artifactId>
 	<version>${org.doa.support.http-ext-webdav-channel.version}</version>
@@ -29,25 +30,25 @@
 		</plugins>
 	</build>
 	<dependencies>
-	    
+
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>log4j-over-slf4j</artifactId>
 			<scope>provided</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.doa</groupId>
 			<artifactId>api</artifactId>
 			<scope>provided</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>commons-fileupload</groupId>
 			<artifactId>commons-fileupload</artifactId>
 			<scope>runtime</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>com.ettrema</groupId>
 			<artifactId>milton-api</artifactId>
@@ -58,7 +59,7 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>com.ettrema</groupId>
 			<artifactId>milton-servlet</artifactId>
@@ -77,20 +78,20 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.doa.support</groupId>
 			<artifactId>http-tomcat-channel</artifactId>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.doa.engine</groupId>
 			<artifactId>core</artifactId>
 			<scope>provided</scope>
 		</dependency>
-		
+
 	</dependencies>
-	
+
 	<repositories>
 		<repository>
 			<id>doa-repo</id>

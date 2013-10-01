@@ -1,389 +1,424 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	
+
 	<groupId>org</groupId>
 	<artifactId>doa</artifactId>
-	<version>1</version>
+	<version>${org.doa.version}</version>
 	<packaging>pom</packaging>
 	<name>DOA</name>
 
 	<properties>
-	    <!-- INTERNAL VERSIONING -->
-	    <org.doa.api.version>0.0.1</org.doa.api.version>
-	    <org.doa.engine.version>0.0.1</org.doa.engine.version>
-	    <org.doa.config.version>0.0.1</org.doa.config.version>
-	    <org.doa.integration.version>0.0.1</org.doa.integration.version>
-	    <org.doa.examples.version>0.0.1</org.doa.examples.version>
-	    <org.doa.persistence.version>0.0.1</org.doa.persistence.version>
-	    <org.doa.support.version>0.0.1</org.doa.support.version>
+	    <!-- GENERAL VERSION -->
+	    <org.doa.version>1</org.doa.version>
 	    
-	    <org.doa.config.xml.version>0.0.1</org.doa.config.xml.version>
-	    <org.doa.support.json-entity-mapper.version>0.0.1</org.doa.support.json-entity-mapper.version>
-	    
-	    <!-- EXTERNAL VERSIONING -->
-	    
-	    <com.skyrails.skyrails-neo4j.version>0.0.1</com.skyrails.skyrails-neo4j.version>
-	    <aspectj.aspectjweaver.version>1.5.3</aspectj.aspectjweaver.version>
-	    <aspectj.aspectjrt.version>1.5.3</aspectj.aspectjrt.version>
-	    <com.uwyn.continuations.version>1.6.1</com.uwyn.continuations.version>
-	    <org.springframework.version>3.2.4.RELEASE</org.springframework.version>
-	    <org.apache.bcel.bcel.version>5.2</org.apache.bcel.bcel.version>
-	    <dom4j.dom4j.version>1.6.1</dom4j.dom4j.version>
-	    <commons-io.commons-io.version>1.4</commons-io.commons-io.version>
-	    <rhino.js.version>1.7R1</rhino.js.version>
-	    <org.apache.ivy.ivy.version>2.2.0</org.apache.ivy.ivy.version>
-	    <junit.junit.version>4.8.1</junit.junit.version>
-	    <net.sf.scannotation.version>1.0.2</net.sf.scannotation.version>
-	    <org.slf4j.version>1.7.5</org.slf4j.version>
-	    <org.lightwolf.lightwolf-continuations.version>0.0.1</org.lightwolf.lightwolf-continuations.version>
-	    <asm.asm-all.version>3.1</asm.asm-all.version>
-	    <org.slf4j.slf4j-log4j12.version>1.5.7</org.slf4j.slf4j-log4j12.version>
-	    <log4j.log4j.version>1.2.12</log4j.log4j.version>
-	    <commons-beanutils.commons-beanutils.version>1.8.3</commons-beanutils.commons-beanutils.version>
-	    <org.neo4j.neo4j-graph-matching.version>1.8.M06</org.neo4j.neo4j-graph-matching.version>
-	    <org.neo4j.neo4j-udc.version>1.8.M06</org.neo4j.neo4j-udc.version>
-	    <org.neo4j.neo4j-lucene-index.version>1.8.M06</org.neo4j.neo4j-lucene-index.version>
-	    <commons-fileupload.commons-fileupload.version>1.2.1</commons-fileupload.commons-fileupload.version>
-	    <org.json.json.version>20090211</org.json.json.version>
-	    <javax.servlet.javax.servlet-api.version>3.0.1</javax.servlet.javax.servlet-api.version>
-	    <org.apache.wicket.version>6.10.0</org.apache.wicket.version>
-	    <org.apache.maven.maven-model.version>3.0.3</org.apache.maven.maven-model.version>
-	    <commons-fileupload.commons-fileupload.version>1.2.1</commons-fileupload.commons-fileupload.version>
-	    <com.ettrema.milton.version>1.5.4-SNAPSHOT</com.ettrema.milton.version>
-	    <commons-lang.commons-lang.version>2.1</commons-lang.commons-lang.version>
-	    <javax.servlet.javax.servlet-api.version>3.0.1</javax.servlet.javax.servlet-api.version>
-	    <org.apache.tomcat.version>7.0.27</org.apache.tomcat.version>
+		<!-- INTERNAL VERSIONING -->
+		<org.doa.api.version>0.0.1</org.doa.api.version>
+		<org.doa.engine.version>0.0.1</org.doa.engine.version>
+		<org.doa.config.version>0.0.1</org.doa.config.version>
+		<org.doa.integration.version>0.0.1</org.doa.integration.version>
+		<org.doa.examples.version>0.0.1</org.doa.examples.version>
+		<org.doa.persistence.version>0.0.1</org.doa.persistence.version>
+		<org.doa.support.version>0.0.1</org.doa.support.version>
+
+		<org.doa.config.xml.version>0.0.1</org.doa.config.xml.version>
+		<org.doa.support.json-entity-mapper.version>0.0.1</org.doa.support.json-entity-mapper.version>
+		<org.doa.support.xml-templates.version>0.0.1</org.doa.support.xml-templates.version>
+		<org.doa.engine.core.version>0.0.1</org.doa.engine.core.version>
+
+		<!-- EXTERNAL VERSIONING -->
+
+		<xom.xom.version>1.2.5</xom.xom.version>
+		<jdom.jdom.version>1.0</jdom.jdom.version>
+		<com.skyrails.skyrails-neo4j.version>0.0.1</com.skyrails.skyrails-neo4j.version>
+		<aspectj.aspectjweaver.version>1.5.3</aspectj.aspectjweaver.version>
+		<aspectj.aspectjrt.version>1.5.3</aspectj.aspectjrt.version>
+		<com.uwyn.continuations.version>1.6.1</com.uwyn.continuations.version>
+		<org.springframework.version>3.2.4.RELEASE</org.springframework.version>
+		<org.apache.bcel.bcel.version>5.2</org.apache.bcel.bcel.version>
+		<dom4j.dom4j.version>1.6.1</dom4j.dom4j.version>
+		<commons-io.commons-io.version>1.4</commons-io.commons-io.version>
+		<rhino.js.version>1.7R1</rhino.js.version>
+		<org.apache.ivy.ivy.version>2.2.0</org.apache.ivy.ivy.version>
+		<junit.junit.version>4.8.1</junit.junit.version>
+		<net.sf.scannotation.version>1.0.2</net.sf.scannotation.version>
+		<org.slf4j.version>1.7.5</org.slf4j.version>
+		<org.lightwolf.lightwolf-continuations.version>0.0.1</org.lightwolf.lightwolf-continuations.version>
+		<asm.asm-all.version>3.1</asm.asm-all.version>
+		<org.slf4j.slf4j-log4j12.version>1.5.7</org.slf4j.slf4j-log4j12.version>
+		<log4j.log4j.version>1.2.12</log4j.log4j.version>
+		<commons-beanutils.commons-beanutils.version>1.8.3</commons-beanutils.commons-beanutils.version>
+		<org.neo4j.neo4j-graph-matching.version>1.8.M06</org.neo4j.neo4j-graph-matching.version>
+		<org.neo4j.neo4j-udc.version>1.8.M06</org.neo4j.neo4j-udc.version>
+		<org.neo4j.neo4j-lucene-index.version>1.8.M06</org.neo4j.neo4j-lucene-index.version>
+		<commons-fileupload.commons-fileupload.version>1.2.1</commons-fileupload.commons-fileupload.version>
+		<org.json.json.version>20090211</org.json.json.version>
+		<javax.servlet.javax.servlet-api.version>3.0.1</javax.servlet.javax.servlet-api.version>
+		<org.apache.wicket.version>6.10.0</org.apache.wicket.version>
+		<org.apache.maven.maven-model.version>3.0.3</org.apache.maven.maven-model.version>
+		<commons-fileupload.commons-fileupload.version>1.2.1</commons-fileupload.commons-fileupload.version>
+		<com.ettrema.milton.version>1.5.4-SNAPSHOT</com.ettrema.milton.version>
+		<commons-lang.commons-lang.version>2.1</commons-lang.commons-lang.version>
+		<javax.servlet.javax.servlet-api.version>3.0.1</javax.servlet.javax.servlet-api.version>
+		<org.apache.tomcat.version>7.0.27</org.apache.tomcat.version>
 	</properties>
-	
+
 	<dependencyManagement>
+		<dependencies>
 
-	    <!-- FRAMEWORK LAYERS -->
-		
-		<dependency>
-			<groupId>pl.doa</groupId>
-			<artifactId>doa-api</artifactId>
-			<version>${org.doa.api.version}</version>
-			<scope>provided</scope>
-		</dependency>
+			<!-- FRAMEWORK LAYERS (AGGREGATORS) -->
 
-		<dependency>
-			<groupId>org.doa</groupId>
-			<artifactId>engine</artifactId>
-			<version>${org.doa.engine.version}</version>
-		</dependency>
-		
-		<dependency>
-			<groupId>org.doa</groupId>
-			<artifactId>config</artifactId>
-			<version>${org.doa.config.version}</version>
-			<scope>provided</scope>
-		</dependency>
-		
-		<dependency>
-			<groupId>org.doa</groupId>
-			<artifactId>integration</artifactId>
-			<version>${org.doa.integration.version}</version>
-		</dependency>
-		
-		<dependency>
-			<groupId>org.doa</groupId>
-			<artifactId>persistence</artifactId>
-			<version>${org.doa.persistence.version}</version>
-		</dependency>
-		
-		<dependency>
-			<groupId>org.doa</groupId>
-			<artifactId>support</artifactId>
-			<version>${org.doa.support.version}</version>
-		</dependency>
-		
-		<dependency>
-			<groupId>org.doa</groupId>
-			<artifactId>examples</artifactId>
-			<version>${org.doa.examples.version}</version>
-		</dependency>
+			<dependency>
+				<groupId>org.doa</groupId>
+				<artifactId>api</artifactId>
+				<version>${org.doa.api.version}</version>
+				<scope>provided</scope>
+			</dependency>
 
-		<!-- FRAMEWORK LAYERS IMPLEMENTATIONS -->		
-		
-		<dependency>
-			<groupId>org.doa.config</groupId>
-			<artifactId>xml</artifactId>
-			<version>${org.doa.config.xml.version}</version>
-			<scope>provided</scope>
-		</dependency>
-		
-		<dependency>
-            <groupId>org.doa.support</groupId>
-            <artifactId>json-entity-mapper</artifactId>
-            <version>${org.doa.support.json-entity-mapper.version}</version>
-        </dependency>	
-		
-		<!-- xxx -->
-		
-		<dependency>
-			<groupId>pl.doa</groupId>
-			<artifactId>doa-entity-mapper-json</artifactId>
-			<version>0.0.1</version>
-		</dependency>
-		
-		<!-- xxx -->
-		
-		<!-- PERSISTENCE -->
-		
-		<dependency>
-			<groupId>org.neo4j</groupId>
-			<artifactId>neo4j-graph-matching</artifactId>
-			<version>${org.neo4j.neo4j-graph-matching.version}</version>
-		</dependency>
-		
-		<dependency>
-			<groupId>org.neo4j</groupId>
-			<artifactId>neo4j-udc</artifactId>
-			<version>${org.neo4j.neo4j-udc.version}</version>
-		</dependency>
-		
-		<dependency>
-			<groupId>org.neo4j</groupId>
-			<artifactId>neo4j-lucene-index</artifactId>
-			<version>${org.neo4j.neo4j-lucene-index.version}</version>
-		</dependency>
-		
-		<!-- SPRING -->
-		
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring</artifactId>
-			<version>${org.springframework.version}</version>
-		</dependency>
-		
-		<!-- SERVER -->
-		
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>javax.servlet-api</artifactId>
-			<version>${javax.servlet.javax.servlet-api.version}</version>
-		</dependency>
-		
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>javax.servlet-api</artifactId>
-			<version>${javax.servlet.javax.servlet-api}</version>
-		</dependency>
+			<dependency>
+				<groupId>org.doa</groupId>
+				<artifactId>engine</artifactId>
+				<version>${org.doa.engine.version}</version>
+			</dependency>
 
-		<dependency>
-			<groupId>org.apache.tomcat.embed</groupId>
-			<artifactId>tomcat-embed-core</artifactId>
-			<version>${org.apache.tomcat.version}</version>
-		</dependency>
+			<dependency>
+				<groupId>org.doa</groupId>
+				<artifactId>config</artifactId>
+				<version>${org.doa.config.version}</version>
+				<scope>provided</scope>
+			</dependency>
 
-		<dependency>
-			<groupId>org.apache.tomcat</groupId>
-			<artifactId>tomcat-juli</artifactId>
-			<version>${org.apache.tomcat.version}</version>
-		</dependency>
+			<dependency>
+				<groupId>org.doa</groupId>
+				<artifactId>integration</artifactId>
+				<version>${org.doa.integration.version}</version>
+			</dependency>
 
-		<dependency>
-			<groupId>org.apache.tomcat</groupId>
-			<artifactId>tomcat-jasper</artifactId>
-			<version>${org.apache.tomcat.version}</version>
-		</dependency>			
-				
-		<!-- COMMONS -->
-		
-		<dependency>
-			<groupId>commons-io</groupId>
-			<artifactId>commons-io</artifactId>
-			<version>${commons-io.commons-io.version}</version>
-		</dependency>
-		
-		<dependency>
-			<groupId>commons-beanutils</groupId>
-			<artifactId>commons-beanutils</artifactId>
-			<version>${commons-beanutils.commons-beanutils.version}</version>
-		</dependency>
-		
-		<dependency>
-			<groupId>commons-fileupload</groupId>
-			<artifactId>commons-fileupload</artifactId>
-			<version>${commons-fileupload.commons-fileupload.version}</version>
-		</dependency>
-		
-		<dependency>
-			<groupId>commons-fileupload</groupId>
-			<artifactId>commons-fileupload</artifactId>
-			<version>${commons-fileupload.commons-fileupload.version}</version>
-			<scope>runtime</scope>
-		</dependency>
-		
-		<dependency>
-			<groupId>commons-lang</groupId>
-			<artifactId>commons-lang</artifactId>
-			<version>${commons-lang.commons-lang.version}</version>
-		</dependency>
-		
-		<!-- TESTING -->
-		
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>${junit.junit.version}</version>
-			<scope>test</scope>
-		</dependency>
-		
-		<!-- LOGGING -->
-		
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-log4j12</artifactId>
-			<version>${org.slf4j.slf4j-log4j12.version}</version>
-		</dependency>
-		
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<version>${org.slf4j.version}</version>
-			<scope>provided</scope>
-		</dependency>
-		
-		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
-			<version>${log4j.log4j.version}</version>
-		</dependency>
-		
-		<!-- WICKET -->
-		
-		<dependency>
-			<groupId>org.apache.wicket</groupId>
-			<artifactId>wicket-core</artifactId>
-			<version>${org.apache.wicket.version}</version>
-		</dependency>
-		
-		<dependency>
-			<groupId>org.apache.wicket</groupId>
-			<artifactId>wicket-extensions</artifactId>
-			<version>${org.apache.wicket.version}</version>
-		</dependency>
+			<dependency>
+				<groupId>org.doa</groupId>
+				<artifactId>persistence</artifactId>
+				<version>${org.doa.persistence.version}</version>
+			</dependency>
 
-		<dependency>
-			<groupId>org.apache.wicket</groupId>
-			<artifactId>wicket-auth-roles</artifactId>
-			<version>${org.apache.wicket.version}</version>
-		</dependency>	
-		
-		<!-- OTHER -->	
-		
-		<dependency>
-			<groupId>com.skyrails</groupId>
-			<artifactId>skyrails-neo4j</artifactId>
-			<version>${com.skyrails.skyrails-neo4j}</version>
-		</dependency>
-		
-		<dependency>
-			<groupId>aspectj</groupId>
-			<artifactId>aspectjrt</artifactId>
-			<version>${aspectj.aspectjrt.version}</version>
-		</dependency>
-		
-		<dependency>
-			<groupId>aspectj</groupId>
-			<artifactId>aspectjweaver</artifactId>
-			<version>${aspectj.aspectjweaver.version}</version>
-		</dependency>
-		
-		<dependency>
-			<groupId>com.uwyn</groupId>
-			<artifactId>continuations</artifactId>
-			<version>${com.uwyn.continuations.version}</version>
-		</dependency>
-		
-		<dependency>
-			<groupId>org.apache.bcel</groupId>
-			<artifactId>bcel</artifactId>
-			<version>${org.apache.bcel.bcel.version}</version>
-		</dependency>	
-		
-		<dependency>
-			<groupId>dom4j</groupId>
-			<artifactId>dom4j</artifactId>
-			<version>${dom4j.dom4j.version}</version>
-		</dependency>		
+			<dependency>
+				<groupId>org.doa</groupId>
+				<artifactId>support</artifactId>
+				<version>${org.doa.support.version}</version>
+			</dependency>
 
-		<dependency>
-			<groupId>rhino</groupId>
-			<artifactId>js</artifactId>
-			<version>${rhino.js.version}</version>
-		</dependency>
+			<dependency>
+				<groupId>org.doa</groupId>
+				<artifactId>examples</artifactId>
+				<version>${org.doa.examples.version}</version>
+			</dependency>
 
-		<dependency>
-			<groupId>org.apache.ivy</groupId>
-			<artifactId>ivy</artifactId>
-			<version>${org.apache.ivy.ivy.version}</version>
-		</dependency>		
-		
-		<dependency>
-			<groupId>net.sf.scannotation</groupId>
-			<artifactId>scannotation</artifactId>
-			<version>${net.sf.scannotation.version}</version>
-		</dependency>
-		
-		<dependency>
-			<groupId>org.lightwolf</groupId>
-			<artifactId>lightwolf-continuations</artifactId>
-			<version>${org.lightwolf.lightwolf-continuations.version}</version>
-		</dependency>
-		
-		<dependency>
-			<groupId>asm</groupId>
-			<artifactId>asm-all</artifactId>
-			<version>${asm.asm-all.version}</version>
-		</dependency>
-		
-		<dependency>
-			<groupId>org.json</groupId>
-			<artifactId>json</artifactId>
-			<version>${org.json.json.version}</version>
-		</dependency>
-		
-		<dependency>
-			<groupId>org.apache.maven</groupId>
-			<artifactId>maven-model</artifactId>
-			<version>${org.apache.maven.maven-model.version}</version>
-		</dependency>
-				
-		<dependency>
-			<groupId>com.ettrema</groupId>
-			<artifactId>milton-api</artifactId>
-			<version>${com.ettrema.milton.version}</version>
-			<exclusions>
-				<exclusion>
-					<artifactId>slf4j-api</artifactId>
-					<groupId>org.slf4j</groupId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		
-		<dependency>
-			<groupId>com.ettrema</groupId>
-			<artifactId>milton-servlet</artifactId>
-			<version>${com.ettrema.milton.version}</version>
-			<exclusions>
-				<exclusion>
-					<artifactId>spring-webmvc</artifactId>
-					<groupId>org.springframework</groupId>
-				</exclusion>
-				<exclusion>
-					<artifactId>slf4j-api</artifactId>
-					<groupId>org.slf4j</groupId>
-				</exclusion>
-				<exclusion>
-					<artifactId>spring</artifactId>
-					<groupId>org.springframework</groupId>
-				</exclusion>
-			</exclusions>
-		</dependency>
+			<!-- FRAMEWORK LAYERS IMPLEMENTATIONS -->
 
+			<dependency>
+				<groupId>org.doa.config</groupId>
+				<artifactId>xml</artifactId>
+				<version>${org.doa.config.xml.version}</version>
+				<scope>provided</scope>
+			</dependency>
+
+			<dependency>
+				<groupId>org.doa.support</groupId>
+				<artifactId>json-entity-mapper</artifactId>
+				<version>${org.doa.support.json-entity-mapper.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.doa.support</groupId>
+				<artifactId>json-entity-mapper</artifactId>
+				<version>${org.doa.support.json-entity-mapper.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.doa.support</groupId>
+				<artifactId>xml-templates</artifactId>
+				<version>${org.doa.support.xml-templates.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.doa.persitence</groupId>
+				<artifactId>neo4j</artifactId>
+				<version>${org.doa.persistence.neo4j.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.doa.engine</groupId>
+				<artifactId>core</artifactId>
+				<version>${org.doa.engine.core.version}</version>
+			</dependency>
+
+			<!-- PERSISTENCE -->
+
+			<dependency>
+				<groupId>org.neo4j</groupId>
+				<artifactId>neo4j-graph-matching</artifactId>
+				<version>${org.neo4j.neo4j-graph-matching.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.neo4j</groupId>
+				<artifactId>neo4j-udc</artifactId>
+				<version>${org.neo4j.neo4j-udc.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.neo4j</groupId>
+				<artifactId>neo4j-lucene-index</artifactId>
+				<version>${org.neo4j.neo4j-lucene-index.version}</version>
+			</dependency>
+
+			<!-- SPRING -->
+
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring</artifactId>
+				<version>${org.springframework.version}</version>
+			</dependency>
+
+			<!-- SERVER -->
+
+			<dependency>
+				<groupId>javax.servlet</groupId>
+				<artifactId>javax.servlet-api</artifactId>
+				<version>${javax.servlet.javax.servlet-api.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>javax.servlet</groupId>
+				<artifactId>javax.servlet-api</artifactId>
+				<version>${javax.servlet.javax.servlet-api}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.apache.tomcat.embed</groupId>
+				<artifactId>tomcat-embed-core</artifactId>
+				<version>${org.apache.tomcat.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.apache.tomcat</groupId>
+				<artifactId>tomcat-juli</artifactId>
+				<version>${org.apache.tomcat.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.apache.tomcat</groupId>
+				<artifactId>tomcat-jasper</artifactId>
+				<version>${org.apache.tomcat.version}</version>
+			</dependency>
+
+			<!-- COMMONS -->
+
+			<dependency>
+				<groupId>commons-io</groupId>
+				<artifactId>commons-io</artifactId>
+				<version>${commons-io.commons-io.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>commons-beanutils</groupId>
+				<artifactId>commons-beanutils</artifactId>
+				<version>${commons-beanutils.commons-beanutils.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>commons-fileupload</groupId>
+				<artifactId>commons-fileupload</artifactId>
+				<version>${commons-fileupload.commons-fileupload.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>commons-fileupload</groupId>
+				<artifactId>commons-fileupload</artifactId>
+				<version>${commons-fileupload.commons-fileupload.version}</version>
+				<scope>runtime</scope>
+			</dependency>
+
+			<dependency>
+				<groupId>commons-lang</groupId>
+				<artifactId>commons-lang</artifactId>
+				<version>${commons-lang.commons-lang.version}</version>
+			</dependency>
+
+			<!-- TESTING -->
+
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<version>${junit.junit.version}</version>
+				<scope>test</scope>
+			</dependency>
+
+			<!-- LOGGING -->
+
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-log4j12</artifactId>
+				<version>${org.slf4j.slf4j-log4j12.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-api</artifactId>
+				<version>${org.slf4j.version}</version>
+				<scope>provided</scope>
+			</dependency>
+
+			<dependency>
+				<groupId>log4j</groupId>
+				<artifactId>log4j</artifactId>
+				<version>${log4j.log4j.version}</version>
+			</dependency>
+
+			<!-- WICKET -->
+
+			<dependency>
+				<groupId>org.apache.wicket</groupId>
+				<artifactId>wicket-core</artifactId>
+				<version>${org.apache.wicket.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.apache.wicket</groupId>
+				<artifactId>wicket-extensions</artifactId>
+				<version>${org.apache.wicket.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.apache.wicket</groupId>
+				<artifactId>wicket-auth-roles</artifactId>
+				<version>${org.apache.wicket.version}</version>
+			</dependency>
+
+			<!-- OTHER -->
+
+			<dependency>
+				<groupId>jdom</groupId>
+				<artifactId>jdom</artifactId>
+				<version>${jdom.jdom.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>xom</groupId>
+				<artifactId>xom</artifactId>
+				<version>${xom.xom.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>com.skyrails</groupId>
+				<artifactId>skyrails-neo4j</artifactId>
+				<version>${com.skyrails.skyrails-neo4j}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>aspectj</groupId>
+				<artifactId>aspectjrt</artifactId>
+				<version>${aspectj.aspectjrt.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>aspectj</groupId>
+				<artifactId>aspectjweaver</artifactId>
+				<version>${aspectj.aspectjweaver.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>com.uwyn</groupId>
+				<artifactId>continuations</artifactId>
+				<version>${com.uwyn.continuations.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.apache.bcel</groupId>
+				<artifactId>bcel</artifactId>
+				<version>${org.apache.bcel.bcel.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>dom4j</groupId>
+				<artifactId>dom4j</artifactId>
+				<version>${dom4j.dom4j.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>rhino</groupId>
+				<artifactId>js</artifactId>
+				<version>${rhino.js.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.apache.ivy</groupId>
+				<artifactId>ivy</artifactId>
+				<version>${org.apache.ivy.ivy.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>net.sf.scannotation</groupId>
+				<artifactId>scannotation</artifactId>
+				<version>${net.sf.scannotation.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.lightwolf</groupId>
+				<artifactId>lightwolf-continuations</artifactId>
+				<version>${org.lightwolf.lightwolf-continuations.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>asm</groupId>
+				<artifactId>asm-all</artifactId>
+				<version>${asm.asm-all.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.json</groupId>
+				<artifactId>json</artifactId>
+				<version>${org.json.json.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.apache.maven</groupId>
+				<artifactId>maven-model</artifactId>
+				<version>${org.apache.maven.maven-model.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>com.ettrema</groupId>
+				<artifactId>milton-api</artifactId>
+				<version>${com.ettrema.milton.version}</version>
+				<exclusions>
+					<exclusion>
+						<artifactId>slf4j-api</artifactId>
+						<groupId>org.slf4j</groupId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+
+			<dependency>
+				<groupId>com.ettrema</groupId>
+				<artifactId>milton-servlet</artifactId>
+				<version>${com.ettrema.milton.version}</version>
+				<exclusions>
+					<exclusion>
+						<artifactId>spring-webmvc</artifactId>
+						<groupId>org.springframework</groupId>
+					</exclusion>
+					<exclusion>
+						<artifactId>slf4j-api</artifactId>
+						<groupId>org.slf4j</groupId>
+					</exclusion>
+					<exclusion>
+						<artifactId>spring</artifactId>
+						<groupId>org.springframework</groupId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+
+		</dependencies>
 	</dependencyManagement>
 
 	<modules>

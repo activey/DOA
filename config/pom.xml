@@ -10,33 +10,9 @@
 
 	<groupId>org.doa</groupId>
 	<artifactId>config</artifactId>
-	<version>${org.doa.config.version}</version>
 	<packaging>pom</packaging>
 	<name>DOA Config</name>
 	<description>This is where all methods of configuration reside.</description>
-
-	<dependencies>
-
-		<dependency>
-			<groupId>org.doa</groupId>
-			<artifactId>api</artifactId>
-			<version>${org.doa.api.version}</version>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<scope>test</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<scope>provided</scope>
-		</dependency>
-
-	</dependencies>
 
 	<modules>
 		<module>xml</module>
