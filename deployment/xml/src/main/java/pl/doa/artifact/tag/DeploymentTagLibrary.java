@@ -41,33 +41,19 @@
  *******************************************************************************/
 package pl.doa.artifact.tag;
 
-import java.io.InputStream;
-
 import org.apache.commons.beanutils.ConvertUtils;
-
-import pl.doa.artifact.tag.convert.EntityConverter;
-import pl.doa.artifact.tag.convert.EntityEventTypeConverter;
-import pl.doa.artifact.tag.convert.FieldDataTypeConverter;
-import pl.doa.artifact.tag.convert.FileConverter;
-import pl.doa.artifact.tag.convert.TypeConverter;
-import pl.doa.artifact.tag.field.impl.BigdecimalFieldTypeTag;
-import pl.doa.artifact.tag.field.impl.BooleanFieldTypeTag;
-import pl.doa.artifact.tag.field.impl.DateFieldTypeTag;
-import pl.doa.artifact.tag.field.impl.DoubleFieldTypeTag;
-import pl.doa.artifact.tag.field.impl.IntegerFieldTypeTag;
-import pl.doa.artifact.tag.field.impl.ListFieldTypeTag;
-import pl.doa.artifact.tag.field.impl.LongFieldTypeTag;
-import pl.doa.artifact.tag.field.impl.PasswordFieldTypeTag;
-import pl.doa.artifact.tag.field.impl.ReferenceFieldTypeTag;
-import pl.doa.artifact.tag.field.impl.StringFieldTypeTag;
+import pl.doa.artifact.deploy.IDeploymentProcessor;
+import pl.doa.artifact.tag.convert.*;
+import pl.doa.artifact.tag.field.impl.*;
 import pl.doa.artifact.tag.processor.DeployProcessorTag;
-import pl.doa.artifact.tag.processor.IDeploymentProcessor;
 import pl.doa.container.IEntitiesContainer;
 import pl.doa.document.IDocumentDefinition;
 import pl.doa.document.field.DocumentFieldDataType;
 import pl.doa.entity.IEntity;
 import pl.doa.entity.event.EntityEventType;
 import pl.doa.templates.tags.TagLibrary;
+
+import java.io.InputStream;
 
 public class DeploymentTagLibrary extends TagLibrary {
 

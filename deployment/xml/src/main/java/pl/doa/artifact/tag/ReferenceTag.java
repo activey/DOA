@@ -43,7 +43,6 @@ package pl.doa.artifact.tag;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import pl.doa.GeneralDOAException;
 import pl.doa.entity.IEntity;
 import pl.doa.entity.IEntityReference;
@@ -52,13 +51,11 @@ public class ReferenceTag extends EntityTag {
 
     private final static Logger log = LoggerFactory
             .getLogger(ReferenceTag.class);
-
     private IEntity referencedEntity;
 
     @Override
     public IEntityReference createEntity() throws GeneralDOAException {
-        IEntityReference reference =
-                getDoa().createReference(getName(), referencedEntity);
+        IEntityReference reference = createReference(getName(), referencedEntity);
         return reference;
     }
 

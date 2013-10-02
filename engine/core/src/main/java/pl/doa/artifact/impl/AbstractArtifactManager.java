@@ -41,26 +41,6 @@
  *******************************************************************************/
 package pl.doa.artifact.impl;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Enumeration;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.ivy.Ivy;
@@ -91,44 +71,112 @@ import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.codehaus.plexus.util.io.URLInputStreamFacade;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import pl.doa.GeneralDOAException;
 import pl.doa.IDOA;
-import pl.doa.artifact.DirectoryListener;
-import pl.doa.artifact.DirectoryMonitor;
-import pl.doa.artifact.EntryMatcher;
-import pl.doa.artifact.IArtifact;
+import pl.doa.artifact.*;
 import pl.doa.artifact.IArtifact.Type;
-import pl.doa.artifact.deploy.ArtifactUtils;
-import pl.doa.artifact.IArtifactManager;
-import pl.doa.entity.IEntity;
-import pl.doa.entity.IEntityEvaluator;
-import pl.doa.entity.IEntityReference;
-import pl.doa.entity.ITransactionCallback;
-import pl.doa.entity.ITransactionErrorHandler;
+import pl.doa.artifact.deployment.IArtifactManager;
+import pl.doa.entity.*;
 import pl.doa.entity.startable.IStartableEntity;
 import pl.doa.jvm.DOAStreamHandler;
 import pl.doa.jvm.DOAURLHandlerFactory;
 import pl.doa.utils.FileUtils;
+
+import java.io.*;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.text.MessageFormat;
+import java.util.*;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 public abstract class AbstractArtifactManager extends DirectoryListener
         implements IArtifactManager, IvyListener {
 
     private final static Logger log = LoggerFactory
             .getLogger(AbstractArtifactManager.class);
-
     private Ivy ivy;
-
     private long progressCounter = 0L;
-
     private List<ExcludeRule> excludeRules = new ArrayList<ExcludeRule>();
-
     private ChainResolver chainResolver;
-
     private List<URL> repositories = new ArrayList<URL>();
 
     public AbstractArtifactManager() {
     }
+
+    @Override
+    public final void undeployArtifact(IArtifact artifact)
+            throws GeneralDOAException {
+        if (artifact == null) {
+            throw new GeneralDOAException(
+                    "Could not undeploy because artifact is null.");
+        }
+        switch (artifact.getType()) {
+            case XML:
+                undeployXmlArtifact(artifact.getName());
+                break;
+            case JAR:
+                undeployJarArtifact(artifact.getName());
+                break;
+            default:
+                throw new GeneralDOAException("Unknown artifact type.");
+        }
+    }
+
+    @Override
+    public final IArtifact deployArtifact(String artifactFileName,
+                                          InputStream artifactData, Type artifactType)
+            throws GeneralDOAException {
+
+        switch (artifactType) {
+            case XML:
+                return deployXmlArtifact(artifactFileName, artifactData);
+            case JAR: {
+                File artifactFile;
+                try {
+                    artifactFile = File.createTempFile("artifact", "tmp");
+                    IOUtils.copy(artifactData, new FileWriter(artifactFile));
+                } catch (IOException e) {
+                    throw new GeneralDOAException(e);
+                }
+                // kolekcja obiektow do automatycznego uruchomienia
+                List<IStartableEntity> autostartEntities =
+                        new ArrayList<IStartableEntity>();
+
+                IArtifact artifact =
+                        deployJarArtifact(artifactFile, autostartEntities);
+
+                // uruchamianie wszystkich elementow, ktore sa oznaczone jako
+                // autostart
+                for (IStartableEntity startableEntity : autostartEntities) {
+                    try {
+                        log.debug(MessageFormat.format("starting up entity: {0}",
+                                startableEntity.getLocation()));
+                        startableEntity.startup();
+                        log.debug(MessageFormat.format(
+                                "entity under location {0} started up ...",
+                                startableEntity.getLocation()));
+                    } catch (Exception e) {
+                        log.error("", e);
+                    }
+                }
+                return artifact;
+            }
+            default:
+                break;
+        }
+
+        return null;
+    }
+
+    @Override
+    public final IArtifact deployArtifact(String artifactFileName,
+                                          byte[] artifactData, Type artifactType) throws GeneralDOAException {
+        return deployArtifact(artifactFileName, new ByteArrayInputStream(
+                artifactData), artifactType);
+    }
+
+
 
     private JarEntry findJarEntry(File file, EntryMatcher entryMatcher)
             throws GeneralDOAException {
@@ -293,9 +341,6 @@ public abstract class AbstractArtifactManager extends DirectoryListener
                             artifactVersion);
             ResolvedModuleRevision revision = ivy.findModule(revisionId);
             if (revision == null) {
-                /*
-                 * if (!atLeastOne && !exists) { atLeastOne = true; }
-				 */
                 notDeployed.add(MessageFormat.format("{0}.{1}.{2}", groupId,
                         artifactId, artifactVersion));
                 log.error("dependend artifact not found ...");
@@ -864,10 +909,6 @@ public abstract class AbstractArtifactManager extends DirectoryListener
                 case DirectoryListener.TYPE_ADD: {
                     log.debug("deploying artifact from file "
                             + file.getAbsolutePath());
-				/*
-				 * sprawdzanie rozszerzenia i uruchamianie odpowiedniego trybu
-				 * deyploymentu
-				 */
                     String fileExt = FileUtils.getExtension(file);
                     if ("core".equals(fileExt) || "xml".equals(fileExt)) {
                         try {
@@ -925,11 +966,6 @@ public abstract class AbstractArtifactManager extends DirectoryListener
                                     log.error("Deployment failed!", e);
                                 }
                             }
-
-						/*
-						 * deployArtifact(file.getName(), new
-						 * FileInputStream(file), Type.JAR);
-						 */
                             // deployArtifact(file.getAbsolutePath(), null);
                         } catch (Exception ex) {
                             log.error("", ex);
@@ -1059,78 +1095,6 @@ public abstract class AbstractArtifactManager extends DirectoryListener
                     "error while processing [{0}] file ...", artifactFileName);
         }
         return artifact;
-    }
-
-    @Override
-    public final void undeployArtifact(IArtifact artifact)
-            throws GeneralDOAException {
-        if (artifact == null) {
-            throw new GeneralDOAException(
-                    "Could not undeploy because artifact is null.");
-        }
-        switch (artifact.getType()) {
-            case XML:
-                undeployXmlArtifact(artifact.getName());
-                break;
-            case JAR:
-                undeployJarArtifact(artifact.getName());
-                break;
-            default:
-                throw new GeneralDOAException("Unknown artifact type.");
-        }
-    }
-
-    @Override
-    public final IArtifact deployArtifact(String artifactFileName,
-                                          byte[] artifactData, Type artifactType) throws GeneralDOAException {
-        return deployArtifact(artifactFileName, new ByteArrayInputStream(
-                artifactData), artifactType);
-    }
-
-    @Override
-    public final IArtifact deployArtifact(String artifactFileName,
-                                          InputStream artifactData, Type artifactType)
-            throws GeneralDOAException {
-
-        switch (artifactType) {
-            case XML:
-                return deployXmlArtifact(artifactFileName, artifactData);
-            case JAR: {
-                File artifactFile;
-                try {
-                    artifactFile = File.createTempFile("artifact", "tmp");
-                    IOUtils.copy(artifactData, new FileWriter(artifactFile));
-                } catch (IOException e) {
-                    throw new GeneralDOAException(e);
-                }
-                // kolekcja obiektow do automatycznego uruchomienia
-                List<IStartableEntity> autostartEntities =
-                        new ArrayList<IStartableEntity>();
-
-                IArtifact artifact =
-                        deployJarArtifact(artifactFile, autostartEntities);
-
-                // uruchamianie wszystkich elementow, ktore sa oznaczone jako
-                // autostart
-                for (IStartableEntity startableEntity : autostartEntities) {
-                    try {
-                        log.debug(MessageFormat.format("starting up entity: {0}",
-                                startableEntity.getLocation()));
-                        startableEntity.startup();
-                        log.debug(MessageFormat.format(
-                                "entity under location {0} started up ...",
-                                startableEntity.getLocation()));
-                    } catch (Exception e) {
-                        log.error("", e);
-                    }
-                }
-                return artifact;
-            }
-            default:
-                break;
-        }
-
-        return null;
     }
 
     public abstract IDOA getDoa();

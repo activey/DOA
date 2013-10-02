@@ -41,25 +41,63 @@
  *******************************************************************************/
 package pl.doa.artifact.tag;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import pl.doa.GeneralDOAException;
 import pl.doa.agent.IAgent;
+import pl.doa.artifact.IArtifact;
+import pl.doa.artifact.deploy.IDeploymentProcessor;
+import pl.doa.container.IEntitiesContainer;
 import pl.doa.entity.IEntity;
+import pl.doa.entity.IEntityReference;
+import pl.doa.templates.tags.Tag;
 
-public class AgentTag extends EntityTag {
+/**
+ * @author activey
+ */
+public abstract class DeploymentProcessorSupportTag extends Tag {
 
-    private final static Logger log = LoggerFactory.getLogger(AgentTag.class);
+    public static final String VAR_DOA = "doa";
 
-    @Override
-    public IEntity createEntity() {
-        IAgent agent = null;
-        try {
-            agent = createAgent(getName());
-        } catch (Exception e) {
-            log.error("", e);
+    public static final String VAR_ARTIFACT = "artifact";
+
+    private IDeploymentProcessor processor;
+
+    protected IArtifact getArtifact() {
+        return (IArtifact) context.getVariable(VAR_ARTIFACT);
+    }
+
+    public void setProcessor(IDeploymentProcessor processor) {
+        this.processor = processor;
+    }
+
+    public IEntitiesContainer createEntitiesContainer(String name) throws GeneralDOAException {
+        return processor.createEntitiesContainer(name, getParentContainer());
+    }
+
+    public IEntityReference createReference(String name, IEntity entity) throws GeneralDOAException {
+        return processor.createReference(name, entity, getParentContainer());
+    }
+
+    public IAgent createAgent(String name) throws GeneralDOAException {
+        return processor.createAgent(name, getParentContainer());
+    }
+
+    private IEntitiesContainer getParentContainer() {
+        Tag parent = getParent();
+        if (parent == null) {
             return null;
         }
-        return agent;
+        if (parent instanceof EntitiesContainerTag) {
+            EntitiesContainerTag containerTag = (EntitiesContainerTag) parent;
+            return containerTag.getContainer();
+        } else if (parent instanceof FieldValueTag) {
+            // TODO do it somehow ...
+            //((FieldValueTag) parent).setValue(this.entity);
+        } else if (parent instanceof DeployTag) {
+            DeployTag deployTag = (DeployTag) parent;
+            IEntitiesContainer defaultContainer =
+                    deployTag.getDefaultContainer();
+            return defaultContainer;
+        }
+        return null;
     }
 }

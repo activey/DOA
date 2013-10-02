@@ -39,7 +39,7 @@
  * Contributors:
  *    Inhibi Ltd - initial API and implementation
  *******************************************************************************/
-package pl.doa.artifact.deploy;
+package pl.doa.artifact;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -53,7 +53,6 @@ import org.slf4j.LoggerFactory;
 
 import pl.doa.GeneralDOAException;
 import pl.doa.IDOA;
-import pl.doa.artifact.IArtifact;
 import pl.doa.artifact.tag.DeploymentTagLibrary;
 import pl.doa.entity.startable.IStartableEntity;
 

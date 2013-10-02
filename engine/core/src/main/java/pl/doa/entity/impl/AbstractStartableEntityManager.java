@@ -42,7 +42,7 @@
 /**
  *
  */
-package pl.doa.entity.startable.impl;
+package pl.doa.entity.impl;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;

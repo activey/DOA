@@ -29,7 +29,7 @@
 
         <dependency>
             <groupId>org.doa.deployment</groupId>
-            <artifactId>xml</artifactId>
+            <artifactId>base</artifactId>
         </dependency>
 
         <dependency>

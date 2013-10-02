@@ -43,17 +43,15 @@ package pl.doa.artifact.tag;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import pl.doa.GeneralDOAException;
 import pl.doa.container.IEntitiesContainer;
-import pl.doa.entity.IEntity;
 
 public class EntitiesContainerTag extends EntityTag<IEntitiesContainer> {
 
     private final static Logger log = LoggerFactory
             .getLogger(EntitiesContainerTag.class);
 
-    public <T extends IEntity> T add(T entity) throws GeneralDOAException {
+    /*public <T extends IEntity> T add(T entity) throws GeneralDOAException {
         IEntitiesContainer container = (IEntitiesContainer) this.entity;
         IEntity found = container.getEntityByName(entity.getName());
         if (found == null) {
@@ -64,12 +62,17 @@ public class EntitiesContainerTag extends EntityTag<IEntitiesContainer> {
             return entity;
         }
         return (T) found;
+    }*/
+
+    public IEntitiesContainer getContainer() {
+        return this.entity;
     }
 
     @Override
     public IEntitiesContainer createEntity() throws GeneralDOAException {
-        IEntitiesContainer container = getDoa().createContainer(getName());
+        IEntitiesContainer container = createEntitiesContainer(getName());
         return container;
     }
+
 
 }

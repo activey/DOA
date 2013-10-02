@@ -52,6 +52,7 @@ import org.springframework.context.ApplicationContextAware;
 
 import pl.doa.GeneralDOAException;
 import pl.doa.IDOA;
+import pl.doa.entity.impl.AbstractStartableEntityManager;
 import pl.doa.entity.startable.IStartableEntity;
 import pl.doa.entity.startable.IStartableEntityLogic;
 import pl.doa.utils.SpringUtils;
@@ -61,7 +62,7 @@ import pl.doa.utils.SpringUtils;
  * 
  */
 public class StandaloneStartableEntityManager extends
-		AbstractStartableEntityManager implements ApplicationContextAware {
+        AbstractStartableEntityManager implements ApplicationContextAware {
 
 	private ApplicationContext springContext;
 

@@ -6,13 +6,10 @@ package pl.doa.artifact.tag.processor;
 import nu.xom.Nodes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import pl.doa.GeneralDOAException;
+import pl.doa.artifact.deploy.IDeploymentProcessor;
 import pl.doa.artifact.tag.DeployTag;
 import pl.doa.artifact.tag.EntitiesContainerTag;
-import pl.doa.artifact.tag.FieldValueTag;
 import pl.doa.container.IEntitiesContainer;
-import pl.doa.entity.IEntity;
-import pl.doa.entity.IEntityEvaluator;
 import pl.doa.templates.tags.Tag;
 
 /**

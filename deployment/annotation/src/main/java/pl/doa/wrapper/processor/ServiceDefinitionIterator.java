@@ -16,10 +16,6 @@ import pl.doa.wrapper.utils.ReflectionUtils;
 
 import java.lang.annotation.Annotation;
 
-/**
- * Created with IntelliJ IDEA. User: activey Date: 29.07.13 Time: 15:29 To change this template use File | Settings |
- * File Templates.
- */
 public class ServiceDefinitionIterator extends AbstractAnnotatedIterator<ServiceDefinition, IServiceDefinition> {
 
     private final static Logger log = LoggerFactory.getLogger(ServiceDefinitionIterator.class);

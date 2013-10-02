@@ -5,8 +5,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pl.doa.GeneralDOAException;
 import pl.doa.artifact.IArtifact;
+import pl.doa.artifact.deploy.AbstractDeploymentProcessor;
 import pl.doa.artifact.deploy.DeploymentContext;
-import pl.doa.artifact.tag.processor.IDeploymentProcessor;
+import pl.doa.artifact.deploy.IDeploymentProcessor;
 import pl.doa.container.IEntitiesContainer;
 import pl.doa.entity.IEntity;
 import pl.doa.templates.TemplateContext;
@@ -21,16 +22,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-/**
- * User: activey Date: 29.07.13 Time: 14:05
- */
-public class AnnotationsDeploymentProcessor implements IDeploymentProcessor {
+
+public class AnnotationsDeploymentProcessor extends AbstractDeploymentProcessor {
 
     private final static Logger log = LoggerFactory.getLogger(AnnotationsDeploymentProcessor.class);
 
     @Override
-    public void process(IEntitiesContainer container, TemplateContext context) throws Exception {
-        DeploymentContext deploymentContext = (DeploymentContext) context;
+    public void process(IEntitiesContainer container) throws Exception {
 
         // scanning jar file
         File jarFile = deploymentContext.getArtifactJar();

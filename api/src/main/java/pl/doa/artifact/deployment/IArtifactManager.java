@@ -39,35 +39,22 @@
  * Contributors:
  *    Inhibi Ltd - initial API and implementation
  *******************************************************************************/
-package pl.doa.artifact.tag;
+package pl.doa.artifact.deployment;
 
-import pl.doa.IDOA;
+import pl.doa.GeneralDOAException;
 import pl.doa.artifact.IArtifact;
-import pl.doa.templates.tags.Tag;
 
-/**
- * @author activey
- */
-public abstract class ArtifactSupport extends Tag {
+import java.io.InputStream;
 
-    public static final String VAR_DOA = "doa";
+public interface IArtifactManager {
 
-    public static final String VAR_ARTIFACT = "artifact";
+    public IArtifact deployArtifact(String artifactFileName,
+                                    byte[] artifactData, IArtifact.Type artifactType)
+            throws GeneralDOAException;
 
-    private IDOA doa;
+    public IArtifact deployArtifact(String artifactFileName,
+                                    InputStream artifactData, IArtifact.Type artifactType)
+            throws GeneralDOAException;
 
-    protected IArtifact getArtifact() {
-        return (IArtifact) context.getVariable(VAR_ARTIFACT);
-    }
-
-    protected IDOA getDoa() {
-        if (this.doa != null) {
-            return doa;
-        }
-        return (IDOA) context.getVariable(VAR_DOA);
-    }
-
-    public void setDoa(IDOA doa) {
-        this.doa = doa;
-    }
+    public void undeployArtifact(IArtifact artifact) throws GeneralDOAException;
 }

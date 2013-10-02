@@ -44,16 +44,11 @@
  */
 package pl.doa;
 
-import java.io.InputStream;
-import java.util.Date;
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import pl.doa.artifact.IArtifact;
 import pl.doa.artifact.IArtifact.Type;
-import pl.doa.artifact.IArtifactManager;
+import pl.doa.artifact.deployment.IArtifactManager;
 import pl.doa.container.IEntitiesContainer;
 import pl.doa.entity.IEntity;
 import pl.doa.entity.event.IEntityEventListener;
@@ -67,6 +62,10 @@ import pl.doa.service.IRunningService;
 import pl.doa.service.IServiceDefinitionLogic;
 import pl.doa.service.IServicesManager;
 import pl.doa.thread.IThreadManager;
+
+import java.io.InputStream;
+import java.util.Date;
+import java.util.List;
 
 /**
  * @author activey

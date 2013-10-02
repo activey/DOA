@@ -62,7 +62,7 @@ import pl.doa.resource.IStaticResource;
 import pl.doa.templates.tags.Tag;
 import pl.doa.utils.ContentTypeUtils;
 
-public class LoadTag extends ArtifactSupport {
+public class LoadTag extends DeploymentProcessorSupportTag {
 
     private final static Logger log = LoggerFactory.getLogger(LoadTag.class);
 

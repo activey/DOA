@@ -1,13 +1,12 @@
 package pl.doa.thread.impl;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import pl.doa.thread.IThreadManager;
+
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import pl.doa.thread.IThreadManager;
 
 public class SimpleThreadManager implements IThreadManager {
 

@@ -52,7 +52,7 @@ import java.util.Map;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import pl.doa.artifact.IArtifactManager;
+import pl.doa.artifact.deployment.IArtifactManager;
 import pl.doa.entity.IEntityAttribute;
 import pl.doa.entity.startable.IStartableEntityManager;
 import pl.doa.resource.IStaticResourceStorage;

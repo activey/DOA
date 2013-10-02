@@ -15,8 +15,8 @@
     <artifactId>standalone</artifactId>
     <packaging>jar</packaging>
     <version>${org.doa.environment.standalone.version}</version>
-    <name>DOA Standalone environment</name>
-    <url>http://maven.apache.org</url>
+    <name>DOA Environment - Standalone</name>
+
     <build>
         <plugins>
             <plugin>

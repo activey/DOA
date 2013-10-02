@@ -18,10 +18,6 @@ import pl.doa.wrapper.utils.ReflectionUtils;
 
 import java.lang.reflect.Method;
 
-/**
- * Created with IntelliJ IDEA. User: activey Date: 29.07.13 Time: 15:29 To change this template use File | Settings |
- * File Templates.
- */
 public class DocumentDefinitionIterator extends AbstractAnnotatedIterator<DocumentDefinition, IDocumentDefinition> {
 
     private final static Logger log = LoggerFactory.getLogger(DocumentDefinitionIterator.class);

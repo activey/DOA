@@ -12,7 +12,7 @@ import pl.doa.container.IEntitiesContainer;
 /**
  * @author activey
  */
-public class DeployTag extends ArtifactSupport {
+public class DeployTag extends DeploymentProcessorSupportTag {
 
     private IEntitiesContainer defaultContainer;
 
