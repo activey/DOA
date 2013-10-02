@@ -48,8 +48,6 @@
         <dependency>
             <groupId>org.doa.engine</groupId>
             <artifactId>core</artifactId>
-            <version>${org.doa.engine.core.version}</version>
-            <scope>provided</scope>
         </dependency>
 
         <dependency>
@@ -65,7 +63,6 @@
         <dependency>
             <groupId>org.doa.support</groupId>
             <artifactId>json-entity-mapper</artifactId>
-            <version>${org.doa.support.json-entity-mapper.version}</version>
         </dependency>
 
         <dependency>

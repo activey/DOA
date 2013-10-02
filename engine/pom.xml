@@ -6,7 +6,6 @@
         <groupId>org</groupId>
         <artifactId>doa</artifactId>
         <version>${org.doa.version}</version>
-        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <groupId>org.doa</groupId>

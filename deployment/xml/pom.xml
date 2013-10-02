@@ -22,14 +22,12 @@
         <dependency>
             <groupId>org.doa</groupId>
             <artifactId>api</artifactId>
-            <scope>provided</scope>
+            <scope>compile</scope>
         </dependency>
 
         <dependency>
             <groupId>org.doa.engine</groupId>
             <artifactId>core</artifactId>
-            <version>${org.doa.engine.core.version}</version>
-            <scope>provided</scope>
         </dependency>
 
         <dependency>
@@ -47,7 +45,6 @@
         <dependency>
             <groupId>org.doa.support</groupId>
             <artifactId>xml-templates</artifactId>
-            <version>${org.doa.support.xml-templates.version}</version>
         </dependency>
 
         <dependency>

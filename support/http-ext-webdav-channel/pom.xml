@@ -13,7 +13,7 @@
     <groupId>org.doa.support</groupId>
     <artifactId>http-ext-webdav-channel</artifactId>
     <version>${org.doa.support.http-ext-webdav-channel.version}</version>
-    <name>DOA HTTP-ext-webdav-channel</name>
+    <name>DOA Channel - HTTP - WebDav</name>
 
     <build>
         <plugins>
@@ -64,11 +64,6 @@
 
         <dependency>
             <groupId>com.ettrema</groupId>
-            <artifactId>milton-api</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.ettrema</groupId>
             <artifactId>milton-servlet</artifactId>
             <exclusions>
                 <exclusion>
@@ -88,15 +83,12 @@
 
         <dependency>
             <groupId>org.doa.support</groupId>
-            <artifactId>http-tomcat-channel</artifactId>
-            <version>${org.doa.support.http-tomcat-channel.version}</version>
+            <artifactId>channel-http</artifactId>
         </dependency>
 
         <dependency>
             <groupId>org.doa.engine</groupId>
             <artifactId>core</artifactId>
-            <version>${org.doa.engine.core.version}</version>
-            <scope>provided</scope>
         </dependency>
 
     </dependencies>

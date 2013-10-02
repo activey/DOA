@@ -6,7 +6,7 @@
         <groupId>org</groupId>
         <artifactId>doa</artifactId>
         <version>${org.doa.version}</version>
-        <relativePath>../../pom.xml</relativePath>
+        <relativePath>../..</relativePath>
     </parent>
 
     <groupId>org.doa.support</groupId>
@@ -24,22 +24,16 @@
         <dependency>
             <groupId>org.doa.engine</groupId>
             <artifactId>core</artifactId>
-            <version>${org.doa.engine.core.version}</version>
-            <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>org.doa.deployment</groupId>
             <artifactId>annotation</artifactId>
-            <version>${org.doa.deployment.annotation.version}</version>
-            <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>org.doa.integration.ui</groupId>
             <artifactId>wicket</artifactId>
-            <version>${org.doa.integration.ui.wicket.version}</version>
-            <scope>provided</scope>
         </dependency>
 
         <dependency>

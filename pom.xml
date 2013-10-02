@@ -28,8 +28,11 @@
         <org.doa.support.servlet.version>0.0.1</org.doa.support.servlet.version>
         <org.doa.support.http-tomcat-channel.version>0.0.1</org.doa.support.http-tomcat-channel.version>
         <org.doa.support.wicket-data-wrapper.version>0.0.1</org.doa.support.wicket-data-wrapper.version>
+        <org.doa.support.http-ext-webdav-channel.version>0.0.1</org.doa.support.http-ext-webdav-channel.version>
         <org.doa.engine.core.version>0.0.1</org.doa.engine.core.version>
         <org.doa.deployment.annotation.version>0.0.1</org.doa.deployment.annotation.version>
+        <org.doa.environment.version>0.0.1</org.doa.environment.version>
+        <org.doa.environment.standalone.version>0.0.1</org.doa.environment.standalone.version>
 
         <!-- EXTERNAL VERSIONING -->
 
@@ -64,7 +67,6 @@
         <org.apache.maven.maven-model.version>3.0.3</org.apache.maven.maven-model.version>
         <com.ettrema.milton.version>1.5.4-SNAPSHOT</com.ettrema.milton.version>
         <commons-lang.commons-lang.version>2.1</commons-lang.commons-lang.version>
-        <javax.servlet.javax.servlet-api.version>3.0.1</javax.servlet.javax.servlet-api.version>
         <org.apache.tomcat.version>7.0.27</org.apache.tomcat.version>
     </properties>
 
@@ -98,48 +100,40 @@
                 <version>${org.doa.support.version}</version>
             </dependency>
 
-            <!--dependency>
+            <dependency>
                 <groupId>org.doa</groupId>
                 <artifactId>deployment</artifactId>
                 <version>${org.doa.deployment.version}</version>
                 <scope>provided</scope>
             </dependency>
 
-            <dependency>
-                <groupId>org.doa</groupId>
-                <artifactId>integration</artifactId>
-                <version>${org.doa.integration.version}</version>
-            </dependency>
-
-
-
-
-
-            <dependency>
-                <groupId>org.doa</groupId>
-                <artifactId>examples</artifactId>
-                <version>${org.doa.examples.version}</version>
-            </dependency-->
 
             <!-- FRAMEWORK LAYERS IMPLEMENTATIONS -->
 
-            <!--dependency>
+            <dependency>
                 <groupId>org.doa.deployment</groupId>
                 <artifactId>xml</artifactId>
                 <version>${org.doa.deployment.xml.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.doa.deployment</groupId>
+                <artifactId>annotation</artifactId>
+                <version>${org.doa.deployment.annotation.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.doa.engine</groupId>
+                <artifactId>core</artifactId>
+                <version>${org.doa.engine.core.version}</version>
                 <scope>provided</scope>
             </dependency>
 
             <dependency>
-                <groupId>org.doa.support</groupId>
-                <artifactId>json-entity-mapper</artifactId>
-                <version>${org.doa.support.json-entity-mapper.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.doa.support</groupId>
-                <artifactId>json-entity-mapper</artifactId>
-                <version>${org.doa.support.json-entity-mapper.version}</version>
+                <groupId>org.doa.integration.ui</groupId>
+                <artifactId>wicket</artifactId>
+                <version>${org.doa.integration.ui.wicket.version}</version>
+                <scope>provided</scope>
             </dependency>
 
             <dependency>
@@ -149,22 +143,28 @@
             </dependency>
 
             <dependency>
-                <groupId>org.doa.persitence</groupId>
+                <groupId>org.doa.persistence</groupId>
                 <artifactId>neo4j</artifactId>
                 <version>${org.doa.persistence.neo4j.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>org.doa.engine</groupId>
-                <artifactId>core</artifactId>
-                <version>${org.doa.engine.core.version}</version>
+                <groupId>org.doa.support</groupId>
+                <artifactId>channel-http</artifactId>
+                <version>${org.doa.support.http-tomcat-channel.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>org.doa.deployment</groupId>
-                <artifactId>annotation</artifactId>
-                <version>org.doa.deployment.annotation.version</version>
-            </dependency-->
+                <groupId>org.doa.support</groupId>
+                <artifactId>servlet</artifactId>
+                <version>${org.doa.support.servlet.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.doa.support</groupId>
+                <artifactId>json-entity-mapper</artifactId>
+                <version>${org.doa.support.json-entity-mapper.version}</version>
+            </dependency>
 
             <!-- PERSISTENCE -->
 
@@ -203,12 +203,6 @@
             </dependency>
 
             <dependency>
-                <groupId>javax.servlet</groupId>
-                <artifactId>javax.servlet-api</artifactId>
-                <version>${javax.servlet.javax.servlet-api}</version>
-            </dependency>
-
-            <dependency>
                 <groupId>org.apache.tomcat.embed</groupId>
                 <artifactId>tomcat-embed-core</artifactId>
                 <version>${org.apache.tomcat.version}</version>
@@ -244,13 +238,6 @@
                 <groupId>commons-fileupload</groupId>
                 <artifactId>commons-fileupload</artifactId>
                 <version>${commons-fileupload.commons-fileupload.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>commons-fileupload</groupId>
-                <artifactId>commons-fileupload</artifactId>
-                <version>${commons-fileupload.commons-fileupload.version}</version>
-                <scope>runtime</scope>
             </dependency>
 
             <dependency>

@@ -3,8 +3,6 @@
  */
 package pl.doa.wicket;
 
-import javax.servlet.ServletContext;
-
 import org.apache.wicket.Component;
 import org.apache.wicket.Page;
 import org.apache.wicket.Session;
@@ -18,7 +16,6 @@ import org.apache.wicket.request.Request;
 import org.apache.wicket.request.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import pl.doa.GeneralDOAException;
 import pl.doa.IDOA;
 import pl.doa.agent.IAgent;
@@ -35,6 +32,8 @@ import pl.doa.wicket.mount.container.AgentEntitiesContainerMapper;
 import pl.doa.wicket.mount.container.EntitiesContainerMapper;
 import pl.doa.wicket.mount.container.ResourcesContainerMapper;
 import pl.doa.wicket.ui.page.EntityPage;
+
+import javax.servlet.ServletContext;
 
 /**
  * @author activey

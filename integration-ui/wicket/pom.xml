@@ -40,6 +40,16 @@
         </dependency>
 
         <dependency>
+            <groupId>org.doa.engine</groupId>
+            <artifactId>core</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.doa.support</groupId>
+            <artifactId>channel-http</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>org.apache.wicket</groupId>
             <artifactId>wicket-core</artifactId>
         </dependency>
@@ -55,18 +65,9 @@
         </dependency>
 
         <dependency>
-            <groupId>org.doa.support</groupId>
-            <artifactId>channel-http</artifactId>
-            <version>${org.doa.support.http-tomcat-channel.version}</version>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
         </dependency>
-
-        <dependency>
-            <groupId>org.doa.engine</groupId>
-            <artifactId>core</artifactId>
-            <version>${org.doa.engine.core.version}</version>
-            <scope>provided</scope>
-        </dependency>
-
     </dependencies>
 
     <repositories>

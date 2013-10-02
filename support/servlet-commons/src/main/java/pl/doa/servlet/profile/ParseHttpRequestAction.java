@@ -3,20 +3,6 @@
  */
 package pl.doa.servlet.profile;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.URLDecoder;
-import java.util.Collection;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.StringTokenizer;
-
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.FileUploadException;
@@ -24,7 +10,6 @@ import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import pl.doa.GeneralDOAException;
 import pl.doa.IDOA;
 import pl.doa.container.IEntitiesContainer;
@@ -37,6 +22,16 @@ import pl.doa.entity.IEntityEvaluator;
 import pl.doa.entity.IEntityReference;
 import pl.doa.resource.IStaticResource;
 import pl.doa.utils.profile.IProfiledAction;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import java.io.IOException;
+import java.net.URLDecoder;
+import java.util.Collection;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.StringTokenizer;
 
 /**
  * @author activey
