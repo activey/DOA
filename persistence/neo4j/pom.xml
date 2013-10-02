@@ -14,7 +14,7 @@
     <artifactId>neo4j</artifactId>
     <packaging>jar</packaging>
     <version>${org.doa.persistence.neo4j.version}</version>
-    <name>DOA Neo4j</name>
+    <name>DOA Persistence - Neo4j</name>
 
     <!-- <build>
         <plugins>

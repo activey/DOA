@@ -13,7 +13,8 @@
     <groupId>org.doa.deployment</groupId>
     <artifactId>xml</artifactId>
     <packaging>jar</packaging>
-    <name>DOA XML-based configuration</name>
+    <version>${org.doa.deployment.xml.version}</version>
+    <name>DOA XML-based deployment</name>
     <url>http://doaplatform.org</url>
 
     <dependencies>

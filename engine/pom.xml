@@ -6,12 +6,13 @@
         <groupId>org</groupId>
         <artifactId>doa</artifactId>
         <version>${org.doa.version}</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <groupId>org.doa</groupId>
     <artifactId>engine</artifactId>
     <packaging>pom</packaging>
-    <name>DOA Engine</name>
+    <name>DOA Engine [parent]</name>
     <description>This is where most of the logic shall reside.</description>
 
     <modules>

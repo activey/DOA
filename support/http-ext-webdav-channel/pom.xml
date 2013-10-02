@@ -14,9 +14,7 @@
     <artifactId>http-ext-webdav-channel</artifactId>
     <version>${org.doa.support.http-ext-webdav-channel.version}</version>
     <name>DOA HTTP-ext-webdav-channel</name>
-    <description>
-        Rozszerzenie kanalu komunikacyjnego HTTP - obsluga subprotokolu WEBDAV.
-    </description>
+
     <build>
         <plugins>
             <plugin>
@@ -45,7 +43,6 @@
         <dependency>
             <groupId>org.doa</groupId>
             <artifactId>api</artifactId>
-            <scope>provided</scope>
         </dependency>
 
         <dependency>
@@ -63,6 +60,11 @@
                     <groupId>org.slf4j</groupId>
                 </exclusion>
             </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>com.ettrema</groupId>
+            <artifactId>milton-api</artifactId>
         </dependency>
 
         <dependency>

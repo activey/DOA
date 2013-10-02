@@ -13,7 +13,7 @@
     <groupId>org.doa.engine</groupId>
     <artifactId>core</artifactId>
     <packaging>jar</packaging>
-    <name>DOA Core</name>
+    <name>DOA Engine - Core</name>
 
     <dependencies>
         <dependency>

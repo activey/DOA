@@ -17,11 +17,12 @@
     <description>This is where all supportive to the framework modules reside.</description>
 
     <modules>
-        <module>servlet</module>
+        <module>servlet-commons</module>
         <module>http-tomcat-channel</module>
         <module>http-ext-webdav-channel</module>
         <module>json-entity-mapper</module>
         <module>xml-templates</module>
+        <module>wicket-data-wrapper</module>
     </modules>
 
 </project>

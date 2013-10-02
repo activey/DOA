@@ -9,12 +9,12 @@
         <version>${org.doa.version}</version>
     </parent>
 
-    <groupId>org.doa</groupId>
-    <artifactId>examples</artifactId>
-    <version>${org.doa.examples.version}</version>
+    <groupId>org.doa.integration</groupId>
+    <artifactId>ui</artifactId>
+    <version>${org.doa.integration.ui.version}</version>
     <packaging>pom</packaging>
-    <name>DOA Examples</name>
-    <description>This is where all examples reside.</description>
+    <name>DOA Integration - UI</name>
+    <description>Libraries that provide integration features with common UI frameworks.</description>
 
     <modules>
         <module>wicket</module>

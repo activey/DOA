@@ -11,6 +11,7 @@
 
     <groupId>org.doa.support</groupId>
     <artifactId>servlet</artifactId>
+    <name>DOA Servlet Commons</name>
     <version>${org.doa.support.servlet.version}</version>
 
     <build>

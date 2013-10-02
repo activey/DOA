@@ -12,7 +12,7 @@
 	<artifactId>persistence</artifactId>
 	<version>${org.doa.persistence.version}</version>
 	<packaging>pom</packaging>
-	<name>DOA Persistence</name>
+	<name>DOA Persistence [parent]</name>
 	<description>This is where data storage is being handled.</description>
 
 	<modules>

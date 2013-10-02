@@ -11,7 +11,8 @@
 
     <groupId>org.doa.deployment</groupId>
     <artifactId>annotation</artifactId>
-    <name>DOA Annotation-based configuration</name>
+    <name>DOA Annotation-based deployment</name>
+    <version>${org.doa.deployment.annotation.version}</version>
 
     <dependencies>
 

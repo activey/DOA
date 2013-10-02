@@ -11,7 +11,9 @@
 
     <groupId>org.doa.support</groupId>
     <artifactId>xml-templates</artifactId>
+    <name>XML Templates Engine</name>
     <version>${org.doa.support.xml-templates.version}</version>
+
     <build>
         <plugins>
             <plugin>

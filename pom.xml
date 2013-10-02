@@ -16,9 +16,8 @@
         <org.doa.api.version>0.0.1</org.doa.api.version>
         <org.doa.engine.version>0.0.1</org.doa.engine.version>
         <org.doa.deployment.version>0.0.1</org.doa.deployment.version>
-        <org.doa.integration.version>0.0.1</org.doa.integration.version>
-        <org.doa.integration.wicket.version>0.0.1</org.doa.integration.wicket.version>
-        <org.doa.examples.version>0.0.1</org.doa.examples.version>
+        <org.doa.integration.ui.version>0.0.1</org.doa.integration.ui.version>
+        <org.doa.integration.ui.wicket.version>0.0.1</org.doa.integration.ui.wicket.version>
         <org.doa.persistence.version>0.0.1</org.doa.persistence.version>
         <org.doa.persistence.neo4j.version>0.0.1</org.doa.persistence.neo4j.version>
         <org.doa.support.version>0.0.1</org.doa.support.version>
@@ -28,6 +27,7 @@
         <org.doa.support.xml-templates.version>0.0.1</org.doa.support.xml-templates.version>
         <org.doa.support.servlet.version>0.0.1</org.doa.support.servlet.version>
         <org.doa.support.http-tomcat-channel.version>0.0.1</org.doa.support.http-tomcat-channel.version>
+        <org.doa.support.wicket-data-wrapper.version>0.0.1</org.doa.support.wicket-data-wrapper.version>
         <org.doa.engine.core.version>0.0.1</org.doa.engine.core.version>
         <org.doa.deployment.annotation.version>0.0.1</org.doa.deployment.annotation.version>
 
@@ -449,7 +449,7 @@
         <module>support</module>
         <module>deployment</module>
         <module>environment</module>
-        <module>examples</module>
+        <module>integration-ui</module>
     </modules>
 
 </project>

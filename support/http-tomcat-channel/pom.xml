@@ -12,9 +12,8 @@
     <groupId>org.doa.support</groupId>
     <artifactId>channel-http</artifactId>
     <version>${org.doa.support.http-tomcat-channel.version}</version>
-    <description>
-        Kanal komunikacyjny HTTP - obsluga protokolu HTTP.
-    </description>
+    <name>DOA Channel - HTTP</name>
+
     <dependencies>
         <dependency>
             <groupId>org.doa</groupId>
