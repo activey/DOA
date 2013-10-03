@@ -3,8 +3,7 @@ package pl.doa.wrapper.processor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pl.doa.GeneralDOAException;
-import pl.doa.IDOA;
-import pl.doa.artifact.deploy.DeploymentContext;
+import pl.doa.artifact.deploy.IDeploymentProcessor;
 import pl.doa.container.IEntitiesContainer;
 import pl.doa.document.IDocument;
 import pl.doa.document.IDocumentDefinition;
@@ -21,17 +20,11 @@ import java.lang.reflect.Method;
 public class DocumentDefinitionIterator extends AbstractAnnotatedIterator<DocumentDefinition, IDocumentDefinition> {
 
     private final static Logger log = LoggerFactory.getLogger(DocumentDefinitionIterator.class);
-    private final DeploymentContext deploymentContext;
+    private final IDeploymentProcessor processor;
     private final IEntitiesContainer container;
-
-    public DocumentDefinitionIterator(DeploymentContext deploymentContext, IEntitiesContainer container) {
-        this.deploymentContext = deploymentContext;
-        this.container = container;
-    }
 
     @Override
     public IIteratorResult<IDocumentDefinition> iterateType(Class<?> wrapperType, DocumentDefinition annotation) throws GeneralDOAException {
-        IDOA doa = deploymentContext.getDoa();
         String name = annotation.name();
         if (name == null || name.trim().length() == 0) {
             name = wrapperType.getSimpleName();
@@ -58,9 +51,9 @@ public class DocumentDefinitionIterator extends AbstractAnnotatedIterator<Docume
         }
 
         // creating entity
-        IEntitiesContainer container = createClassContainer(doa, this.container, wrapperType);
-        IDocumentDefinition definition = (ancestor != null) ? doa
-                .createDocumentDefinition(name, container, ancestor) : doa
+        IEntitiesContainer container = createClassContainer(processor, this.container, wrapperType);
+        IDocumentDefinition definition = (ancestor != null) ? processor
+                .createDocumentDefinition(name, container, ancestor) : processor
                 .createDocumentDefinition(name, container);
         definition.setAttribute("_wraps_to", wrapperType.getName());
 
@@ -96,7 +89,7 @@ public class DocumentDefinitionIterator extends AbstractAnnotatedIterator<Docume
             IDocumentFieldType existingField = definition.getFieldType(fieldName);
             if (existingField != null) {
                 // TODO checking existing field data type if matches interface definition data type
-                DocumentFieldDataType fieldType = existingField.getFieldDataType();
+                //DocumentFieldDataType fieldType = existingField.getFieldDataType();
 
                 log.warn(String.format("Field [%s] is already present!", fieldName));
                 continue;
@@ -112,5 +105,10 @@ public class DocumentDefinitionIterator extends AbstractAnnotatedIterator<Docume
             }
         }
         return new EntityResult<IDocumentDefinition>(definition);
+    }
+
+    public DocumentDefinitionIterator(IDeploymentProcessor processor, IEntitiesContainer container) {
+        this.processor = processor;
+        this.container = container;
     }
 }

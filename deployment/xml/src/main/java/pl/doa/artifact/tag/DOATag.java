@@ -57,7 +57,7 @@ public class DOATag extends EntityTag {
     public IEntity createEntity() {
         IDOA doa = null;
         try {
-            doa = getDoa().createDOA(getName(), getLogicClass());
+            doa = createDOA(getName(), getLogicClass());
             doa.setAutostart(true);
             addStartable(doa);
         } catch (Exception e) {
@@ -66,6 +66,8 @@ public class DOATag extends EntityTag {
         }
         return doa;
     }
+
+
 
     public String getLogicClass() {
         return logicClass;

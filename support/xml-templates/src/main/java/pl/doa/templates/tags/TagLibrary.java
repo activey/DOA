@@ -44,99 +44,92 @@
  */
 package pl.doa.templates.tags;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import pl.doa.templates.TemplateContext;
+
 import java.util.HashMap;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import pl.doa.templates.TemplateContext;
-
 /**
- * 
  * @author activey
  */
 public abstract class TagLibrary {
 
-	private Map<String, Class<? extends Tag>> tags =
-			new HashMap<String, Class<? extends Tag>>();
+    private final static Logger log = LoggerFactory.getLogger(TagLibrary.class);
+    private static final String RESTRICTED_CLASS = "class";
+    protected TemplateContext templateContext;
+    private Map<String, Class<? extends Tag>> tags =
+            new HashMap<String, Class<? extends Tag>>();
+    private String namespace;
+    private UnrecognizedTag unrecognizedTag;
 
-	private String namespace;
+    /**
+     * Metoda rejestruje instancje znacznika w bibliotece znacznikow.
+     *
+     * @param tagName
+     * @param tagInstance
+     */
+    protected final void registerTag(String tagName,
+                                     Class<? extends Tag> tagClass) throws Exception {
+        if (tags.containsKey(tagName))
+            throw new Exception("this tag is already registered!");
+        tags.put(tagName, tagClass);
+    }
 
-	private final static Logger log = LoggerFactory.getLogger(TagLibrary.class);
+    public final void initialize(TemplateContext templateContext) throws Exception {
+        this.templateContext = templateContext;
+        initializeTagLibrary();
+    }
 
-	private static final String RESTRICTED_CLASS = "class";
+    protected abstract void initializeTagLibrary() throws Exception;
 
-	private UnrecognizedTag unrecognizedTag;
+    public String getNamespace() {
+        return namespace;
+    }
 
-	protected TemplateContext templateContext;
+    public void setNamespace(String namespace) {
+        this.namespace = namespace;
+    }
 
-	/**
-	 * Metoda rejestruje instancje znacznika w bibliotece znacznikow.
-	 * 
-	 * @param tagName
-	 * @param tagInstance
-	 */
-	protected final void registerTag(String tagName,
-			Class<? extends Tag> tagClass) throws Exception {
-		if (tags.containsKey(tagName))
-			throw new Exception("this tag is already registered!");
-		tags.put(tagName, tagClass);
-	}
+    public boolean equals(TagLibrary otherTaglibrary) {
+        if (otherTaglibrary == null)
+            return false;
+        if (otherTaglibrary.getNamespace().equals(this.getNamespace()))
+            return true;
+        return false;
+    }
 
-	public final void initialize(TemplateContext templateContext) throws Exception {
-		this.templateContext = templateContext;
-		initializeTagLibrary();
-	}
+    public Tag createTagInstance(String tagName, TemplateContext context) {
+        Class<? extends Tag> tagClass = tags.get(tagName);
+        Tag tagInstance = null;
+        try {
+            if (tagClass != null) {
+                tagInstance = tagClass.newInstance();
+            }
+        } catch (Exception e) {
+            log.error("", e);
+        }
+        if (tagInstance == null) {
+            UnrecognizedTag unr = getUnrecognizedTag();
+            if (unr != null) {
+                unr.setTagName(tagName);
+                tagInstance = unr;
+            }
+            if (tagInstance == null) {
+                return null;
+            }
+        }
+        tagInstance.setTemplateContext(context);
+        return tagInstance;
+    }
 
-	protected abstract void initializeTagLibrary() throws Exception;
+    public UnrecognizedTag getUnrecognizedTag() {
+        return unrecognizedTag;
+    }
 
-	public String getNamespace() {
-		return namespace;
-	}
-
-	public void setNamespace(String namespace) {
-		this.namespace = namespace;
-	}
-
-	public boolean equals(TagLibrary otherTaglibrary) {
-		if (otherTaglibrary == null)
-			return false;
-		if (otherTaglibrary.getNamespace().equals(this.getNamespace()))
-			return true;
-		return false;
-	}
-
-	public Tag createTagInstance(String tagName, TemplateContext context) {
-		Class<? extends Tag> tagClass = tags.get(tagName);
-		Tag tagInstance = null;
-		try {
-			if (tagClass != null) {
-				tagInstance = tagClass.newInstance();
-			}
-		} catch (Exception e) {
-			log.error("", e);
-		}
-		if (tagInstance == null) {
-			UnrecognizedTag unr = getUnrecognizedTag();
-			if (unr != null) {
-				unr.setTagName(tagName);
-				tagInstance = unr;
-			}
-			if (tagInstance == null) {
-				return null;
-			}
-		}
-		tagInstance.setTemplateContext(context);
-		return tagInstance;
-	}
-
-	public UnrecognizedTag getUnrecognizedTag() {
-		return unrecognizedTag;
-	}
-
-	public void setUnrecognizedTag(UnrecognizedTag unrecognizedTag) {
-		this.unrecognizedTag = unrecognizedTag;
-	}
+    public void setUnrecognizedTag(UnrecognizedTag unrecognizedTag) {
+        this.unrecognizedTag = unrecognizedTag;
+    }
 
 }

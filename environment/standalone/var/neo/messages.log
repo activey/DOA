@@ -1,0 +1,283 @@
+2013-10-03 18:45:13.734+0000: Creating new db @ /opt/java/projects/DOA/environment/standalone/var/neo/neostore
+2013-10-03 18:45:16.315+0000: Opened logical log [/opt/java/projects/DOA/environment/standalone/var/neo/nioneo_logical.log.1] version=0, lastTxId=1 (clean)
+2013-10-03 18:45:16.364+0000: TM new log: tm_tx_log.1
+2013-10-03 18:45:16.463+0000: Opened logical log [/opt/java/projects/DOA/environment/standalone/var/neo/index/lucene.log.1] version=0, lastTxId=1 (clean)
+2013-10-03 18:45:16.506+0000: --- STARTUP diagnostics START ---
+2013-10-03 18:45:16.512+0000: Neo4j Kernel properties:
+    store_dir=./var/neo
+    remote_logging_host=127.0.0.1
+    read_only=false
+    neo4j.ext.udc.host=udc.neo4j.org
+    online_backup_enabled=false
+    logical_log=nioneo_logical.log
+    remote_logging_port=4560
+    gc_monitor_threshold=200ms
+    load_kernel_extensions=true
+    array_block_size=120
+    intercept_committing_transactions=false
+    node_auto_indexing=false
+    neostore.relationshipstore.db.mapped_memory=771M
+    keep_logical_logs=true
+    dump_configuration=false
+    gc_monitor_wait_time=100ms
+    relationship_cache_size=452984832
+    cache_type=soft
+    intercept_deserialized_transactions=false
+    neostore.nodestore.db.mapped_memory=174M
+    neo4j.ext.udc.first_delay=600000
+    neo4j.ext.udc.reg=unreg
+    lucene_searcher_cache_size=2147483647
+    neo4j.ext.udc.interval=86400000
+    use_memory_mapped_buffers=true
+    rebuild_idgenerators_fast=true
+    neostore.propertystore.db.index.keys.mapped_memory=1M
+    neostore.propertystore.db.arrays.mapped_memory=606M
+    neostore.propertystore.db.strings.mapped_memory=534M
+    neo_store=neostore
+    logging.threshold_for_rotation=104857600
+    neostore.propertystore.db.index.mapped_memory=1M
+    backup_slave=false
+    neostore.propertystore.db.mapped_memory=629M
+    gcr_cache_min_log_interval=60s
+    relationship_auto_indexing=false
+    relationship_grab_size=100
+    string_block_size=120
+    grab_file_lock=true
+    node_cache_array_fraction=1.0
+    remote_logging_enabled=false
+    node_cache_size=452984832
+    allow_store_upgrade=false
+    execution_guard_enabled=false
+    neo4j.ext.udc.enabled=true
+    relationship_cache_array_fraction=1.0
+    online_backup_port=6362
+2013-10-03 18:45:16.518+0000: Diagnostics providers:
+    org.neo4j.kernel.configuration.Config
+    org.neo4j.kernel.info.DiagnosticsManager
+    SYSTEM_MEMORY
+    JAVA_MEMORY
+    OPERATING_SYSTEM
+    JAVA_VIRTUAL_MACHINE
+    CLASSPATH
+    LIBRARY_PATH
+    SYSTEM_PROPERTIES
+    LINUX_SCHEDULERS
+2013-10-03 18:45:16.519+0000: System memory information:
+    Total Physical memory: 7,59 GB
+    Free Physical memory: 1,52 GB
+    Committed virtual memory: 3,44 GB
+    Total swap space: 2,00 GB
+    Free swap space: 2,00 GB
+2013-10-03 18:45:16.526+0000: JVM memory information:
+    Free  memory: 99,90 MB
+    Total memory: 116,44 MB
+    Max   memory: 1,69 GB
+    Garbage Collector: PS Scavenge: [PS Eden Space, PS Survivor Space]
+    Garbage Collector: PS MarkSweep: [PS Eden Space, PS Survivor Space, PS Old Gen, PS Perm Gen]
+    Memory Pool: Code Cache (Non-heap memory): committed=2,44 MB, used=854,31 kB, max=48,00 MB, threshold=0,00 B
+    Memory Pool: PS Eden Space (Heap memory): committed=30,38 MB, used=11,88 MB, max=637,88 MB, threshold=?
+    Memory Pool: PS Survivor Space (Heap memory): committed=5,06 MB, used=4,57 MB, max=5,06 MB, threshold=?
+    Memory Pool: PS Old Gen (Heap memory): committed=81,00 MB, used=88,02 kB, max=1,27 GB, threshold=0,00 B
+    Memory Pool: PS Perm Gen (Non-heap memory): committed=20,75 MB, used=14,78 MB, max=166,00 MB, threshold=0,00 B
+2013-10-03 18:45:16.533+0000: Operating system information:
+    Operating System: Linux; version: 3.8.0-30-generic; arch: amd64; cpus: 4
+    Max number of file descriptors: 4096
+    Number of open file descriptors: 78
+    Process id: 27353@mordor
+    Byte order: LITTLE_ENDIAN
+2013-10-03 18:45:16.535+0000: JVM information:
+    VM Name: OpenJDK 64-Bit Server VM
+    VM Vendor: Oracle Corporation
+    VM Version: 23.7-b01
+    JIT compiler: HotSpot 64-Bit Tiered Compilers
+    VM Arguments: [-agentlib:jdwp=transport=dt_socket,address=127.0.0.1:33951,suspend=y,server=n, -Dfile.encoding=UTF-8]
+2013-10-03 18:45:16.536+0000: Java classpath:
+     [classpath + loader.0] file:/home/activey/.m2/repository/commons-beanutils/commons-beanutils/1.8.3/commons-beanutils-1.8.3.jar
+     [loader.1] file:/usr/lib/jvm/java-7-openjdk-common/jre/lib/ext/sunpkcs11.jar
+     [bootstrap + classpath + loader.0] file:/usr/lib/jvm/java-7-openjdk-amd64/jre/lib/jce.jar
+     [bootstrap] /usr/lib/jvm/java-7-openjdk-amd64/jre/lib/plugin.jar
+     [classpath + loader.0] file:/home/activey/.m2/repository/org/neo4j/neo4j-udc/1.8.M06/neo4j-udc-1.8.M06.jar
+     [classpath + loader.0] file:/home/activey/.m2/repository/org/springframework/spring/2.5.6/spring-2.5.6.jar
+     [bootstrap] /usr/lib/jvm/java-7-openjdk-amd64/jre/lib/sunrsasign.jar
+     [classpath + loader.0] file:/opt/java/projects/DOA/engine/core/target/classes/
+     [loader.1] file:/usr/lib/x86_64-linux-gnu/jni/libatk-wrapper.so.0.0.18
+     [classpath + loader.0] file:/opt/java/projects/DOA/support/xml-templates/target/classes/
+     [bootstrap + classpath + loader.0] file:/usr/lib/jvm/java-7-openjdk-amd64/jre/lib/resources.jar
+     [classpath + loader.0] file:/home/activey/.m2/repository/xml-apis/xml-apis/1.3.03/xml-apis-1.3.03.jar
+     [classpath + loader.0] file:/opt/java/projects/DOA/deployment/xml/target/classes/
+     [classpath + loader.0] file:/home/activey/.m2/repository/org/apache/ivy/ivy/2.2.0/ivy-2.2.0.jar
+     [loader.1] file:/usr/share/java/java-atk-wrapper.jar
+     [classpath + loader.0] file:/home/activey/.m2/repository/xalan/xalan/2.7.0/xalan-2.7.0.jar
+     [classpath + loader.0] file:/home/activey/.m2/repository/org/apache/bcel/bcel/5.2/bcel-5.2.jar
+     [classpath + loader.0] file:/home/activey/.m2/repository/org/neo4j/neo4j-lucene-index/1.8.M06/neo4j-lucene-index-1.8.M06.jar
+     [classpath + loader.0] file:/home/activey/.m2/repository/xom/xom/1.2.5/xom-1.2.5.jar
+     [loader.1] file:/usr/lib/jvm/java-7-openjdk-common/jre/lib/ext/sunjce_provider.jar
+     [classpath + loader.0] file:/home/activey/.m2/repository/org/apache/lucene/lucene-core/3.5.0/lucene-core-3.5.0.jar
+     [classpath + loader.0] file:/usr/lib/jvm/java-7-openjdk-amd64/jre/lib/javazic.jar
+     [classpath + loader.0] file:/home/activey/.m2/repository/aspectj/aspectjrt/1.5.3/aspectjrt-1.5.3.jar
+     [classpath + loader.0] file:/home/activey/.m2/repository/org/apache/maven/maven-model/3.0.3/maven-model-3.0.3.jar
+     [classpath + loader.0] file:/opt/java/projects/DOA/api/target/classes/
+     [classpath + loader.0] file:/opt/java/projects/DOA/environment/standalone/target/classes/
+     [classpath + loader.0] file:/home/activey/.m2/repository/jakarta-regexp/jakarta-regexp/1.4/jakarta-regexp-1.4.jar
+     [classpath + loader.0] file:/home/activey/.m2/repository/org/neo4j/neo4j-graph-matching/1.8.M06/neo4j-graph-matching-1.8.M06.jar
+     [classpath + loader.0] file:/home/activey/.m2/repository/aspectj/aspectjweaver/1.5.3/aspectjweaver-1.5.3.jar
+     [classpath + loader.0] file:/home/activey/.m2/repository/org/slf4j/slf4j-api/1.7.5/slf4j-api-1.7.5.jar
+     [loader.1] file:/usr/lib/jvm/java-7-openjdk-common/jre/lib/ext/localedata.jar
+     [bootstrap + classpath + loader.0] file:/usr/lib/jvm/java-7-openjdk-amd64/jre/lib/rt.jar
+     [classpath + loader.0] file:/home/activey/.m2/repository/commons-logging/commons-logging/1.1.3/commons-logging-1.1.3.jar
+     [classpath + loader.0] file:/home/activey/.m2/repository/com/uwyn/continuations/1.6.1/continuations-1.6.1.jar
+     [loader.1] file:/usr/lib/jvm/java-7-openjdk-common/jre/lib/ext/dnsns.jar
+     [classpath + loader.0] file:/home/activey/.m2/repository/commons-io/commons-io/1.4/commons-io-1.4.jar
+     [classpath + loader.0] file:/home/activey/.m2/repository/org/apache/geronimo/specs/geronimo-jta_1.1_spec/1.1.1/geronimo-jta_1.1_spec-1.1.1.jar
+     [bootstrap + classpath + loader.0] file:/usr/lib/jvm/java-7-openjdk-amd64/jre/lib/jsse.jar
+     [classpath + loader.0] file:/opt/java/projects/DOA/persistence/neo4j/target/classes/
+     [classpath + loader.0] file:/home/activey/.m2/repository/rhino/js/1.7R1/js-1.7R1.jar
+     [classpath + loader.0] file:/usr/lib/jvm/java-7-openjdk-amd64/jre/lib/compilefontconfig.jar
+     [bootstrap + classpath + loader.0] file:/usr/lib/jvm/java-7-openjdk-amd64/jre/lib/rhino.jar
+     [classpath + loader.0] file:/home/activey/.m2/repository/xerces/xercesImpl/2.8.0/xercesImpl-2.8.0.jar
+     [bootstrap] /usr/lib/jvm/java-7-openjdk-amd64/jre/lib/netx.jar
+     [classpath + loader.0] file:/home/activey/.m2/repository/org/slf4j/slf4j-log4j12/1.5.7/slf4j-log4j12-1.5.7.jar
+     [bootstrap] /usr/lib/jvm/java-7-openjdk-amd64/jre/classes
+     [classpath + loader.0] file:/home/activey/.m2/repository/log4j/log4j/1.2.12/log4j-1.2.12.jar
+     [bootstrap] /usr/lib/jvm/java-7-openjdk-amd64/jre/lib/jfr.jar
+     [classpath + loader.0] file:/home/activey/.m2/repository/dom4j/dom4j/1.6.1/dom4j-1.6.1.jar
+     [classpath + loader.0] file:/home/activey/.m2/repository/org/codehaus/plexus/plexus-utils/2.0.6/plexus-utils-2.0.6.jar
+     [bootstrap + classpath + loader.0] file:/usr/lib/jvm/java-7-openjdk-amd64/jre/lib/charsets.jar
+     [loader.1] file:/usr/lib/jvm/java-7-openjdk-common/jre/lib/ext/pulse-java.jar
+     [classpath + loader.0] file:/opt/apps/idea-IC-129.451/lib/idea_rt.jar
+     [classpath + loader.0] file:/usr/lib/jvm/java-7-openjdk-amd64/jre/lib/management-agent.jar
+     [classpath + loader.0] file:/home/activey/.m2/repository/org/neo4j/neo4j-kernel/1.8.M06/neo4j-kernel-1.8.M06.jar
+     [classpath + loader.0] file:/opt/java/projects/DOA/deployment/base/target/classes/
+     [classpath + loader.0] file:/home/activey/.m2/repository/jdom/jdom/1.0/jdom-1.0.jar
+     [loader.1] file:/usr/lib/jvm/java-7-openjdk-common/jre/lib/ext/zipfs.jar
+2013-10-03 18:45:16.545+0000: Library path:
+    /opt/apps/idea-IC-129.451/bin
+    /opt/java/projects/DOA/environment/standalone
+    /usr/java/packages/lib/amd64
+    /usr/lib/jni
+    /lib
+    /usr/lib
+2013-10-03 18:45:16.545+0000: System.properties:
+    sun.boot.library.path = /usr/lib/jvm/java-7-openjdk-amd64/jre/lib/amd64
+    path.separator = :
+    file.encoding.pkg = sun.io
+    user.country = PL
+    sun.java.launcher = SUN_STANDARD
+    sun.os.patch.level = unknown
+    user.dir = /opt/java/projects/DOA/environment/standalone
+    sun.jnu.encoding = UTF-8
+    sun.management.compiler = HotSpot 64-Bit Tiered Compilers
+    user.home = /home/activey
+    user.timezone = Europe/Warsaw
+    file.encoding = UTF-8
+    user.name = activey
+    sun.java.command = pl.doa.DOAStarter
+    sun.arch.data.model = 64
+    user.language = pl
+    awt.toolkit = sun.awt.X11.XToolkit
+    file.separator = /
+    sun.io.unicode.encoding = UnicodeLittle
+    sun.cpu.endian = little
+    sun.cpu.isalist = 
+2013-10-03 18:45:16.547+0000: Linux scheduler information:
+    noop [deadline] cfq 
+    none
+    none
+    none
+    none
+    none
+    none
+    none
+    none
+    none
+    none
+    none
+    none
+    none
+    none
+    none
+    none
+    none
+    none
+    none
+    none
+    none
+    none
+    none
+    none
+2013-10-03 18:45:16.554+0000: --- STARTUP diagnostics END ---
+2013-10-03 18:45:16.613+0000: Extension org.neo4j.kernel.KernelExtension[kernel udc] loaded ok
+2013-10-03 18:45:16.621+0000: --- STARTUP diagnostics for KernelDiagnostics:Versions START ---
+2013-10-03 18:45:16.621+0000: Graph Database: org.neo4j.kernel.EmbeddedGraphDatabase StoreId[time:1380825913736, id:-3419126604106246846, store version: 13561656364791302]
+2013-10-03 18:45:16.621+0000: Kernel version: Neo4j - Graph Database Kernel 1.8.M06
+2013-10-03 18:45:16.621+0000: Neo4j component versions:
+2013-10-03 18:45:16.623+0000:   Neo4j - Graph Database Kernel 1.8.M06
+2013-10-03 18:45:16.623+0000: --- STARTUP diagnostics for KernelDiagnostics:Versions END ---
+2013-10-03 18:45:16.628+0000: --- STARTUP diagnostics for NEO_STORE_VERSIONS START ---
+2013-10-03 18:45:16.629+0000: Store versions:
+    Store versions:
+      NeoStore v0.A.0
+      NodeStore v0.A.0
+      RelationshipStore v0.A.0
+      RelationshipTypeStore v0.A.0
+      PropertyStore v0.A.0
+      PropertyIndexStore v0.A.0
+      StringPropertyStore v0.A.0
+      ArrayPropertyStore v0.A.0
+2013-10-03 18:45:16.629+0000: --- STARTUP diagnostics for NEO_STORE_VERSIONS END ---
+2013-10-03 18:45:16.629+0000: --- STARTUP diagnostics for NEO_STORE_ID_USAGE START ---
+2013-10-03 18:45:16.629+0000: Id usage:
+    Id usage:
+      NodeStore: used=1 high=0
+      RelationshipStore: used=0 high=-1
+      RelationshipTypeStore: used=0 high=-1
+      PropertyStore: used=0 high=-1
+      PropertyIndexStore: used=0 high=-1
+      StringPropertyStore: used=1 high=0
+      ArrayPropertyStore: used=1 high=0
+2013-10-03 18:45:16.632+0000: --- STARTUP diagnostics for NEO_STORE_ID_USAGE END ---
+2013-10-03 18:45:16.632+0000: --- STARTUP diagnostics for KernelDiagnostics:StoreFiles START ---
+2013-10-03 18:45:16.633+0000: Storage files:
+    tm_tx_log.1: 0,00 B
+    neostore.propertystore.db.strings.id: 9,00 B
+    neostore.propertystore.db: 0,00 B
+    lock: 0,00 B
+    neostore.propertystore.db.arrays: 128,00 B
+    neostore.propertystore.db.strings: 128,00 B
+    neostore.propertystore.db.index: 0,00 B
+    index:
+      lucene.log.1: 16,00 B
+      lucene.log.active: 4,00 B
+      lucene-store.db: 40,00 B
+    - Total: 60,00 B
+    neostore.relationshiptypestore.db.names: 38,00 B
+    neostore.propertystore.db.index.keys: 38,00 B
+    neostore.propertystore.db.id: 9,00 B
+    nioneo_logical.log.active: 4,00 B
+    neostore: 54,00 B
+    neostore.relationshiptypestore.db.names.id: 9,00 B
+    neostore.nodestore.db: 9,00 B
+    neostore.nodestore.db.id: 9,00 B
+    neostore.propertystore.db.index.keys.id: 9,00 B
+    neostore.relationshiptypestore.db: 0,00 B
+    messages.log: 12,51 kB
+    neostore.relationshipstore.db: 0,00 B
+    neostore.propertystore.db.index.id: 9,00 B
+    active_tx_log: 11,00 B
+    neostore.relationshiptypestore.db.id: 9,00 B
+    nioneo_logical.log.1: 16,00 B
+    neostore.propertystore.db.arrays.id: 9,00 B
+    neostore.relationshipstore.db.id: 9,00 B
+    neostore.id: 9,00 B
+2013-10-03 18:45:16.642+0000: --- STARTUP diagnostics for KernelDiagnostics:StoreFiles END ---
+2013-10-03 18:45:16.645+0000: Started - database is now available
+2013-10-03 18:45:16.646+0000: GC Monitor started. 
+2013-10-03 18:45:20.634+0000: GC Monitor: Application threads blocked for an additional 182ms [total block time: 0.182s]
+2013-10-03 18:45:24.591+0000: GC Monitor: Application threads blocked for an additional 3856ms [total block time: 4.038s]
+2013-10-03 18:45:26.020+0000: GC Monitor: Application threads blocked for an additional 1028ms [total block time: 5.066s]
+2013-10-03 18:45:33.897+0000: GC Monitor: Application threads blocked for an additional 2561ms [total block time: 7.627s]
+2013-10-03 18:45:34.623+0000: GC Monitor: Application threads blocked for an additional 626ms [total block time: 8.253s]
+2013-10-03 18:45:39.561+0000: GC Monitor: Application threads blocked for an additional 4837ms [total block time: 13.09s]
+2013-10-03 18:45:41.234+0000: GC Monitor: Application threads blocked for an additional 1569ms [total block time: 14.659s]
+2013-10-03 18:45:42.812+0000: GC Monitor: Application threads blocked for an additional 1377ms [total block time: 16.036s]
+2013-10-03 18:45:52.286+0000: GC Monitor: Application threads blocked for an additional 5956ms [total block time: 21.992s]

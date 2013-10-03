@@ -43,7 +43,6 @@ package pl.doa.artifact.tag;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import pl.doa.GeneralDOAException;
 import pl.doa.document.IDocumentDefinition;
 import pl.doa.document.alignment.IDocumentAligner;
@@ -83,10 +82,12 @@ public class DocumentAlignerTag extends EntityTag {
     @Override
     public IEntity createEntity() throws GeneralDOAException {
         IDocumentAligner aligner =
-                getDoa().createDocumentAligner(getName(), fromDefinition,
+                createDocumentAligner(getName(), fromDefinition,
                         toDefinition);
         aligner.setLogicClass(getLogicClass());
         return aligner;
     }
+
+
 
 }

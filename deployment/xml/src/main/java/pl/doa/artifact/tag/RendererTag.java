@@ -77,7 +77,7 @@ public class RendererTag extends EntityTag {
     @Override
     public IRenderer createEntity() throws GeneralDOAException {
         IRenderer renderer =
-                getDoa().createRenderer(getName(), getLogicClass(),
+                createRenderer(getName(), getLogicClass(),
                         getMimetype());
         renderer.setAutostart(autostart);
         if (autostart) {
@@ -85,6 +85,8 @@ public class RendererTag extends EntityTag {
         }
         return renderer;
     }
+
+
 
     public String getMimetype() {
         return mimetype;

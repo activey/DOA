@@ -41,27 +41,22 @@
  *******************************************************************************/
 package pl.doa.artifact;
 
-import java.io.File;
-import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.lang.ref.WeakReference;
+import java.util.*;
 
 public class DirectoryMonitor {
     private final static Logger log = LoggerFactory
             .getLogger(DirectoryMonitor.class);
+    private final long pollingInterval;
     private Timer timer_;
     private File directory_;
     private List<File> directoryFiles = new ArrayList<File>();
     private Collection listeners_; // of WeakReference(FileListener)
     private long lastModifiedTime;
-    private final long pollingInterval;
 
     public DirectoryMonitor(long pollingInterval) {
         this.pollingInterval = pollingInterval;
@@ -111,6 +106,12 @@ public class DirectoryMonitor {
         }
     }
 
+    public void start() {
+        log.debug("starting up directory monitor ...");
+        timer_ = new Timer(true);
+        timer_.schedule(new FileMonitorNotifier(), 0, pollingInterval);
+    }
+
     private class FileMonitorNotifier extends TimerTask {
         public void run() {
             if (directory_ == null) {
@@ -131,7 +132,7 @@ public class DirectoryMonitor {
                     WeakReference reference = (WeakReference) j.next();
                     DirectoryListener listener =
                             (DirectoryListener) reference.get();
-					/*
+                    /*
 					 * lista plikow po modyfikacji
 					 */
                     int type = -1;
@@ -176,11 +177,5 @@ public class DirectoryMonitor {
                 }
             }
         }
-    }
-
-    public void start() {
-        log.debug("starting up directory monitor ...");
-        timer_ = new Timer(true);
-        timer_.schedule(new FileMonitorNotifier(), 0, pollingInterval);
     }
 }

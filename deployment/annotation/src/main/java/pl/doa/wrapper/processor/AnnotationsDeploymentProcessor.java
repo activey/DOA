@@ -3,14 +3,9 @@ package pl.doa.wrapper.processor;
 import org.scannotation.AnnotationDB;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import pl.doa.GeneralDOAException;
-import pl.doa.artifact.IArtifact;
 import pl.doa.artifact.deploy.AbstractDeploymentProcessor;
-import pl.doa.artifact.deploy.DeploymentContext;
-import pl.doa.artifact.deploy.IDeploymentProcessor;
 import pl.doa.container.IEntitiesContainer;
 import pl.doa.entity.IEntity;
-import pl.doa.templates.TemplateContext;
 import pl.doa.wrapper.annotation.Aligner;
 import pl.doa.wrapper.annotation.DocumentDefinition;
 import pl.doa.wrapper.annotation.ServiceDefinition;
@@ -28,32 +23,27 @@ public class AnnotationsDeploymentProcessor extends AbstractDeploymentProcessor 
     private final static Logger log = LoggerFactory.getLogger(AnnotationsDeploymentProcessor.class);
 
     @Override
-    public void process(IEntitiesContainer container) throws Exception {
-
+    public void process(File deployedFile, IEntitiesContainer root) throws Exception {
         // scanning jar file
-        File jarFile = deploymentContext.getArtifactJar();
         AnnotationDB db = new AnnotationDB();
-        db.scanArchives(jarFile.toURI().toURL());
+        db.scanArchives(deployedFile.toURI().toURL());
 
         // iterating annotations
         // TODO implement rest of annotations
-
 
         List<AwaitingProcessing> awaitingProcessing = new ArrayList<AwaitingProcessing>();
         int pass = 1;
         log.debug(String.format("Running pass nr: %d", pass));
 
         Map<String, Set<String>> index = db.getAnnotationIndex();
-        iterateAnnotated(DocumentDefinition.class, new DocumentDefinitionIterator(deploymentContext, container), index, deploymentContext, awaitingProcessing);
-        iterateAnnotated(ServiceDefinition.class, new ServiceDefinitionIterator(deploymentContext, container), index, deploymentContext, awaitingProcessing);
-        iterateAnnotated(Aligner.class, new AlignerIterator(deploymentContext, container), index, deploymentContext, awaitingProcessing);
+        iterateAnnotated(DocumentDefinition.class, new DocumentDefinitionIterator(this, root), index, awaitingProcessing);
+        iterateAnnotated(ServiceDefinition.class, new ServiceDefinitionIterator(this, root), index, awaitingProcessing);
+        iterateAnnotated(Aligner.class, new AlignerIterator(this, root), index, awaitingProcessing);
 
-
-        iterateAwaiting(awaitingProcessing, 2, deploymentContext);
-
+        iterateAwaiting(awaitingProcessing, 2);
     }
 
-    private void iterateAwaiting(List<AwaitingProcessing> awaitingProcessing, int pass, DeploymentContext deploymentContext) {
+    private void iterateAwaiting(List<AwaitingProcessing> awaitingProcessing, int pass) {
         log.debug(String.format("Running pass nr: %d", pass));
         for (int i = awaitingProcessing.size(); i > 0; i--) {
             AwaitingProcessing awaiting = awaitingProcessing.get(i - 1);
@@ -62,56 +52,36 @@ public class AnnotationsDeploymentProcessor extends AbstractDeploymentProcessor 
             AbstractAnnotatedIterator<Annotation, IEntity> iterator = awaiting.getIterator();
 
             IIteratorResult<? extends IEntity> iteratorResult = iterator
-                    .iterate(className, annotationClass, deploymentContext);
+                    .iterate(className, annotationClass);
 
-            try {
-                IArtifact artifact = deploymentContext.getArtifact();
-                artifact.registerEntity(iteratorResult.getResult());
+            // trying to retrieve result
+            iteratorResult.getResult();
 
-                awaitingProcessing.remove(i - 1);
-            } catch (WaitingForDependencyException e) {
-                awaitingProcessing.add(awaiting);
-
-                log.debug(String
-                        .format("Can not unwrapDocumentDefinition required type: [%s] for: [%s], moving to queue ...", e
-                                .getAwaitingWrapping().getName(), className));
-            } catch (GeneralDOAException e) {
-                log.error("", e);
-            }
+            awaitingProcessing.remove(i - 1);
         }
 
         if (awaitingProcessing.size() > 0) {
-            iterateAwaiting(awaitingProcessing, pass + 1, deploymentContext);
+            iterateAwaiting(awaitingProcessing, pass + 1);
         }
     }
 
-    private <T extends Annotation> void iterateAnnotated(Class<T> annotationClass, AbstractAnnotatedIterator<T, ? extends IEntity> iterator, Map<String, Set<String>> index, DeploymentContext deploymentContext, List<AwaitingProcessing> awaitingProcessing) {
+    private <T extends Annotation> void iterateAnnotated(Class<T> annotationClass, AbstractAnnotatedIterator<T, ? extends IEntity> iterator, Map<String, Set<String>> index, List<AwaitingProcessing> awaitingProcessing) {
         Set<String> classes = index.get(annotationClass.getName());
         if (classes == null || classes.size() == 0) {
             return;
         }
         for (String className : classes) {
             IIteratorResult<? extends IEntity> iteratorResult = iterator
-                    .iterate(className, annotationClass, deploymentContext);
+                    .iterate(className, annotationClass);
             AwaitingProcessing awaiting = new AwaitingProcessing();
             awaiting.setAnnotation((Class<Annotation>) annotationClass);
             awaiting.setClassName(className);
             awaiting.setIterator((AbstractAnnotatedIterator<Annotation, IEntity>) iterator);
 
-            try {
-                IArtifact artifact = deploymentContext.getArtifact();
-                artifact.registerEntity(iteratorResult.getResult());
+            // trying to retrieve result
+            iteratorResult.getResult();
 
-                awaitingProcessing.remove(awaiting);
-            } catch (WaitingForDependencyException e) {
-                awaitingProcessing.add(awaiting);
-
-                log.debug(String
-                        .format("Can not unwrapDocumentDefinition required type: [%s] for: [%s], moving to queue ...", e
-                                .getAwaitingWrapping().getName(), className));
-            } catch (GeneralDOAException e) {
-                log.error("", e);
-            }
+            awaitingProcessing.remove(awaiting);
         }
     }
 

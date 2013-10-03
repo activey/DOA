@@ -42,12 +42,24 @@
 package pl.doa.artifact.tag;
 
 import pl.doa.GeneralDOAException;
+import pl.doa.IDOA;
 import pl.doa.agent.IAgent;
 import pl.doa.artifact.IArtifact;
 import pl.doa.artifact.deploy.IDeploymentProcessor;
+import pl.doa.channel.IChannel;
+import pl.doa.channel.IIncomingChannel;
+import pl.doa.channel.IOutgoingChannel;
 import pl.doa.container.IEntitiesContainer;
+import pl.doa.document.IDocumentDefinition;
+import pl.doa.document.alignment.IDocumentAligner;
 import pl.doa.entity.IEntity;
 import pl.doa.entity.IEntityReference;
+import pl.doa.entity.event.EntityEventType;
+import pl.doa.entity.event.IEntityEventListener;
+import pl.doa.entity.event.IEntityEventReceiver;
+import pl.doa.renderer.IRenderer;
+import pl.doa.resource.IStaticResource;
+import pl.doa.service.IServiceDefinition;
 import pl.doa.templates.tags.Tag;
 
 /**
@@ -81,6 +93,54 @@ public abstract class DeploymentProcessorSupportTag extends Tag {
         return processor.createAgent(name, getParentContainer());
     }
 
+    public IDOA createDOA(String name, String logicClass) throws GeneralDOAException {
+        return processor.createDOA(name, logicClass, getParentContainer());
+    }
+
+    public IRenderer createRenderer(String name, String logicClass, String mimetype) throws GeneralDOAException {
+        return processor.createRenderer(name, logicClass, mimetype, getParentContainer());
+    }
+
+    public IChannel createChannel(String name, String logicClass) throws GeneralDOAException {
+        return processor.createChannel(name, logicClass, getParentContainer());
+    }
+
+    public IIncomingChannel createIncomingChannel(String name, String logicClass) throws GeneralDOAException {
+        return processor.createIncomingChannel(name, logicClass, getParentContainer());
+    }
+
+    public IOutgoingChannel createOutgoingChannel(String name, String logicClass) throws GeneralDOAException {
+        return processor.createOutgoingChannel(name, logicClass, getParentContainer());
+    }
+
+    public IStaticResource createStaticResource(String name, String mimetype) throws GeneralDOAException {
+        return processor.createStaticResource(name, mimetype, getParentContainer());
+    }
+
+    public IDocumentDefinition createDocumentDefinition(String name) throws GeneralDOAException {
+        return processor.createDocumentDefinition(name, getParentContainer());
+    }
+
+    public IDocumentDefinition createDocumentDefinition(String name, IDocumentDefinition ancestor) throws GeneralDOAException {
+        return processor.createDocumentDefinition(name, getParentContainer(), ancestor);
+    }
+
+    public IServiceDefinition createServiceDefinition(String name, String logicClass) throws GeneralDOAException {
+        return processor.createServiceDefinition(name, logicClass, getParentContainer());
+    }
+
+    public IServiceDefinition createServiceDefinition(IServiceDefinition ancestor, String name) throws GeneralDOAException {
+        return processor.createServiceDefinition(ancestor, name, getParentContainer());
+    }
+
+    public IDocumentAligner createDocumentAligner(String name, IDocumentDefinition fromDefinition, IDocumentDefinition toDefinition) throws GeneralDOAException {
+        return processor.createDocumentAligner(name, fromDefinition, toDefinition, getParentContainer());
+    }
+
+    public IEntityEventListener createEntityEventListener(IEntity sourceEntity, IEntityEventReceiver receiver, EntityEventType eventType) throws GeneralDOAException {
+        return processor.createEntityEventListener(sourceEntity, receiver, eventType, getParentContainer());
+    }
+
     private IEntitiesContainer getParentContainer() {
         Tag parent = getParent();
         if (parent == null) {
@@ -90,6 +150,7 @@ public abstract class DeploymentProcessorSupportTag extends Tag {
             EntitiesContainerTag containerTag = (EntitiesContainerTag) parent;
             return containerTag.getContainer();
         } else if (parent instanceof FieldValueTag) {
+            throw new UnsupportedOperationException("Setting values in value tag not supported yet!");
             // TODO do it somehow ...
             //((FieldValueTag) parent).setValue(this.entity);
         } else if (parent instanceof DeployTag) {

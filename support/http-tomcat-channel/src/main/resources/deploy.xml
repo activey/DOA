@@ -21,8 +21,7 @@
 	API and implementation -->
 
 <deploy xmlns="http://doaplatform.org/deploy" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://doaplatform.org/deploy http://doaplatform.org/schema/deploy.xsd"
-        defaultContainer="/channels">
+        xsi:schemaLocation="http://doaplatform.org/deploy http://doaplatform.org/schema/deploy.xsd">
 
     <container name="http">
         <definition name="http_request_definition" var="http_request_definition">

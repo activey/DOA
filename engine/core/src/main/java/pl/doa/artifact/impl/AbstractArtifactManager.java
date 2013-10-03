@@ -42,7 +42,6 @@
 package pl.doa.artifact.impl;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.ivy.Ivy;
 import org.apache.ivy.core.event.EventManager;
 import org.apache.ivy.core.event.IvyEvent;
@@ -73,12 +72,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pl.doa.GeneralDOAException;
 import pl.doa.IDOA;
-import pl.doa.artifact.*;
+import pl.doa.artifact.DirectoryListener;
+import pl.doa.artifact.DirectoryMonitor;
+import pl.doa.artifact.EntryMatcher;
+import pl.doa.artifact.IArtifact;
 import pl.doa.artifact.IArtifact.Type;
+import pl.doa.artifact.deploy.IDeploymentProcessor;
 import pl.doa.artifact.deployment.IArtifactManager;
-import pl.doa.entity.*;
-import pl.doa.entity.startable.IStartableEntity;
-import pl.doa.jvm.DOAStreamHandler;
+import pl.doa.container.IEntitiesContainer;
+import pl.doa.entity.IEntity;
+import pl.doa.entity.IEntityEvaluator;
+import pl.doa.entity.ITransactionCallback;
 import pl.doa.jvm.DOAURLHandlerFactory;
 import pl.doa.utils.FileUtils;
 
@@ -92,6 +96,11 @@ import java.util.jar.JarFile;
 
 public abstract class AbstractArtifactManager extends DirectoryListener
         implements IArtifactManager, IvyListener {
+
+    private static final String ARTIFACT_PROCESSOR = "deploy.processor";
+    private static final String ARTIFACT_PROCESSOR_DEFAULT = "pl.doa.artifact.deploy.XMLDeploymentProcessor";
+    private static final String ARTIFACT_ROOT = "deploy.root";
+    private static final String ARTIFACT_ROOT_DEFAULT = "/";
 
     private final static Logger log = LoggerFactory
             .getLogger(AbstractArtifactManager.class);
@@ -113,10 +122,10 @@ public abstract class AbstractArtifactManager extends DirectoryListener
         }
         switch (artifact.getType()) {
             case XML:
-                undeployXmlArtifact(artifact.getName());
+                // TODO implement undeployment
                 break;
             case JAR:
-                undeployJarArtifact(artifact.getName());
+                // TODO implement undeployment
                 break;
             default:
                 throw new GeneralDOAException("Unknown artifact type.");
@@ -139,28 +148,8 @@ public abstract class AbstractArtifactManager extends DirectoryListener
                 } catch (IOException e) {
                     throw new GeneralDOAException(e);
                 }
-                // kolekcja obiektow do automatycznego uruchomienia
-                List<IStartableEntity> autostartEntities =
-                        new ArrayList<IStartableEntity>();
 
-                IArtifact artifact =
-                        deployJarArtifact(artifactFile, autostartEntities);
-
-                // uruchamianie wszystkich elementow, ktore sa oznaczone jako
-                // autostart
-                for (IStartableEntity startableEntity : autostartEntities) {
-                    try {
-                        log.debug(MessageFormat.format("starting up entity: {0}",
-                                startableEntity.getLocation()));
-                        startableEntity.startup();
-                        log.debug(MessageFormat.format(
-                                "entity under location {0} started up ...",
-                                startableEntity.getLocation()));
-                    } catch (Exception e) {
-                        log.error("", e);
-                    }
-                }
-                return artifact;
+                return deployJarArtifact(artifactFile);
             }
             default:
                 break;
@@ -175,8 +164,6 @@ public abstract class AbstractArtifactManager extends DirectoryListener
         return deployArtifact(artifactFileName, new ByteArrayInputStream(
                 artifactData), artifactType);
     }
-
-
 
     private JarEntry findJarEntry(File file, EntryMatcher entryMatcher)
             throws GeneralDOAException {
@@ -209,10 +196,8 @@ public abstract class AbstractArtifactManager extends DirectoryListener
         }
     }
 
-    private IArtifact deployJarArtifact(File artifactFile,
-                                        List<IStartableEntity> autostartEntities)
+    private IArtifact deployJarArtifact(File artifactFile)
             throws GeneralDOAException {
-        // szukanie deskryptora mavena
         JarEntry mavenDescriptorEntry =
                 findJarEntry(artifactFile, new EntryMatcher() {
 
@@ -228,50 +213,46 @@ public abstract class AbstractArtifactManager extends DirectoryListener
                 });
         if (mavenDescriptorEntry != null) {
             log.debug(MessageFormat
-                    .format("found maven artifact descriptor file: {0}, processing ...",
+                    .format("Found maven artifact descriptor file: {0}, processing ...",
                             mavenDescriptorEntry.getName()));
-        }
-        // zbior artefactow ktorych nie nalezy usunac przy redeploymencie
-        Set<String> keepArtifacts = new HashSet<String>();
-        // lista zaleznosci
-        List<IArtifact> dependendArtifacts = new ArrayList<IArtifact>();
-        ModuleDescriptor moduleDescriptor = null;
-        if (mavenDescriptorEntry != null) {
-
-            URL jarEntryURL =
-                    getJarEntryURL(artifactFile, mavenDescriptorEntry);
-            log.debug(MessageFormat.format("getting jar entry from url: {0}",
-                    jarEntryURL));
-
-            // parsowanie deskryptora maven
-            PomModuleDescriptorParser pomParser =
-                    PomModuleDescriptorParser.getInstance();
-            try {
-                initializeRepository(jarEntryURL);
-
-                moduleDescriptor =
-                        pomParser.parseDescriptor(ivy.getSettings(),
-                                jarEntryURL, false);
-
-            } catch (Exception e) {
-                throw new GeneralDOAException(e);
-            }
+        } else {
+            log.debug(MessageFormat
+                    .format("No maven artifact found for descriptor file: {0}, skipping ...",
+                            mavenDescriptorEntry.getName()));
+            return null;
         }
 
-        return deployIvyArtifact(moduleDescriptor, artifactFile,
-                new ArrayList<String>(), autostartEntities);
+        URL jarEntryURL =
+                getJarEntryURL(artifactFile, mavenDescriptorEntry);
+        log.debug(MessageFormat.format("Getting jar entry from url: {0}",
+                jarEntryURL));
+
+        // parsing maven descriptor
+        PomModuleDescriptorParser pomParser =
+                PomModuleDescriptorParser.getInstance();
+        try {
+            initializeRepository(jarEntryURL);
+
+            ModuleDescriptor moduleDescriptor =
+                    pomParser.parseDescriptor(ivy.getSettings(),
+                            jarEntryURL, false);
+            return deployIvyArtifact(moduleDescriptor, artifactFile,
+                    new ArrayList<String>());
+
+        } catch (Exception e) {
+            throw new GeneralDOAException(e);
+        }
     }
 
     private IArtifact deployIvyArtifact(ModuleDescriptor descriptor,
-                                        File artifactFile, List<IStartableEntity> autostartEntities)
+                                        File artifactFile)
             throws GeneralDOAException {
         return deployIvyArtifact(descriptor, artifactFile,
-                new ArrayList<String>(), autostartEntities);
+                new ArrayList<String>());
     }
 
     private IArtifact deployIvyArtifact(ModuleDescriptor moduleDescriptor,
-                                        File artifactFile, List<String> dependenciesToKeep,
-                                        List<IStartableEntity> autostartEntities)
+                                        File artifactFile, List<String> dependenciesToKeep)
             throws GeneralDOAException {
 
         List<IArtifact> dependencies = new ArrayList<IArtifact>();
@@ -391,8 +372,7 @@ public abstract class AbstractArtifactManager extends DirectoryListener
                         downloadRep.getName()));
 
                 IArtifact deployedDependency =
-                        deployIvyArtifact(descriptor, dependencyFile,
-                                autostartEntities);
+                        deployIvyArtifact(descriptor, dependencyFile);
                 if (deployedDependency != null) {
                     dependencies.add(deployedDependency);
                 }
@@ -428,16 +408,11 @@ public abstract class AbstractArtifactManager extends DirectoryListener
 
         IArtifact existingArtifact = lookupArtifact(groupId, artifactId, null);
         if (existingArtifact != null && version != null) {
-            if (existingArtifact.getVersion().compareTo(version) == 0) {
-                log.debug("Artifact has the same version as existing in repository. Redeployment cancelled!");
-                return existingArtifact;
-            }
-            undeployJarArtifact(existingArtifact.getArtifactFileName(),
-                    dependenciesToKeep);
+            // TODO implement undeployment
         }
         IArtifact newArtifact =
                 getDoa().createArtifact(
-                        ArtifactUtils.getArtifactName(moduleArtifact), Type.JAR);
+                        getArtifactName(moduleArtifact), Type.JAR);
         newArtifact.setDescription(artifactDescription);
         newArtifact.setArtifactFileName(artifactFile.getName());
         newArtifact.setArtifactId(artifactId);
@@ -454,34 +429,43 @@ public abstract class AbstractArtifactManager extends DirectoryListener
             throw new GeneralDOAException(e);
         }
 
-        // szukanie pliku deploy.core
-        JarFile jarFile;
+
         try {
-            jarFile = new JarFile(artifactFile);
+            JarFile jarFile = new JarFile(artifactFile);
+            JarEntry artifactDescriptor = jarFile.getJarEntry(getArtifactName(moduleArtifact));
+            if (artifactDescriptor != null) {
+                InputStream descriptorStream = jarFile.getInputStream(artifactDescriptor);
+                Properties artifactProperties = new Properties();
+                artifactProperties.load(descriptorStream);
+
+                // initializing deployment processor
+                IDeploymentProcessor processor = (IDeploymentProcessor) getDoa().instantiateObject(artifactProperties
+                        .getProperty(ARTIFACT_PROCESSOR, ARTIFACT_PROCESSOR_DEFAULT));
+                if (processor != null) {
+                    log.debug("Running deployment processor:" + processor.getClass());
+                    processor.setDoa(getDoa());
+                    processor.setArtifact(newArtifact);
+                    try {
+                        IEntitiesContainer deploymentRoot = (IEntitiesContainer) getDoa()
+                                .lookupEntityByLocation(artifactProperties
+                                        .getProperty(ARTIFACT_ROOT, ARTIFACT_ROOT_DEFAULT));
+
+                        processor.process(artifactFile, deploymentRoot);
+                    } catch (Exception e) {
+                        throw new GeneralDOAException(e);
+                    }
+                }
+            }
+            return newArtifact;
         } catch (IOException e) {
             throw new GeneralDOAException(e);
         }
-        JarEntry deployScriptEntry = jarFile.getJarEntry("deploy.core");
-        if (deployScriptEntry == null) {
-            deployScriptEntry = jarFile.getJarEntry("deploy.xml");
-        }
-        if (deployScriptEntry == null) {
-            log.warn("unable to find deploy.core, skipping ...");
-        } else {
-            try {
-                InputStream deployFile =
-                        jarFile.getInputStream(deployScriptEntry);
-                // uruchamianie skryptu z pliku "deploy.core"
-                ArtifactUtils.executeDeploymentScript(newArtifact,
-                        artifactFile, deployFile, autostartEntities);
-                deployFile.close();
-            } catch (Exception e) {
-                throw new GeneralDOAException(
-                        "error while processing deployment plan file ...", e);
-            }
-        }
-        return newArtifact;
+    }
 
+    private String getArtifactName(Artifact artifact) {
+        return MessageFormat.format("{0}.{1}", artifact
+                .getModuleRevisionId().getOrganisation(), artifact.getId()
+                .getArtifactId().getName());
     }
 
     private boolean isExcluded(DependencyDescriptor dependency) {
@@ -549,209 +533,6 @@ public abstract class AbstractArtifactManager extends DirectoryListener
                 });
     }
 
-    public void undeployXmlArtifact(String xmlFileName)
-            throws GeneralDOAException {
-        final String fileName = xmlFileName;
-        getDoa().doInTransaction(new ITransactionCallback() {
-
-            @Override
-            public Object performOperation() throws Exception {
-                IArtifact artifact =
-                        (IArtifact) getDoa().lookup(IDOA.ARTIFACTS_CONTAINER,
-                                new IEntityEvaluator() {
-                                    @Override
-                                    public boolean isReturnableEntity(
-                                            IEntity entity) {
-                                        if (entity.getName().equals(fileName)) {
-                                            return true;
-                                        }
-                                        return false;
-                                    }
-                                });
-                if (artifact == null) {
-                    throw new GeneralDOAException(
-                            "Artifact doesn't exist. Removing artifact object from repository.");
-                }
-                int changed = 1;
-                while (changed > 0) {
-                    changed = 0;
-                    for (IEntity entity : artifact.getRegisteredEntities()) {
-                        if (entity != null) {
-                            String autostartEntityName = null;
-                            if (entity instanceof IStartableEntity)
-                                autostartEntityName = entity.getName();
-                            if (entity.remove()) {
-                                // removing IStartableEntity reference from /autostart
-                                if (autostartEntityName != null) {
-                                    IEntityReference reference =
-                                            (IEntityReference) getDoa()
-                                                    .lookupEntityByLocation(
-                                                            IDOA.AUTOSTART_CONTAINER
-                                                                    + "/"
-                                                                    + autostartEntityName);
-                                    if (reference != null) {
-                                        reference.remove();
-                                    }
-                                }
-                                changed++;
-                            }
-                        }
-                    }
-                }
-                if (artifact.getRegisteredEntities() != null
-                        && artifact.getRegisteredEntities().size() > 0) {
-                    log.error("Could not remove all entities while undeploing. Entities not removed:\n");
-                    for (IEntity entity : artifact.getRegisteredEntities()) {
-                        if (entity != null) {
-                            log.debug("# " + entity.getName());
-                            artifact.unregisterEntity(entity);
-                        }
-                    }
-                }
-                for (IArtifact dependency : artifact.getDependencies()) {
-                    artifact.removeDependency(dependency);
-                    removeDependency(dependency);
-                }
-                if (artifact.getDependencies() != null
-                        && artifact.getDependencies().size() > 0) {
-                    throw new GeneralDOAException(
-                            "Could not disconnect from dependecies!");
-                }
-                boolean removed = artifact.remove();
-                if (!removed) {
-                    throw new GeneralDOAException(
-                            "Unable to undeploy artifact!");
-                }
-                return true;
-            }
-
-        });
-    }
-
-    public void undeployJarArtifact(String jarFile) throws GeneralDOAException {
-        undeployJarArtifact(jarFile, null);
-    }
-
-    public void undeployJarArtifact(final String jarFile,
-                                    final List<String> dependenciesToKeep) throws GeneralDOAException {
-        getDoa().doInTransaction(new ITransactionCallback() {
-
-                                     @Override
-                                     public Object performOperation() throws Exception {
-                                         IArtifact artifact =
-                                                 (IArtifact) getDoa().lookup(IDOA.ARTIFACTS_CONTAINER,
-                                                         new IEntityEvaluator() {
-
-                                                             @Override
-                                                             public boolean isReturnableEntity(
-                                                                     IEntity currentEntity) {
-                                                                 IArtifact artifact = null;
-                                                                 if (!(currentEntity instanceof IArtifact)) {
-                                                                     return false;
-                                                                 }
-                                                                 artifact = (IArtifact) currentEntity;
-                                                                 if (jarFile.equals(artifact
-                                                                         .getArtifactFileName())) {
-                                                                     return true;
-                                                                 }
-                                                                 return false;
-                                                             }
-
-                                                         });
-                                         if (artifact == null) {
-                                             log.error("Artifact doesn't exist. Undeployment unsuccessful");
-                                             return false;
-                                         }
-                                         log.debug("Started removing artifact: " + artifact.getName());
-                                         int changed = 1;
-                                         while (changed > 0) {
-                                             changed = 0;
-                                             for (IEntity entity : artifact.getRegisteredEntities()) {
-                                                 if (entity != null) {
-                                                     String autostartEntityName = null;
-                                                     if (entity instanceof IStartableEntity)
-                                                         autostartEntityName = entity.getName();
-                                                     if (entity.remove()) {
-                                                         // removing IStartableEntity reference from /autostart
-                                                         if (autostartEntityName != null) {
-                                                             IEntityReference reference =
-                                                                     (IEntityReference) getDoa()
-                                                                             .lookupEntityByLocation(
-                                                                                     IDOA.AUTOSTART_CONTAINER
-                                                                                             + "/"
-                                                                                             + autostartEntityName);
-                                                             if (reference != null) {
-                                                                 reference.remove();
-                                                             }
-                                                         }
-                                                         changed++;
-                                                     }
-                                                 }
-                                             }
-                                         }
-                                         if (artifact.getRegisteredEntities() != null
-                                                 && artifact.getRegisteredEntities().size() > 0) {
-                                             log.error("Could not remove all entities while undeploing. Entities not removed:\n");
-                                             for (IEntity entity : artifact.getRegisteredEntities()) {
-                                                 if (entity != null) {
-                                                     log.debug("# " + entity.getName());
-                                                     artifact.unregisterEntity(entity);
-                                                 }
-                                             }
-                                         }
-                                         for (IArtifact dependency : artifact.getDependencies()) {
-                                             if (dependenciesToKeep != null
-                                                     && dependenciesToKeep
-                                                     .contains(dependency.getName())) {
-                                                 continue;
-                                             }
-                                             artifact.removeDependency(dependency);
-                                             removeDependency(dependency);
-                                         }
-                                         if (artifact.getDependencies() != null
-                                                 && artifact.getDependencies().size() > 0) {
-                                             log.error("Could not disconnect from all dependecies!");
-                                             return false;
-                                         }
-                                         try {
-                                             unRegisterClassloaderArtifact(artifact);
-                                         } catch (Exception e) {
-                                             log.error("Could not unregister artifact.");
-                                             return false;
-                                         }
-                                         return artifact.remove();
-                                     }
-                                 }, new ITransactionErrorHandler() {
-
-                                     @Override
-                                     public void handleException(Exception exception) {
-
-                                     }
-                                 }
-        );
-    }
-
-    private void removeDependency(IArtifact dependency)
-            throws GeneralDOAException {
-        String info = "";
-        if (dependency.isParentDependent()) {
-            info =
-                    "Artifact "
-                            + dependency.getName()
-                            + " could not be removed other artifact is dependent on this";
-        } else {
-            try {
-                undeployJarArtifact(dependency.getArtifactFileName());
-
-            } catch (Exception ex) {
-                log.error("Artifact "
-                        + dependency.getName()
-                        + " could not be removed other artifact is dependent on this");
-            }
-        }
-
-    }
-
     private void registerClassloaderArtifact(IArtifact artifact)
             throws Exception {
         String artifactUrl =
@@ -763,16 +544,6 @@ public abstract class AbstractArtifactManager extends DirectoryListener
                 artifact.getVersion()));
         getDoa().addURL(new URL(artifactUrl));
 
-    }
-
-    private void unRegisterClassloaderArtifact(IArtifact artifact)
-            throws Exception {
-        URL base =
-                new URL("doa", "localhost", 0, "/", new DOAStreamHandler(
-                        getDoa()));
-        getDoa().removeURL(
-                new URL(base, artifact.getLocation(), new DOAStreamHandler(
-                        getDoa())));
     }
 
     private void initializeRepository(URL mavenPomUrl) throws Exception {
@@ -902,8 +673,7 @@ public abstract class AbstractArtifactManager extends DirectoryListener
     }
 
     @Override
-    public void directoryContentsChanged(File directory, File[] changedFiles,
-                                         int type) {
+    public void directoryContentsChanged(File directory, File[] changedFiles, int type) {
         for (final File file : changedFiles) {
             switch (type) {
                 case DirectoryListener.TYPE_ADD: {
@@ -928,45 +698,18 @@ public abstract class AbstractArtifactManager extends DirectoryListener
                         }
                     } else if ("jar".equals(fileExt)) {
                         try {
-                            // kolekcja obiektow do automatycznego uruchomienia
-                            final List<IStartableEntity> autostartEntities =
-                                    new ArrayList<IStartableEntity>();
-                            getDoa().doInTransaction(
-                                    new ITransactionCallback<Object>() {
+                            getDoa().doInTransaction(new ITransactionCallback<Object>() {
 
-                                        @Override
-                                        public Object performOperation()
-                                                throws Exception {
-                                            IArtifact deployedArtifact =
-                                                    deployJarArtifact(file,
-                                                            autostartEntities);
-                                            log.debug(MessageFormat
-                                                    .format("Deployment of artifact [{0}.{1}] complete!",
-                                                            deployedArtifact
-                                                                    .getGroupId(),
-                                                            deployedArtifact
-                                                                    .getArtifactId()));
-
-                                            return null;
-                                        }
-                                    });
-
-                            // uruchamianie wszystkich elementow, ktore sa oznaczone jako
-                            // autostart
-                            for (IStartableEntity startableEntity : autostartEntities) {
-                                try {
-                                    log.debug(MessageFormat.format(
-                                            "starting up entity: {0}",
-                                            startableEntity.getLocation()));
-                                    startableEntity.startup();
-                                    log.debug(MessageFormat
-                                            .format("entity under location {0} started up ...",
-                                                    startableEntity.getLocation()));
-                                } catch (Exception e) {
-                                    log.error("Deployment failed!", e);
+                                @Override
+                                public Object performOperation()
+                                        throws Exception {
+                                    IArtifact deployedArtifact = deployJarArtifact(file);
+                                    log.debug(MessageFormat.format("Deployment of artifact [{0}.{1}] complete!",
+                                            deployedArtifact.getGroupId(), deployedArtifact.getArtifactId()));
+                                    return null;
                                 }
-                            }
-                            // deployArtifact(file.getAbsolutePath(), null);
+                            });
+
                         } catch (Exception ex) {
                             log.error("", ex);
                             return;
@@ -975,29 +718,7 @@ public abstract class AbstractArtifactManager extends DirectoryListener
                     break;
                 }
                 case DirectoryListener.TYPE_REMOVE: {
-                    log.debug("undeploying artifact from file "
-                            + file.getAbsolutePath());
-                    String fileExt = FileUtils.getExtension(file);
-                    // Transaction tx = doa.beginTx();
-                    if ("core".equals(fileExt) || "xml".equals(fileExt)) {
-                        try {
-                            undeployXmlArtifact(file.getName());
-                        } catch (GeneralDOAException e) {
-                            log.debug("Undeployment failed!", e);
-                            return;
-                        }
-
-                    } else if ("jar".equals(fileExt)) {
-                        try {
-                            undeployJarArtifact(file.getName());
-                        } catch (GeneralDOAException e) {
-                            log.debug("Undeployment failed!", e);
-                            // tx.rollback();
-                            return;
-                        }
-                        log.debug("Undeployment complete!");
-                    }
-                    // tx.commit();
+                    // TODO implement undeployment
                     break;
                 }
                 default:
@@ -1042,16 +763,11 @@ public abstract class AbstractArtifactManager extends DirectoryListener
 
     private IArtifact deployXmlArtifact(String artifactFileName,
                                         InputStream fileStream) throws GeneralDOAException {
-        IArtifact artifact =
+        /*IArtifact artifact =
                 (IArtifact) getDoa().lookupEntityByLocation(
                         IDOA.ARTIFACTS_CONTAINER + "/" + artifactFileName);
         if (artifact != null) {
-            if (artifact.getArtifactFileStream().equals(fileStream)) {
-                throw new GeneralDOAException(
-                        "Artifact has the input stream as existing in repository. Redeployment cancelled!");
-            }
-            log.debug("Redeploying xml artifact");
-            undeployXmlArtifact(artifact.getArtifactFileName());
+            // TODO implement undeployment
         }
         ByteArrayOutputStream fileContentStream = new ByteArrayOutputStream();
         try {
@@ -1094,7 +810,8 @@ public abstract class AbstractArtifactManager extends DirectoryListener
             throw new GeneralDOAException(
                     "error while processing [{0}] file ...", artifactFileName);
         }
-        return artifact;
+        return artifact; */
+        return null;
     }
 
     public abstract IDOA getDoa();

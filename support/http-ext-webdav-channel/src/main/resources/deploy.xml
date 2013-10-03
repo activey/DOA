@@ -21,8 +21,7 @@
 	API and implementation -->
 
 <deploy xmlns="http://doaplatform.org/deploy" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://doaplatform.org/deploy http://doaplatform.org/schema/deploy.xsd"
-        defaultContainer="/channels/http/extensions">
+        xsi:schemaLocation="http://doaplatform.org/deploy http://doaplatform.org/schema/deploy.xsd">
 
     <container name="webdav">
         <definition name="webdav_filter" var="webdav_filter">

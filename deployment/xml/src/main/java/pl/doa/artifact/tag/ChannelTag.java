@@ -41,22 +41,19 @@
  *******************************************************************************/
 package pl.doa.artifact.tag;
 
-import java.text.MessageFormat;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import pl.doa.GeneralDOAException;
 import pl.doa.entity.IEntity;
 import pl.doa.entity.startable.IStartableEntity;
+
+import java.text.MessageFormat;
 
 public class ChannelTag extends EntityTag {
 
     private enum ChannelType {
         INCOMING, OUTGOING, TWOWAY
     }
-
-    ;
 
     private final static Logger log = LoggerFactory.getLogger(ChannelTag.class);
 
@@ -80,17 +77,17 @@ public class ChannelTag extends EntityTag {
         try {
             switch (type) {
                 case INCOMING: {
-                    channel = getDoa().createIncomingChannel(getName(), logicClass);
+                    channel = createIncomingChannel(getName(), logicClass);
                     break;
                 }
 
                 case OUTGOING: {
-                    channel = getDoa().createOutgoingChannel(getName(), logicClass);
+                    channel = createOutgoingChannel(getName(), logicClass);
                     break;
                 }
 
                 case TWOWAY: {
-                    channel = getDoa().createChannel(getName(), logicClass);
+                    channel = createChannel(getName(), logicClass);
                     break;
                 }
                 default:

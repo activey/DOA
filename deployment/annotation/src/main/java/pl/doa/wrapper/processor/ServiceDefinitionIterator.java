@@ -3,8 +3,7 @@ package pl.doa.wrapper.processor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pl.doa.GeneralDOAException;
-import pl.doa.IDOA;
-import pl.doa.artifact.deploy.DeploymentContext;
+import pl.doa.artifact.deploy.IDeploymentProcessor;
 import pl.doa.container.IEntitiesContainer;
 import pl.doa.document.IDocument;
 import pl.doa.document.IDocumentDefinition;
@@ -19,23 +18,22 @@ import java.lang.annotation.Annotation;
 public class ServiceDefinitionIterator extends AbstractAnnotatedIterator<ServiceDefinition, IServiceDefinition> {
 
     private final static Logger log = LoggerFactory.getLogger(ServiceDefinitionIterator.class);
-    private final DeploymentContext deploymentContext;
     private final IEntitiesContainer container;
+    private final IDeploymentProcessor processor;
 
-    public ServiceDefinitionIterator(DeploymentContext deploymentContext, IEntitiesContainer container) {
-        this.deploymentContext = deploymentContext;
+    public ServiceDefinitionIterator(IDeploymentProcessor processor, IEntitiesContainer container) {
+        this.processor = processor;
         this.container = container;
     }
 
     @Override
     public IIteratorResult<IServiceDefinition> iterateType(Class<?> wrapperType, ServiceDefinition annotation) throws GeneralDOAException {
-        IDOA doa = deploymentContext.getDoa();
         String name = annotation.name();
         if (name == null || name.trim().length() == 0) {
             name = wrapperType.getSimpleName();
         }
-        IServiceDefinition definition = doa.createServiceDefinition(name, wrapperType
-                .getName(), createClassContainer(doa, this.container, wrapperType));
+        IServiceDefinition definition = processor.createServiceDefinition(name, wrapperType
+                .getName(), createClassContainer(processor, this.container, wrapperType));
         definition.setAttribute("_wraps_to", wrapperType.getName());
 
         // setting service definition parameters

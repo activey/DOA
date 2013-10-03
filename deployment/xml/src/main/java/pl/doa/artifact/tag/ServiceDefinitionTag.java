@@ -43,7 +43,6 @@ package pl.doa.artifact.tag;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import pl.doa.GeneralDOAException;
 import pl.doa.document.IDocumentDefinition;
 import pl.doa.service.IServiceDefinition;
@@ -52,9 +51,7 @@ public class ServiceDefinitionTag extends EntityTag {
 
     private final static Logger log = LoggerFactory
             .getLogger(ServiceDefinitionTag.class);
-
     private String logicClass;
-
     private IDocumentDefinition inputDefinition;
 
     public String getLogicClass() {
@@ -75,12 +72,9 @@ public class ServiceDefinitionTag extends EntityTag {
                             "Logic class must be set for service [{0}]",
                             getName());
                 }
-                service =
-                        getDoa().createServiceDefinition(getName(), logicClass);
+                service = createServiceDefinition(getName(), logicClass);
             } else {
-                service =
-                        getDoa().createServiceDefinition(
-                                (IServiceDefinition) ancestor, getName());
+                service = createServiceDefinition((IServiceDefinition) ancestor, getName());
             }
             if (this.inputDefinition != null) {
                 service.setInputDefinition(this.inputDefinition);
@@ -91,6 +85,9 @@ public class ServiceDefinitionTag extends EntityTag {
         }
         return service;
     }
+
+
+
 
     public IDocumentDefinition getInputDefinition() {
         return inputDefinition;

@@ -42,12 +42,12 @@ public class EntityPage<T extends IEntity> extends BaseDOAPage<T> {
         this(new PageParameters().add("location", entity.getLocation()));
     }
 
-    public EntityPage(String documentLocation) {
-        this(new EntityLocationIterator(documentLocation, true));
+    public EntityPage(String entityLocation) {
+        this(new EntityLocationIterator(entityLocation, true));
     }
 
-    public EntityPage(PathIterator<String> documentPath) {
-        setEntity(documentPath);
+    public EntityPage(PathIterator<String> entitytPath) {
+        setEntity(entitytPath);
     }
 
     public EntityPage(IModel<T> model) {

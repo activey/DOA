@@ -55,6 +55,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import pl.doa.artifact.deployment.IArtifactManager;
 import pl.doa.entity.IEntityAttribute;
 import pl.doa.entity.startable.IStartableEntityManager;
+import pl.doa.impl.AbstractBootstrapDOA;
 import pl.doa.resource.IStaticResourceStorage;
 import pl.doa.service.IServicesManager;
 import pl.doa.thread.IThreadManager;

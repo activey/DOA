@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<deploy xmlns="http://doaplatform.org/deploy" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://doaplatform.org/deploy http://doaplatform.org/schema/deploy.xsd">
+
+    <!-- wicket extension container -->
+    <container name="wicket-test-data">
+        <container name="documents">
+            <definition name="first_definition">
+                <stringField name="firstName" />
+                <stringField name="lastName" />
+                <dateField name="birthDate" />
+            </definition>
+
+            <document name="first" definition="#/wicket-test-data/documents/first_definition" />
+        </container>
+
+
+        <document name="app-definition" definition="/channels/http/ext/wicket/wicketApplication">
+            <fieldValue name="applicationClassName">org.doa.examples.wicket.TestApplication</fieldValue>
+        </document>
+    </container>
+
+
+    <reference name="wicket-test" referencedEntity="#/wicket-test-data/app-definition"/>
+</deploy>

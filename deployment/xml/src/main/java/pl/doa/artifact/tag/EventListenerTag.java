@@ -79,15 +79,15 @@ public class EventListenerTag extends EntityTag {
         IEntityEventReceiver receiver = (IEntityEventReceiver) parentEntity;
         IEntityEventListener listener = null;
         try {
-            listener =
-                    getDoa().createEntityEventListener(sourceEntity, receiver,
-                            eventType);
+            listener = createEntityEventListener(sourceEntity, receiver, eventType);
         } catch (Exception e) {
             log.error("", e);
             return null;
         }
         return listener;
     }
+
+
 
     public IEntity getSourceEntity() {
         return sourceEntity;

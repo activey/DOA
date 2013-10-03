@@ -43,7 +43,6 @@ package pl.doa.artifact.tag;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import pl.doa.GeneralDOAException;
 import pl.doa.document.IDocumentDefinition;
 import pl.doa.document.field.DocumentFieldDataType;
@@ -71,10 +70,10 @@ public class DocumentDefinitionTag extends EntityTag {
         IDocumentDefinition documentDef = null;
         try {
             if (ancestor == null) {
-                documentDef = getDoa().createDocumentDefinition(getName());
+                documentDef = createDocumentDefinition(getName());
             } else {
                 documentDef =
-                        getDoa().createDocumentDefinition(getName(),
+                        createDocumentDefinition(getName(),
                                 (IDocumentDefinition) ancestor);
             }
         } catch (Exception e) {
@@ -83,4 +82,6 @@ public class DocumentDefinitionTag extends EntityTag {
         }
         return documentDef;
     }
+
+
 }

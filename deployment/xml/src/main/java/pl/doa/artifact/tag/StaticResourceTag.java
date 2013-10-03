@@ -41,17 +41,16 @@
  *******************************************************************************/
 package pl.doa.artifact.tag;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import pl.doa.GeneralDOAException;
+import pl.doa.resource.IStaticResource;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import pl.doa.GeneralDOAException;
-import pl.doa.resource.IStaticResource;
 
 public class StaticResourceTag extends EntityTag {
 
@@ -93,7 +92,7 @@ public class StaticResourceTag extends EntityTag {
     @Override
     public IStaticResource createEntity() throws GeneralDOAException {
         IStaticResource staticResource =
-                getDoa().createStaticResource(getName(), getMimetype());
+                createStaticResource(getName(), getMimetype());
         InputStream inputStream = null;
         // TODO - ustawic odpowiednia wartosc
         long contentSize = 0;

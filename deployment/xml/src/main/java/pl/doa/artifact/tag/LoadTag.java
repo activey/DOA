@@ -41,19 +41,9 @@
  *******************************************************************************/
 package pl.doa.artifact.tag;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.text.MessageFormat;
-import java.util.Enumeration;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
-
 import nu.xom.Nodes;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import pl.doa.GeneralDOAException;
 import pl.doa.IDOA;
 import pl.doa.container.IEntitiesContainer;
@@ -61,6 +51,14 @@ import pl.doa.entity.IEntity;
 import pl.doa.resource.IStaticResource;
 import pl.doa.templates.tags.Tag;
 import pl.doa.utils.ContentTypeUtils;
+
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.text.MessageFormat;
+import java.util.Enumeration;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 public class LoadTag extends DeploymentProcessorSupportTag {
 
@@ -95,8 +93,11 @@ public class LoadTag extends DeploymentProcessorSupportTag {
         }
         IEntitiesContainer destContainer = null;
         if (location != null) {
-            destContainer =
+            /*destContainer =
                     (IEntitiesContainer) getDoa().lookupEntityByLocation(location);
+            TODO implement it
+            */
+
         } else {
             Tag parent = getParent();
             if (parent == null || !(parent instanceof EntitiesContainerTag)) {
@@ -138,11 +139,11 @@ public class LoadTag extends DeploymentProcessorSupportTag {
                         destContainer.lookupEntityByLocation(entityLocation);
                 if (entity == null) {
                     if (jarEntry.isDirectory()) {
-                        entity = getDoa().createContainer(entityName);
+                        entity = createEntitiesContainer(entityName);
                     } else {
 
                         IStaticResource resource =
-                                getDoa().createStaticResource(
+                                createStaticResource(
                                         entityName,
                                         ContentTypeUtils
                                                 .findContentTypes(entityName));

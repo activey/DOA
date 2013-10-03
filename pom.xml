@@ -36,6 +36,8 @@
         <org.doa.environment.version>0.0.1</org.doa.environment.version>
         <org.doa.environment.standalone.version>0.0.1</org.doa.environment.standalone.version>
 
+        <org.doa.examples.version>0.0.1</org.doa.examples.version>
+
         <!-- EXTERNAL VERSIONING -->
 
         <commons-logging.commons-logging.version>1.1.3</commons-logging.commons-logging.version>
@@ -445,6 +447,7 @@
         <module>deployment</module>
         <module>environment</module>
         <module>integration-ui</module>
+        <module>examples</module>
     </modules>
 
 </project>

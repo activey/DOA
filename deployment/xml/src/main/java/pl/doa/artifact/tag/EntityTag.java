@@ -129,7 +129,7 @@ public abstract class EntityTag<T extends IEntity> extends DeploymentProcessorSu
 
 
 
-    protected void addStartable(IStartableEntity startableEntity) {
+    protected void addStartable(IStartableEntity startableEntity) throws GeneralDOAException {
         log.debug(MessageFormat.format("registering startable entity: {0}",
                 startableEntity.getLocation()));
         // dodawanie referencji do entity w /autostart

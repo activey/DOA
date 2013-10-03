@@ -39,7 +39,8 @@ public class DeployProcessorTag extends Tag {
                     deployTag.getDefaultContainer();
         }
         log.debug("Running deployment processor: " + processor.getClass().getName());
-        processor.process(container, context);
+
+        // TODO implement it somehow
     }
 
 

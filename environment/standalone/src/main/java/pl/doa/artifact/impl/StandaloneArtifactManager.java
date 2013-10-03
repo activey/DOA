@@ -45,66 +45,61 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import pl.doa.IDOA;
 
 public class StandaloneArtifactManager extends AbstractArtifactManager implements
-		InitializingBean {
+        InitializingBean {
 
-	private final static Logger log = LoggerFactory
-			.getLogger(StandaloneArtifactManager.class);
+    private final static Logger log = LoggerFactory
+            .getLogger(StandaloneArtifactManager.class);
+    @Autowired
+    private IDOA doa;
+    private String deployDirectory;
+    private long monitorInterval;
+    private String cacheDirectory;
 
-	@Autowired
-	private IDOA doa;
+    public StandaloneArtifactManager() {
+    }
 
-	private String deployDirectory;
+    public StandaloneArtifactManager(IDOA doa) {
+        this.doa = doa;
+    }
 
-	private long monitorInterval;
+    public IDOA getDoa() {
+        return doa;
+    }
 
-	private String cacheDirectory;
+    public void setDoa(IDOA doa) {
+        this.doa = doa;
+    }
 
-	public StandaloneArtifactManager() {
-	}
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        initializeRepository();
+    }
 
-	public StandaloneArtifactManager(IDOA doa) {
-		this.doa = doa;
-	}
+    public String getDeployDirectory() {
+        return deployDirectory;
+    }
 
-	public IDOA getDoa() {
-		return doa;
-	}
+    public void setDeployDirectory(String deployDirectory) {
+        this.deployDirectory = deployDirectory;
+    }
 
-	public void setDoa(IDOA doa) {
-		this.doa = doa;
-	}
+    public long getMonitorInterval() {
+        return monitorInterval;
+    }
 
-	@Override
-	public void afterPropertiesSet() throws Exception {
-		initializeRepository();
-	}
+    public void setMonitorInterval(long monitorInterval) {
+        this.monitorInterval = monitorInterval;
+    }
 
-	public String getDeployDirectory() {
-		return deployDirectory;
-	}
+    @Override
+    public String getCacheDirectory() {
+        return this.cacheDirectory;
+    }
 
-	public void setDeployDirectory(String deployDirectory) {
-		this.deployDirectory = deployDirectory;
-	}
-
-	public long getMonitorInterval() {
-		return monitorInterval;
-	}
-
-	public void setMonitorInterval(long monitorInterval) {
-		this.monitorInterval = monitorInterval;
-	}
-
-	@Override
-	public String getCacheDirectory() {
-		return this.cacheDirectory;
-	}
-
-	public void setCacheDirectory(String cacheDirectory) {
-		this.cacheDirectory = cacheDirectory;
-	}
+    public void setCacheDirectory(String cacheDirectory) {
+        this.cacheDirectory = cacheDirectory;
+    }
 }
