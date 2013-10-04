@@ -7,14 +7,14 @@
     <parent>
         <groupId>org</groupId>
         <artifactId>doa</artifactId>
-        <version>${org.doa.version}</version>
+        <version>0.0.1</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
     <groupId>org.doa.environment</groupId>
     <artifactId>standalone</artifactId>
     <packaging>jar</packaging>
-    <version>${org.doa.environment.standalone.version}</version>
+    <version>0.0.1</version>
     <name>DOA Environment - Standalone</name>
 
     <build>

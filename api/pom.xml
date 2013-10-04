@@ -6,7 +6,7 @@
     <parent>
         <groupId>org</groupId>
         <artifactId>doa</artifactId>
-        <version>${org.doa.version}</version>
+        <version>0.0.1</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -14,6 +14,6 @@
     <artifactId>api</artifactId>
     <packaging>jar</packaging>
     <name>DOA API</name>
-    <version>${org.doa.api.version}</version>
+    <version>0.0.1</version>
 
 </project>

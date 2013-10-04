@@ -8,13 +8,13 @@
         <groupId>org</groupId>
         <artifactId>doa</artifactId>
         <relativePath>../../pom.xml</relativePath>
-        <version>${org.doa.version}</version>
+        <version>0.0.1</version>
     </parent>
 
     <groupId>org.doa.deployment</groupId>
     <artifactId>base</artifactId>
     <name>DOA Deployment - base package</name>
-    <version>${org.doa.deployment.version}</version>
+    <version>0.0.1</version>
 
 
     <dependencies>

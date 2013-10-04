@@ -5,14 +5,14 @@
     <parent>
         <groupId>org</groupId>
         <artifactId>doa</artifactId>
-        <version>${org.doa.version}</version>
+        <version>0.0.1</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
     <groupId>org.doa.deployment</groupId>
     <artifactId>annotation</artifactId>
     <name>DOA Annotation-based deployment</name>
-    <version>${org.doa.deployment.annotation.version}</version>
+    <version>0.0.1</version>
 
     <dependencies>
 

@@ -4,14 +4,11 @@
 
     <groupId>org</groupId>
     <artifactId>doa</artifactId>
-    <version>${org.doa.version}</version>
+    <version>0.0.1</version>
     <packaging>pom</packaging>
     <name>DOA</name>
 
     <properties>
-        <!-- GENERAL VERSION -->
-        <org.doa.version>0.0.1</org.doa.version>
-
         <!-- INTERNAL VERSIONING -->
         <org.doa.api.version>0.0.1</org.doa.api.version>
         <org.doa.engine.version>0.0.1</org.doa.engine.version>
@@ -447,7 +444,6 @@
         <module>deployment</module>
         <module>environment</module>
         <module>integration-ui</module>
-        <module>examples</module>
     </modules>
 
 </project>

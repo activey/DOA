@@ -5,7 +5,7 @@
     <parent>
         <groupId>org</groupId>
         <artifactId>doa</artifactId>
-        <version>${org.doa.version}</version>
+        <version>0.0.1</version>
     </parent>
 
     <groupId>org.doa</groupId>
@@ -13,6 +13,7 @@
     <packaging>pom</packaging>
     <name>DOA Deployment</name>
     <description>This is where all methods of configuration reside.</description>
+    <version>0.0.1</version>
 
     <modules>
         <module>base</module>

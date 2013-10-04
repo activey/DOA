@@ -5,12 +5,12 @@
 	<parent>
 		<groupId>org</groupId>
 		<artifactId>doa</artifactId>
-		<version>${org.doa.version}</version>
+		<version>0.0.1</version>
 	</parent>
 	
 	<groupId>org.doa</groupId>
 	<artifactId>persistence</artifactId>
-	<version>${org.doa.persistence.version}</version>
+	<version>0.0.1</version>
 	<packaging>pom</packaging>
 	<name>DOA Persistence [parent]</name>
 	<description>This is where data storage is being handled.</description>

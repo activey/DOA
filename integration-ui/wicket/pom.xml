@@ -6,14 +6,14 @@
     <parent>
         <groupId>org</groupId>
         <artifactId>doa</artifactId>
-        <version>${org.doa.version}</version>
+        <version>0.0.1</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
     <groupId>org.doa.integration.ui</groupId>
     <artifactId>wicket</artifactId>
     <name>DOA Integration - UI - Apache Wicket</name>
-    <version>${org.doa.integration.ui.wicket.version}</version>
+    <version>0.0.1</version>
 
     <build>
         <plugins>

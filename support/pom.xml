@@ -5,13 +5,13 @@
     <parent>
         <groupId>org</groupId>
         <artifactId>doa</artifactId>
-        <version>${org.doa.version}</version>
+        <version>0.0.1</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
     <groupId>org.doa</groupId>
     <artifactId>support</artifactId>
-    <version>${org.doa.support.version}</version>
+    <version>0.0.1</version>
     <packaging>pom</packaging>
     <name>DOA Support</name>
     <description>This is where all supportive to the framework modules reside.</description>

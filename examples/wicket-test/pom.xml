@@ -16,6 +16,12 @@
                 <directory>src/main/resources</directory>
             </resource>
             <resource>
+                <directory>.</directory>
+                <includes>
+                    <include>pom.xml</include>
+                </includes>
+            </resource>
+            <resource>
                 <filtering>false</filtering>
                 <directory>src/main/java</directory>
                 <includes>
@@ -33,6 +39,7 @@
             <groupId>org.doa</groupId>
             <artifactId>api</artifactId>
             <version>0.0.1</version>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
@@ -41,13 +48,4 @@
             <version>0.0.1</version>
         </dependency>
     </dependencies>
-
-
-    <repositories>
-        <repository>
-            <id>project-repo</id>
-            <name>my project repo</name>
-            <url>file://${repo.local.basedir}</url>
-        </repository>
-    </repositories>
 </project>

@@ -6,14 +6,14 @@
     <parent>
         <groupId>org</groupId>
         <artifactId>doa</artifactId>
-        <version>${org.doa.version}</version>
+        <version>0.0.1</version>
         <relativePath>../../</relativePath>
     </parent>
 
     <groupId>org.doa.deployment</groupId>
     <artifactId>xml</artifactId>
     <packaging>jar</packaging>
-    <version>${org.doa.deployment.xml.version}</version>
+    <version>0.0.1</version>
     <name>DOA XML-based deployment</name>
     <url>http://doaplatform.org</url>
 

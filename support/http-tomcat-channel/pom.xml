@@ -5,13 +5,13 @@
     <parent>
         <groupId>org</groupId>
         <artifactId>doa</artifactId>
-        <version>${org.doa.version}</version>
+        <version>0.0.1</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
     <groupId>org.doa.support</groupId>
     <artifactId>channel-http</artifactId>
-    <version>${org.doa.support.http-tomcat-channel.version}</version>
+    <version>0.0.1</version>
     <name>DOA Channel - HTTP</name>
 
     <dependencies>
