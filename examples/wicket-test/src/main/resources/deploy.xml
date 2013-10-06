@@ -12,7 +12,9 @@
                     <dateField name="birthDate"/>
                 </definition>
 
-                <document name="first" definition="#first_definition"/>
+                <document name="first" definition="#first_definition">
+                    <fieldValue name="firstName">Ble ble ble</fieldValue>
+                </document>
             </container>
 
 

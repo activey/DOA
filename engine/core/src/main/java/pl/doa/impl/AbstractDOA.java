@@ -1130,16 +1130,25 @@ public abstract class AbstractDOA extends AbstractStartableEntity implements
     @Override
     public long storeOrUpdate(IStaticResource resource, InputStream dataStream)
             throws Exception {
+        if (doa != null) {
+            return doa.storeOrUpdate(resource, dataStream);
+        }
         return 0;
     }
 
     @Override
     public boolean removeFileStream(IStaticResource resource) throws Exception {
+        if (doa != null) {
+            return doa.removeFileStream(resource);
+        }
         return false;
     }
 
     @Override
     public InputStream retrieve(IStaticResource resource) throws Exception {
+        if (doa != null) {
+            return doa.retrieve(resource);
+        }
         return null;
     }
 }

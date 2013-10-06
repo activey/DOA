@@ -204,6 +204,5 @@ public class NeoDOA extends AbstractDOA implements INeoObject, Serializable {
     @Override
     public void executeThread(Runnable runnable) {
         log.error("Cannot execute this by NeoDOA, b/c it doesn't have thread manager");
-
     }
 }

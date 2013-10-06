@@ -221,6 +221,7 @@ public class HTTPChannelLogic extends AbstractIncomingChannelLogic implements
         context.setPath(contextPath);
         context.setDocBase(".");
         context.addLifecycleListener(new FixContextListener());
+        log.debug(String.format("Initializing context path: %s", contextPath));
 
         ContextConfig ctxCfg = new ContextConfig();
         ctxCfg.setDefaultWebXml(Constants.NoDefaultWebXml);

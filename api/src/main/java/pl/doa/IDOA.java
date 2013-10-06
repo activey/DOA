@@ -67,230 +67,227 @@ import java.util.List;
 
 public interface IDOA extends IEntitiesContainer, IStartableEntity {
 
-	public static String EVENTS_CONTAINER = "/events";
+    public static String EVENTS_CONTAINER = "/events";
+    public final String ARTIFACTS_CONTAINER = "/artifacts";
+    public final String AUTOSTART_CONTAINER = "/autostart";
 
-	public final String ARTIFACTS_CONTAINER = "/artifacts";
+    public IAgent createAgent(String name, IEntitiesContainer container)
+            throws GeneralDOAException;
 
-	public final String AUTOSTART_CONTAINER = "/autostart";
+    public IAgent createAgent(String name) throws GeneralDOAException;
 
-	public IAgent createAgent(String name, IEntitiesContainer container)
-			throws GeneralDOAException;
+    public IChannel createChannel(String name, String logicClass,
+                                  IEntitiesContainer container) throws GeneralDOAException;
 
-	public IAgent createAgent(String name) throws GeneralDOAException;
+    public IOutgoingChannel createOutgoingChannel(String name,
+                                                  String logicClass, IEntitiesContainer container)
+            throws GeneralDOAException;
 
-	public IChannel createChannel(String name, String logicClass,
-			IEntitiesContainer container) throws GeneralDOAException;
+    public IOutgoingChannel createOutgoingChannel(String name, String logicClass)
+            throws GeneralDOAException;
 
-	public IOutgoingChannel createOutgoingChannel(String name,
-			String logicClass, IEntitiesContainer container)
-			throws GeneralDOAException;
+    public IIncomingChannel createIncomingChannel(String name,
+                                                  String logicClass, IEntitiesContainer container)
+            throws GeneralDOAException;
 
-	public IOutgoingChannel createOutgoingChannel(String name, String logicClass)
-			throws GeneralDOAException;
+    public IIncomingChannel createIncomingChannel(String name, String logicClass)
+            throws GeneralDOAException;
 
-	public IIncomingChannel createIncomingChannel(String name,
-			String logicClass, IEntitiesContainer container)
-			throws GeneralDOAException;
+    public IChannel createChannel(String name, String logicClass)
+            throws GeneralDOAException;
 
-	public IIncomingChannel createIncomingChannel(String name, String logicClass)
-			throws GeneralDOAException;
+    public IEntitiesContainer createContainer(String name,
+                                              IEntitiesContainer container) throws GeneralDOAException;
 
-	public IChannel createChannel(String name, String logicClass)
-			throws GeneralDOAException;
+    public IEntitiesContainer createContainer(String name)
+            throws GeneralDOAException;
 
-	public IEntitiesContainer createContainer(String name,
-			IEntitiesContainer container) throws GeneralDOAException;
+    public IDocumentDefinition createDocumentDefinition(String name,
+                                                        IEntitiesContainer container) throws GeneralDOAException;
 
-	public IEntitiesContainer createContainer(String name)
-			throws GeneralDOAException;
+    public IDocumentDefinition createDocumentDefinition(String name)
+            throws GeneralDOAException;
 
-	public IDocumentDefinition createDocumentDefinition(String name,
-			IEntitiesContainer container) throws GeneralDOAException;
+    public IDocumentDefinition createDocumentDefinition(String name,
+                                                        IDocumentDefinition ancestor) throws GeneralDOAException;
 
-	public IDocumentDefinition createDocumentDefinition(String name)
-			throws GeneralDOAException;
+    public IDocumentDefinition createDocumentDefinition(String name,
+                                                        IEntitiesContainer container, IDocumentDefinition ancestor)
+            throws GeneralDOAException;
 
-	public IDocumentDefinition createDocumentDefinition(String name,
-			IDocumentDefinition ancestor) throws GeneralDOAException;
+    public IDocument createDocument(String name,
+                                    IDocumentDefinition definition, IEntitiesContainer container)
+            throws GeneralDOAException;
 
-	public IDocumentDefinition createDocumentDefinition(String name,
-			IEntitiesContainer container, IDocumentDefinition ancestor)
-			throws GeneralDOAException;
+    public IDocumentAligner createDocumentAligner(String name,
+                                                  IDocumentDefinition fromDefinition,
+                                                  IDocumentDefinition toDefinition, IEntitiesContainer container)
+            throws GeneralDOAException;
 
-	public IDocument createDocument(String name,
-			IDocumentDefinition definition, IEntitiesContainer container)
-			throws GeneralDOAException;
+    public IDocumentAligner createDocumentAligner(String name,
+                                                  IDocumentDefinition fromDefinition, IDocumentDefinition toDefinition)
+            throws GeneralDOAException;
 
-	public IDocumentAligner createDocumentAligner(String name,
-			IDocumentDefinition fromDefinition,
-			IDocumentDefinition toDefinition, IEntitiesContainer container)
-			throws GeneralDOAException;
+    public IDocument createDocument(IDocumentDefinition definition)
+            throws GeneralDOAException;
 
-	public IDocumentAligner createDocumentAligner(String name,
-			IDocumentDefinition fromDefinition, IDocumentDefinition toDefinition)
-			throws GeneralDOAException;
+    public IDocument createDocument(String name, IDocumentDefinition definition)
+            throws GeneralDOAException;
 
-	public IDocument createDocument(IDocumentDefinition definition)
-			throws GeneralDOAException;
+    public IRenderer createRenderer(String name, String logicClass,
+                                    String mimeType, IEntitiesContainer container)
+            throws GeneralDOAException;
 
-	public IDocument createDocument(String name, IDocumentDefinition definition)
-			throws GeneralDOAException;
+    public IRenderer createRenderer(String name, String logicClass,
+                                    String mimeType) throws GeneralDOAException;
 
-	public IRenderer createRenderer(String name, String logicClass,
-			String mimeType, IEntitiesContainer container)
-			throws GeneralDOAException;
+    public IStaticResource createStaticResource(String name, String mimeType,
+                                                IEntitiesContainer container) throws GeneralDOAException;
 
-	public IRenderer createRenderer(String name, String logicClass,
-			String mimeType) throws GeneralDOAException;
+    public IStaticResource createStaticResource(String mimeType,
+                                                IEntitiesContainer container) throws GeneralDOAException;
 
-	public IStaticResource createStaticResource(String name, String mimeType,
-			IEntitiesContainer container) throws GeneralDOAException;
+    public IStaticResource createStaticResource(String mimeType)
+            throws GeneralDOAException;
 
-	public IStaticResource createStaticResource(String mimeType,
-			IEntitiesContainer container) throws GeneralDOAException;
+    public IStaticResource createStaticResource(String name, String mimeType)
+            throws GeneralDOAException;
 
-	public IStaticResource createStaticResource(String mimeType)
-			throws GeneralDOAException;
+    public IServiceDefinition createServiceDefinition(String name,
+                                                      String logicClass, IEntitiesContainer container)
+            throws GeneralDOAException;
 
-	public IStaticResource createStaticResource(String name, String mimeType)
-			throws GeneralDOAException;
+    public IServiceDefinition createServiceDefinition(String name,
+                                                      String logicClass) throws GeneralDOAException;
 
-	public IServiceDefinition createServiceDefinition(String name,
-			String logicClass, IEntitiesContainer container)
-			throws GeneralDOAException;
+    public IServiceDefinition createServiceDefinition(
+            IEntitiesContainer container, IServiceDefinition ancestor,
+            String name) throws GeneralDOAException;
 
-	public IServiceDefinition createServiceDefinition(String name,
-			String logicClass) throws GeneralDOAException;
+    public IServiceDefinition createServiceDefinition(
+            IServiceDefinition ancestor, String name)
+            throws GeneralDOAException;
 
-	public IServiceDefinition createServiceDefinition(
-			IEntitiesContainer container, IServiceDefinition ancestor,
-			String name) throws GeneralDOAException;
+    public IArtifact createArtifact(String name, Type type)
+            throws GeneralDOAException;
 
-	public IServiceDefinition createServiceDefinition(
-			IServiceDefinition ancestor, String name)
-			throws GeneralDOAException;
+    public IRunningService createRunningService(
+            IServiceDefinition serviceDefinition) throws GeneralDOAException;
 
-	public IArtifact createArtifact(String name, Type type)
-			throws GeneralDOAException;
+    public IRunningService createRunningService(
+            IServiceDefinition serviceDefinition, IEntitiesContainer container)
+            throws GeneralDOAException;
 
-	public IRunningService createRunningService(
-			IServiceDefinition serviceDefinition) throws GeneralDOAException;
+    public IDOA createDOA(String name, String logicClass)
+            throws GeneralDOAException;
 
-	public IRunningService createRunningService(
-			IServiceDefinition serviceDefinition, IEntitiesContainer container)
-			throws GeneralDOAException;
+    public IDocument createExceptionDocument(String template, Object... params);
 
-	public IDOA createDOA(String name, String logicClass)
-			throws GeneralDOAException;
+    public IDocument createExceptionDocument(String message);
 
-	public IDocument createExceptionDocument(String template, Object... params);
+    public IDocument createExceptionDocument(Throwable throwable);
 
-	public IDocument createExceptionDocument(String message);
+    public IDocument createExceptionDocument(String message, Throwable throwable);
 
-	public IDocument createExceptionDocument(Throwable throwable);
+    public IEntityReference createReference(String referenceName, IEntity entity)
+            throws GeneralDOAException;
 
-	public IDocument createExceptionDocument(String message, Throwable throwable);
+    public IEntityEvent createEntityEvent(IEntity sourceEntity,
+                                          EntityEventType eventType);
 
-	public IEntityReference createReference(String referenceName, IEntity entity)
-			throws GeneralDOAException;
+    public IEntityEventListener createEntityEventListener(IEntity sourceEntity,
+                                                          IEntityEventReceiver eventReceiver, EntityEventType eventType);
 
-	public IEntityEvent createEntityEvent(IEntity sourceEntity,
-			EntityEventType eventType);
+    public void publishEvent(IEntityEventDescription eventDescription);
 
-	public IEntityEventListener createEntityEventListener(IEntity sourceEntity,
-			IEntityEventReceiver eventReceiver, EntityEventType eventType);
+    public Object instantiateObject(String className);
 
-	public void publishEvent(IEntityEventDescription eventDescription);
+    public Object instantiateObject(String className,
+                                    boolean separateClassLoader);
 
-	public Object instantiateObject(String className);
-	
-	public Object instantiateObject(String className,
-			boolean separateClassLoader);
-	
-	public Object instantiateObject(String className,
-			boolean separateClassLoader, boolean useContinuations);
+    public Object instantiateObject(String className,
+                                    boolean separateClassLoader, boolean useContinuations);
 
-	public Object instantiateObject(String className,
-			boolean separateClassLoader, IEntityEvaluator artifactEvaluator);
+    public Object instantiateObject(String className,
+                                    boolean separateClassLoader, IEntityEvaluator artifactEvaluator);
 
+    public void addURL(URL url);
 
-	public void addURL(URL url);
+    public void removeURL(URL url);
 
-	public void removeURL(URL url);
+    public <T extends IEntity> T store(T entity) throws GeneralDOAException;
 
-	public <T extends IEntity> T store(T entity) throws GeneralDOAException;
+    public <T extends IEntity> T store(String location, T entity)
+            throws GeneralDOAException;
 
-	public <T extends IEntity> T store(String location, T entity)
-			throws GeneralDOAException;
+    public <T extends IEntity> T store(String location, T entity,
+                                       boolean forceCreateTree, boolean overwrite)
+            throws GeneralDOAException;
 
-	public <T extends IEntity> T store(String location, T entity,
-			boolean forceCreateTree, boolean overwrite)
-			throws GeneralDOAException;
+    public IEntity lookupByUUID(long entityId);
 
-	public IEntity lookupByUUID(long entityId);
+    public <T> T doInTransaction(ITransactionCallback<T> callback);
 
-	public <T> T doInTransaction(ITransactionCallback<T> callback);
+    public <T> T doInTransaction(ITransactionCallback<T> iTransactionCallback,
+                                 ITransactionErrorHandler iTransactionErrorHandler);
 
-	public <T> T doInTransaction(ITransactionCallback<T> iTransactionCallback,
-			ITransactionErrorHandler iTransactionErrorHandler);
+    public IArtifact deployArtifact(String artifactFileName,
+                                    byte[] artifactData, IArtifact.Type artifactType)
+            throws GeneralDOAException;
 
-	public IArtifact deployArtifact(String artifactFileName,
-			byte[] artifactData, IArtifact.Type artifactType)
-			throws GeneralDOAException;
+    public IArtifact deployArtifact(String artifactFileName,
+                                    InputStream artifactData, IArtifact.Type artifactType)
+            throws GeneralDOAException;
 
-	public IArtifact deployArtifact(String artifactFileName,
-			InputStream artifactData, IArtifact.Type artifactType)
-			throws GeneralDOAException;
+    public Iterable<IArtifact> getArtifacts();
 
-	public Iterable<IArtifact> getArtifacts();
+    public Iterable<IArtifact> getArtifacts(IEntityEvaluator evaluator);
 
-	public Iterable<IArtifact> getArtifacts(IEntityEvaluator evaluator);
+    public void undeployArtifact(IArtifact artifact) throws GeneralDOAException;
 
-	public void undeployArtifact(IArtifact artifact) throws GeneralDOAException;
+    public IServiceDefinitionLogic getRunning(IRunningService runningService);
 
-	public IServiceDefinitionLogic getRunning(IRunningService runningService);
+    public IServiceDefinitionLogic getRunning(String runningServiceUUID);
 
-	public IServiceDefinitionLogic getRunning(String runningServiceUUID);
+    public IStartableEntityLogic startup(IStartableEntity startableEntity)
+            throws GeneralDOAException;
 
-	public IStartableEntityLogic startup(IStartableEntity startableEntity)
-			throws GeneralDOAException;
+    public void shutdown(IStartableEntity startableEntity)
+            throws GeneralDOAException;
 
-	public void shutdown(IStartableEntity startableEntity)
-			throws GeneralDOAException;
+    public IStartableEntityLogic getRunning(IStartableEntity startableEntity);
 
-	public IStartableEntityLogic getRunning(IStartableEntity startableEntity);
+    public boolean isRunning(IStartableEntity startableEntity);
 
-	public boolean isRunning(IStartableEntity startableEntity);
+    public IAgent getAgent();
 
-	public IAgent getAgent();
+    public IRunningService executeService(IServiceDefinition definition,
+                                          IDocument input, boolean asynchronous, IAgent runAs)
+            throws GeneralDOAException;
 
-	public IRunningService executeService(IServiceDefinition definition,
-			IDocument input, boolean asynchronous, IAgent runAs)
-			throws GeneralDOAException;
+    public IAgent profileAgent(IDocument incomingDocument,
+                               String startLookupLocation) throws GeneralDOAException;
 
-	public IAgent profileAgent(IDocument incomingDocument,
-			String startLookupLocation) throws GeneralDOAException;
+    public IAgent profileAgent(IDocument incomingDocument)
+            throws GeneralDOAException;
 
-	public IAgent profileAgent(IDocument incomingDocument)
-			throws GeneralDOAException;
+    public IEntity lookupForEntity(IEntityEvaluator evaluator,
+                                   boolean lookupDeep, IEntitiesContainer... lookupContainers);
 
-	public IEntity lookupForEntity(IEntityEvaluator evaluator,
-			boolean lookupDeep, IEntitiesContainer... lookupContainers);
+    public IEntity lookupEntityFromLocation(String fromLocation,
+                                            IEntityEvaluator evaluator, boolean lookupDeep,
+                                            IEntitiesContainer... lookupContainers);
 
-	public IEntity lookupEntityFromLocation(String fromLocation,
-			IEntityEvaluator evaluator, boolean lookupDeep,
-			IEntitiesContainer... lookupContainers);
+    public IDocumentAligner lookupAligner(IDocumentDefinition fromDefinition,
+                                          IDocumentDefinition toDefinition);
 
-	public IDocumentAligner lookupAligner(IDocumentDefinition fromDefinition,
-			IDocumentDefinition toDefinition);
+    public long storeOrUpdate(IStaticResource resource, InputStream dataStream)
+            throws Exception;
 
-	public long storeOrUpdate(IStaticResource resource, InputStream dataStream)
-			throws Exception;
+    public boolean removeFileStream(IStaticResource resource) throws Exception;
 
-	public boolean removeFileStream(IStaticResource resource) throws Exception;
+    public InputStream retrieve(IStaticResource resource) throws Exception;
 
-	public InputStream retrieve(IStaticResource resource) throws Exception;
-
-	public List<IEntityEventDescription> getAllEvents();
+    public List<IEntityEventDescription> getAllEvents();
 
 }
