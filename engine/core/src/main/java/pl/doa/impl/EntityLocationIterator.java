@@ -3,11 +3,16 @@
  */
 package pl.doa.impl;
 
+import java.io.Serializable;
+
 /**
  * @author activey
  */
-public class EntityLocationIterator extends AbstractPathIterator {
+public class EntityLocationIterator extends AbstractPathIterator implements Serializable {
 
+    public EntityLocationIterator() {
+
+    }
 
     public EntityLocationIterator(String path) {
         super(path);

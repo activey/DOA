@@ -250,8 +250,8 @@ public class HTTPChannelLogic extends AbstractIncomingChannelLogic implements
             if (isStartedUp()) {
                 log.debug("Shutting down HTTP server ...");
                 webServer.stop();
+                webServer.destroy();
                 log.debug("HTTP shutted down ...");
-                this.webServer = null;
                 this.startedUp = false;
             }
         }

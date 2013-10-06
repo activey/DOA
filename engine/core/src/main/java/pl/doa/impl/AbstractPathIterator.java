@@ -5,6 +5,7 @@ package pl.doa.impl;
 
 import pl.doa.utils.PathIterator;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -14,14 +15,18 @@ import java.util.StringTokenizer;
  * @author activey
  */
 public abstract class AbstractPathIterator implements Iterable<String>,
-        PathIterator<String> {
+        PathIterator<String>, Serializable {
 
-    private final boolean backwards;
+    private boolean backwards;
     private List<String> parts = new ArrayList<String>();
     private String originalLocation;
     private int originalDepth;
     private int currentDepth;
     private String currentLocationPart;
+
+    public AbstractPathIterator() {
+
+    }
 
     public AbstractPathIterator(String path) {
         this(path, false);
