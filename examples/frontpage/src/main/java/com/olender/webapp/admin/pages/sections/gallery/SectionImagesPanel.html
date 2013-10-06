@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:wicket="http://wicket.apache.org">
+	<body>
+		<wicket:panel>
+			<div class="row-fluid">
+				<form class="form-horizontal" wicket:id="form_link">
+					<fieldset>
+						<legend>Dodaj obraz do galerii</legend>
+
+						<div class="control-group">
+							<div wicket:id="placeholder_popup_big"></div>
+							<label class="control-label" for="gallery_image">
+								<wicket:message key="form_link.gallery_image">gallery_image
+								</wicket:message>
+							</label>
+							<div class="controls">
+								<div class="input-append">
+									<input type="text" class="input-xlarge" id="gallery_image"
+										wicket:id="gallery_image" readonly="true" />
+									<a href="#" class="btn" wicket:id="link_popup_show_big">
+										<i class="icon-search"></i>
+									</a>
+								</div>
+							</div>
+						</div>
+
+						<div class="control-group">
+							<div wicket:id="placeholder_popup_small"></div>
+							<label class="control-label" for="gallery_image_small">
+								<wicket:message key="form_link.gallery_thumbnail">gallery_thumbnail
+								</wicket:message>
+							</label>
+							<div class="controls">
+								<div class="input-append">
+									<input type="text" class="input-xlarge" id="gallery_image_small"
+										wicket:id="gallery_image_small" readonly="true" />
+									<a href="#" class="btn" wicket:id="link_popup_show_small">
+										<i class="icon-search"></i>
+									</a>
+								</div>
+								<p class="help-block">Gdy obraz miniatury nie zostanie wskazany, system
+									wygeneruje miniaturę automatycznie.</p>
+							</div>
+						</div>
+
+						<div class="control-group">
+							<label class="control-label" for="gallery_priority">
+								<wicket:message key="form_link.gallery_priority">gallery_priority
+								</wicket:message>
+							</label>
+							<div class="controls">
+								<input type="text" class="input-xlarge" id="gallery_priority"
+									wicket:id="gallery_priority" />
+							</div>
+						</div>
+
+						<div class="form-actions">
+							<a href="#" class="btn btn-primary" wicket:id="create_image_link">Dodaj obraz</a>
+						</div>
+					</fieldset>
+				</form>
+			</div>
+
+			<div class="row-fluid">
+				<legend>Obrazy w tej galerii</legend>
+				<ul class="thumbnails" wicket:id="container_images">
+					<li wicket:id="placeholder_image">
+						<div class="thumbnail" wicket:id="link_panel">
+
+						</div>
+					</li>
+				</ul>
+			</div>
+		</wicket:panel>
+	</body>
+</html>

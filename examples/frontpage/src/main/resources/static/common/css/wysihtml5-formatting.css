@@ -1,0 +1,15 @@
+div.wysiwyg-text-align-left {
+	text-align: left;
+}
+
+div.wysiwyg-text-align-center {
+	text-align: center;
+}
+
+div.wysiwyg-text-align-right {
+	text-align: right;
+}
+
+p.pad_bot1 {
+	padding-bottom: 0px;
+}

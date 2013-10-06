@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:wicket="http://wicket.apache.org">
+	<body>
+		<wicket:panel>
+			<legend>Podlinkowane sekcje</legend>
+			<div class="row-fluid" wicket:id="linked_sections_list">
+				<div class="span3 well" wicket:id="placeholder_section">
+					<span wicket:id="name">nazwa sekcji</span>
+					<a class="btn pull-right button" href="#" wicket:id="link_section_removelink">
+						<i class="icon-remove"></i>
+						Usuń link
+					</a>
+				</div>
+			</div>
+
+			<legend>Dostępne sekcje</legend>
+			<div class="row-fluid" wicket:id="sections_list">
+				<form wicket:id="sections_form" class="form-inline">
+					<div class="span3 well" wicket:id="placeholder_section">
+						<span wicket:id="name" class="pull-left">nazwa sekcji</span>
+
+						<div class="btn-group pull-right">
+							<a class="btn dropdown-toggle" wicket:id="link_section_addlink">
+								<i class="icon-ok"></i>
+								Powiąż jako link
+							</a>
+
+						</div>
+					</div>
+				</form>
+			</div>
+		</wicket:panel>
+	</body>
+</html>

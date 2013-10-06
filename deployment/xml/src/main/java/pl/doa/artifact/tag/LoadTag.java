@@ -46,12 +46,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pl.doa.GeneralDOAException;
 import pl.doa.IDOA;
+import pl.doa.artifact.deploy.DeploymentContext;
 import pl.doa.container.IEntitiesContainer;
 import pl.doa.entity.IEntity;
+import pl.doa.impl.EntityLocationIterator;
 import pl.doa.resource.IStaticResource;
-import pl.doa.templates.tags.Tag;
 import pl.doa.utils.ContentTypeUtils;
+import pl.doa.utils.PathIterator;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -63,11 +66,8 @@ import java.util.jar.JarFile;
 public class LoadTag extends DeploymentProcessorSupportTag {
 
     private final static Logger log = LoggerFactory.getLogger(LoadTag.class);
-
     private String directory;
-
     private String location;
-
     private IDOA doa;
 
     public String getDirectory() {
@@ -91,31 +91,13 @@ public class LoadTag extends DeploymentProcessorSupportTag {
         if (directory == null) {
             return;
         }
-        IEntitiesContainer destContainer = null;
-        if (location != null) {
-            /*destContainer =
-                    (IEntitiesContainer) getDoa().lookupEntityByLocation(location);
-            TODO implement it
-            */
 
-        } else {
-            Tag parent = getParent();
-            if (parent == null || !(parent instanceof EntitiesContainerTag)) {
-                return;
-            }
-            if (!(parent instanceof EntitiesContainerTag)) {
-                return;
-            }
-            EntitiesContainerTag containerTag = (EntitiesContainerTag) parent;
-            // kontener, do ktorego beda importowane pliki
-            destContainer = (IEntitiesContainer) containerTag.entity;
-        }
 
-        String artifactFileLocation =
-                (String) context.getVariable("artifactJarFile");
+        File artifactFile =
+                (File) context.getVariable(DeploymentContext.VAR_DEPLOYED);
         JarFile jarFile;
         try {
-            jarFile = new JarFile(artifactFileLocation);
+            jarFile = new JarFile(artifactFile);
         } catch (IOException e) {
             throw new GeneralDOAException(e);
         }
@@ -130,25 +112,29 @@ public class LoadTag extends DeploymentProcessorSupportTag {
                 if ("".equals(entityLocation)) {
                     continue;
                 }
-                String[] nameParts = entityLocation.split("/");
-                if (nameParts.length == 0) {
+
+                PathIterator<String> entityLocationPath = new EntityLocationIterator(entityLocation, true);
+                if (entityLocationPath.getLength() == 0) {
                     continue;
                 }
-                String entityName = nameParts[nameParts.length - 1];
+                String entityName = entityLocationPath.previous();
+
                 IEntity entity =
-                        destContainer.lookupEntityByLocation(entityLocation);
+                        getParentContainer().lookupEntityByLocation(entityLocation);
                 if (entity == null) {
+                    IEntitiesContainer parentContainer = (IEntitiesContainer) getParentContainer()
+                            .lookupEntityByLocation(entityLocationPath.getRemainingPath());
                     if (jarEntry.isDirectory()) {
-                        entity = createEntitiesContainer(entityName);
+                        entity = createEntitiesContainer(entityName, parentContainer);
                     } else {
 
                         IStaticResource resource =
                                 createStaticResource(
                                         entityName,
                                         ContentTypeUtils
-                                                .findContentTypes(entityName));
+                                                .findContentTypes(entityName), parentContainer);
                         URL entryUrl =
-                                getJarEntryURL(artifactFileLocation, jarEntry);
+                                getJarEntryURL(artifactFile, jarEntry);
                         try {
                             resource.setContentFromStream(
                                     entryUrl.openStream(), jarEntry.getSize());
@@ -161,10 +147,12 @@ public class LoadTag extends DeploymentProcessorSupportTag {
                             entityLocation.substring(0, entityLocation.length()
                                     - entityName.length() - 1);
                     if (destLocation == null || destLocation.length() == 0) {
-                        destContainer.addEntity(entity);
+                        getParentContainer().addEntity(entity);
                     } else {
+                        System.out.println("AAAAAAAAAAAAAAA");
+                        /*TODO think about it
                         entity.store(MessageFormat.format("{0}{1}",
-                                destContainer.getLocation(), destLocation));
+                                destContainer.getLocation(), destLocation));   */
                     }
                 }
                 continue;
@@ -177,11 +165,11 @@ public class LoadTag extends DeploymentProcessorSupportTag {
         return null;
     }
 
-    private URL getJarEntryURL(String jarFile, JarEntry jarEntry) {
+    private URL getJarEntryURL(File jarFile, JarEntry jarEntry) {
         String entryLocation = jarEntry.getName();
         try {
             String url =
-                    MessageFormat.format("jar:file:{0}!/{1}", jarFile,
+                    MessageFormat.format("jar:file:{0}!/{1}", jarFile.getAbsolutePath(),
                             entryLocation);
             return new URL(url);
         } catch (MalformedURLException e) {

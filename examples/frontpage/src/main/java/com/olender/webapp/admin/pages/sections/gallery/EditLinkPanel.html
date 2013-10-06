@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:wicket="http://wicket.apache.org">
+	<body>
+		<wicket:panel>
+			<form class="form-horizontal" wicket:id="form_link">
+				<fieldset>
+					<legend>Edytuj element galerii</legend>
+					<div class="control-group">
+						<label class="control-label" for="gallery_description">Opis obrazu</label>
+						<div class="controls">
+							<textarea class="input-xxlarge" id="gallery_description"
+								rows="3" wicket:id="description"></textarea>
+						</div>
+					</div>
+					<div class="control-group">
+						<div wicket:id="placeholder_popup"></div>
+						<label class="control-label" for="gallery_thumbnail">Wskaż miniaturę</label>
+						<div class="controls">
+							<div class="input-append">
+								<input type="text" class="input-xlarge" id="gallery_thumbnail" wicket:id="gallery_thumbnail"
+									readonly="true" />
+								<a href="#" class="btn" wicket:id="link_popup_show">
+									<i class="icon-search"></i>
+								</a>
+							</div>
+						</div>
+					</div>
+					<div class="control-group">
+						<div wicket:id="placeholder_popup_big"></div>
+						<label class="control-label" for="gallery_image">Wskaż obraz</label>
+						<div class="controls">
+							<div class="input-append">
+								<input type="text" class="input-xlarge" id="gallery_image" wicket:id="gallery_image"
+									readonly="true" />
+								<a href="#" class="btn" wicket:id="link_popup_show_big">
+									<i class="icon-search"></i>
+								</a>
+							</div>
+						</div>
+					</div>
+					<div class="control-group">
+						<label class="control-label" for="gallery_priority">
+							Priorytet
+							</label>
+						<div class="controls">
+							<input type="text" class="input-xlarge" id="gallery_priority"
+								wicket:id="gallery_priority" />
+						</div>
+					</div>
+
+					<div class="form-actions">
+						<a href="#" class="btn btn-primary" wicket:id="save_link">Zapisz</a>
+						<a href="#" class="btn" wicket:id="cancel_link">Anuluj</a>
+					</div>
+				</fieldset>
+			</form>
+		</wicket:panel>
+	</body>
+</html>

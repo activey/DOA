@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:wicket="http://wicket.apache.org">
+	<body>
+		<wicket:panel>
+			<div class="modal-body">
+				<div class="row-fluid">
+					<div class="span4" wicket:id="folders_container">
+						<legend>Foldery obrazów</legend>						
+						<div class="sidebar-nav">
+							<ul class="nav nav-list" wicket:id="panel_current_container">
+								<li class="nav-header">...</li>
+							</ul>
+						</div>
+					</div>
+					<div class="span8" wicket:id="images_container">
+						<legend>Obrazy dostępne w folderze</legend>
+						<ul class="thumbnails">
+							<li class="span3" wicket:id="placeholder_image">
+								<div class="thumbnail">
+									<img src="http://placehold.it/260x180" wicket:id="resource_thumbnail"></img>
+									<div class="caption">
+										<h5 wicket:id="resource_name">name</h5>
+										<p>
+											<a href="#" class="btn" wicket:id="link_select">Wybierz</a>
+										</p>
+									</div>
+								</div>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</wicket:panel>
+	</body>
+</html>

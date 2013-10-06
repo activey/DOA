@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:wicket="http://wicket.apache.org">
+	<body>
+		<wicket:panel>
+			<img src="http://placehold.it/260x180" wicket:id="resource_thumbnail"></img>
+			<div class="caption">
+				<h5 wicket:id="resource_name">name</h5>
+				<p>
+					<a href="#" class="btn" wicket:id="edit_link">Edytuj</a>
+					<a href="#" class="btn btn-danger" wicket:id="remove_link">Usuń</a>
+
+					<form class="pull-right" wicket:id="form_priority">
+						<div class="btn-group">
+							<a class="btn button" href="#" wicket:id="link_priority_up">
+								<i class="icon-arrow-up"></i>
+							</a>
+							<a class="btn button" href="#" wicket:id="link_priority_down">
+								<i class="icon-arrow-down"></i>
+							</a>
+						</div>
+					</form>
+					
+					<strong>Piorytet:</strong>
+					<span wicket:id="priority"></span>
+				</p>
+			</div>
+		</wicket:panel>
+	</body>
+</html>

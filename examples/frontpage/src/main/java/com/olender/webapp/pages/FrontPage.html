@@ -1,0 +1,130 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html lang="en" xmlns:wicket="http://wicket.apache.org">
+	<head>
+		<title></title>
+		<meta charset="utf-8">
+		</meta>
+		<link rel="stylesheet" href="main/css/reset.css" type="text/css"
+		media="all">
+		</link>
+		<link href='http://fonts.googleapis.com/css?family=Days+One'
+		rel='stylesheet' type='text/css'>
+		</link>
+		<link rel="stylesheet" href="main/css/jquery.fancybox-1.3.4.css"
+		type="text/css" media="screen">
+		</link>
+		<link rel="stylesheet" href="main/css/style.css" type="text/css"
+		media="all">
+		</link>
+		<link rel="stylesheet" href="common/resources/css/wysihtml5-formatting.css"
+		type="text/css" media="all">
+		</link>
+
+        <link rel="stylesheet" href="main/css/jquery.mCustomScrollbar.css"
+              type="text/css" media="all">
+        </link>
+
+
+	</head>
+
+	<body>
+		<div class="page_spinner">
+			<div></div>
+		</div>
+		<div class="bg">
+			<div wicket:id="placeholder_section_background"
+			class="section_background"></div>
+		</div>
+
+		<div class="center">
+			<div class="main">
+				<!--header -->
+				<header>
+					<h1><a href="#close" id="logo" wicket:id="logo">OLENDERPRESS Agencja
+					Kreatywna & Printing
+					house</a></h1>
+				</header>
+				<!--header end -->
+			</div>
+			<!--content -->
+			<article id="content">
+				<div class="main">
+					<nav class="menu">
+						<ul id="menu">
+							<li data-type="#img2" wicket:id="placeholder_section">
+								<span> <a href="#!/page_about" wicket:id="link_section">about</a> </span>
+								<ul class="submenu_1" wicket:enclosure="placeholder_subsection">
+									<li wicket:id="placeholder_subsection" data-type="#img2">
+										<span></span>
+										<a href="#!/page_wedding" wicket:id="link_subsection">2012</a>
+										<ul class="submenu_2" wicket:enclosure="placeholder_subsubsection">
+											<li wicket:id="placeholder_subsubsection">
+												<span></span>
+												<a href="#!/page_wedding" wicket:id="link_subsection">test</a>
+											</li>
+										</ul>
+									</li>
+								</ul>
+							</li>
+						</ul>
+					</nav>
+				</div>
+				<ul style="height: 100%;">
+					<li id="page_about" wicket:id="placeholder_section_body" class="section_spinner">
+						<div wicket:id="placeholder_section" style="display: none;">
+
+						</div>
+					</li>
+
+				</ul>
+			</article>
+			<!--content end -->
+			<div class="main">
+				<!--footer -->
+				<footer>
+					OLENDER PRESS - AGENCJA KREATYWNA &copy;
+					2012 | POWERED BY
+					<a href="http://www.doaplatform.org">DOA PLATFORM</a>
+					<br />
+					<ul id="icons">
+						<li wicket:enclosure="twitterUrl">
+							<a href="#" target="_blank" wicket:id="twitterUrl"> <img src="main/images/icon1.gif" alt=""></img> <img src="main/images/icon1_active.jpg" alt="" class="img_act"
+							style="opacity: 0; "></img> </a>
+						</li>
+						<li wicket:enclosure="facebookUrl">
+							<a href="#" target="_blank" wicket:id="facebookUrl"> <img src="main/images/icon2.gif" alt=""></img> <img src="main/images/icon2_active.jpg" alt="" class="img_act"
+							style="opacity: 0; "></img> </a>
+						</li>
+						<li wicket:enclosure="googlePlusUrl">
+							<a href="#" target="_blank" wicket:id="googlePlusUrl"> <img src="main/images/icon3.gif" alt=""></img> <img src="main/images/icon3_active.jpg" alt="" class="img_act"
+							style="opacity: 0; "></img> </a>
+						</li>
+					</ul>
+				</footer>
+				<!--footer end -->
+			</div>
+		</div>
+
+        <script type="text/javascript" src="main/js/jquery.waitforimages.min.js"></script>
+		<script type="text/javascript" src="main/js/script.js"></script>
+		<script type="text/javascript" src="main/js/content_switch.js"></script>
+		<script type="text/javascript" src="main/js/jquery.easing.1.3.js"></script>
+		<script type="text/javascript" src="main/js/superfish.js"></script>
+		<script type="text/javascript" src="main/js/jquery.color.js"></script>
+		<script type="text/javascript" src="main/js/jquery.fancybox-1.3.4.js"></script>
+		<script type="text/javascript" src="main/js/jquery-ui.js"></script>
+
+		<script type="text/javascript" src="main/js/jquery.mousewheel.min.js"></script>
+        <script type="text/javascript" src="main/js/jquery.mCustomScrollbar.min.js"></script>
+
+		<script>
+			$(window).load(function() {
+				$('.page_spinner').fadeOut();
+				$('body').css({
+					overflow : 'visible'
+				})
+			})
+		</script>
+		<!--coded by koma -->
+	</body>
+</html>

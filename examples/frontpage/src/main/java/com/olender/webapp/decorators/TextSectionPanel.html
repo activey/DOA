@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:wicket="http://wicket.apache.org">
+	<body>
+		<wicket:panel>
+			<div class="main">
+				<h2 class="pad_top2" style="opacity: 0.2; left: 0px; "></h2>
+				<div class="box">
+					<a href="#close" class="close">
+						<span></span>
+					</a>
+					<div class="relative">
+						<div class="scroll">
+							<figure class="left marg_right1" wicket:enclosure="section_image">
+								<img src="images/page1_img1.jpg" wicket:id="section_image"></img>
+							</figure>
+
+							<h4 wicket:id="section_name">about</h4>
+							<h5 wicket:id="section_header">Hello</h5>
+							<p wicket:id="section_description"></p>
+							<ul class="list1" wicket:enclosure="placeholder_section_link">
+								<li wicket:id="placeholder_section_link">
+									<a href="#!/page_more" wicket:id="section_link">Lorem ipsum dolor sit amet </a>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</wicket:panel>
+	</body>
+</html>

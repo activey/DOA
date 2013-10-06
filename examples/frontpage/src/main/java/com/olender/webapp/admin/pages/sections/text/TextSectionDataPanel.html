@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:wicket="http://wicket.apache.org">
+	<body>
+		<wicket:panel>
+			<form class="form-horizontal" wicket:id="form_section_details">
+				<fieldset>
+					<div class="control-group">
+						<label class="control-label" for="header">Nagłówek sekcji</label>
+						<div class="controls">
+							<input type="text" class="input-xlarge" id="header"
+								wicket:id="section_header"></input>
+						</div>
+					</div>
+					<div class="control-group">
+						<label class="control-label" for="description">Tekst sekcji</label>
+						<div class="controls">
+							<textarea class="input-xxlarge" rows="9"
+								wicket:id="section_description"></textarea>
+						</div>
+					</div>
+					<hr />
+					<div class="control-group">
+						<label class="control-label" for="section_image">Obraz sekcji</label>
+						<div class="controls">
+							<div class="input-append">
+								<div wicket:id="placeholder_popup"></div>
+								<input type="text" class="input-xlarge" id="section_image"
+									wicket:id="section_image" readonly="true" />
+								<a href="#" class="btn" wicket:id="link_popup_show">
+									<i class="icon-search"></i>
+								</a>
+							</div>
+						</div>
+					</div>
+					<div class="form-actions">
+						<a type="submit" class="btn btn-primary" wicket:id="call_service">Zapisz zmiany</a>
+					</div>
+				</fieldset>
+			</form>
+		</wicket:panel>
+	</body>
+</html>

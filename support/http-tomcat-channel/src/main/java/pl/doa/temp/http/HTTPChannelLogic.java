@@ -374,7 +374,7 @@ public class HTTPChannelLogic extends AbstractIncomingChannelLogic implements
                 return;
             }
         }
-        deployApplication(ref.getName(), document);
+        deployApplication(document.getName(), document);
     }
 
 }

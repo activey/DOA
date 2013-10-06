@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:wicket="http://wicket.apache.org">
+	<body>
+		<wicket:panel>
+			<div class="row-fluid">
+				<form class="form-horizontal" wicket:id="form_section_details">
+					<fieldset>
+						<div class="control-group">
+							<label class="control-label" for="description">Tekst sekcji</label>
+							<div class="controls">
+								<textarea class="input-xxlarge" rows="9"
+									wicket:id="section_description"></textarea>
+							</div>
+						</div>
+						<div class="form-actions">
+							<a type="submit" class="btn btn-primary" wicket:id="call_service">Zapisz
+								zmiany</a>
+						</div>
+					</fieldset>
+				</form>
+
+				<form class="form-horizontal" wicket:id="form_link">
+					<fieldset>
+						<legend>Dodaj klienta do listy</legend>
+						<div class="control-group">
+							<div wicket:id="placeholder_popup"></div>
+							<label class="control-label" for="customerLogo">
+								<wicket:message key="form_link.customerLogo">customerLogo
+								</wicket:message>
+							</label>
+							<div class="controls">
+								<div class="input-append">
+									<input type="text" class="input-xlarge" id="customerLogo"
+										wicket:id="customerLogo" readonly="true" />
+									<a href="#" class="btn" wicket:id="link_popup_show">
+										<i class="icon-search"></i>
+									</a>
+								</div>
+							</div>
+						</div>
+						<div class="control-group">
+							<label class="control-label" for="customerUrl">
+								<wicket:message key="form_link.customerUrl">customerUrl
+								</wicket:message>
+							</label>
+							<div class="controls">
+								<input type="text" class="input-xlarge" id="customerUrl"
+									wicket:id="customerUrl"></input>
+							</div>
+						</div>
+						<div class="form-actions">
+							<a href="#" class="btn btn-primary" wicket:id="create_image_link">Dodaj logo</a>
+						</div>
+					</fieldset>
+				</form>
+			</div>
+
+			<div class="row-fluid">
+				<legend>Klienci w tej sekcji</legend>
+				<ul class="thumbnails" wicket:id="container_images">
+					<li wicket:id="placeholder_image">
+						<div class="thumbnail" wicket:id="link_panel">
+
+						</div>
+					</li>
+				</ul>
+			</div>
+		</wicket:panel>
+	</body>
+</html>

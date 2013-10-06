@@ -1,0 +1,25 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.sourceforge.net/"
+	xml:lang="en" lang="en">
+	<body>
+		<wicket:panel>
+			<wicket:enclosure child="parent_container_entity">
+				<li wicket:id="parent_container_entity">
+					<a href="#" wicket:id="parent_container_link">
+						<i class="icon-folder-close"></i>
+						<span>..</span>
+					</a>
+				</li>
+			</wicket:enclosure>
+			<li wicket:id="container_entity">
+				<a class="inline" href="#" wicket:id="entity_link">
+					<i class="icon-folder-close"></i>
+					<span wicket:id="entity_name">entity_name</span>
+				</a>
+
+				<a href="#" class="btn-mini pull-right inline" wicket:id="container_remove">
+					<i class="icon-trash"></i>
+				</a>
+			</li>
+		</wicket:panel>
+	</body>
+</html>

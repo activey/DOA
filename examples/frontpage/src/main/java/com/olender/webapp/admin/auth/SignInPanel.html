@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<html xmlns:wicket="http://wicket.apache.org">
+	<body>
+		<wicket:panel>
+			<span wicket:id="feedback" />
+
+			<form class="form-horizontal" wicket:id="signInForm">
+				<fieldset>
+					<legend>Proszę się zalogować</legend>
+					<div class="control-group">
+						<label class="control-label" for="id_username">Nazwa użytkownika:</label>
+						<div class="controls">
+							<input type="text" autofocus="true" class="input-large" id="id_username" wicket:id="username" />
+						</div>
+					</div>
+					<div class="control-group">
+						<label class="control-label" for="id_password">Hasło:</label>
+						<div class="controls">
+							<input wicket:id="password" type="password" class="input-large"
+								id="id_password" />
+						</div>
+					</div>
+				</fieldset>
+
+				<div class="form-actions">
+					<input type="submit" name="submit" class="btn btn-primary"
+						value="Zaloguj" />
+					<input class="btn" type="reset" value="Resetuj formularz" />
+				</div>
+			</form>
+		</wicket:panel>
+	</body>
+</html>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:wicket="http://wicket.apache.org">
+	<body>
+		<wicket:panel>
+			<legend>Podsekcje</legend>
+			<div class="row-fluid" wicket:id="linked_sections_list">
+				<ul class="thumbnails">
+					<li class="span3" wicket:id="placeholder_subsection">
+						<div class="thumbnail">
+							<div class="caption">
+								<h3 wicket:id="name">Nazwa sekcji</h3>
+								<p>
+									Priorytet:
+									<span wicket:id="priority"></span>
+								</p>
+								<a class="btn button pull-right btn-danger" href="#"
+									wicket:id="link_subsection_removelink">
+									<i class="icon-remove"></i>
+									Usuń podsekcję
+								</a>
+								<form wicket:id="form_priority">
+									<div class="btn-group" style="position: initial !important;">
+										<a class="btn button" href="#" wicket:id="link_priority_up">
+											<i class="icon-arrow-up"></i>
+										</a>
+										<a class="btn button" href="#" wicket:id="link_priority_down">
+											<i class="icon-arrow-down"></i>
+										</a>
+									</div>
+								</form>
+							</div>
+						</div>
+					</li>
+				</ul>
+			</div>
+
+			<legend>Dostępne sekcje</legend>
+			<div class="row-fluid" wicket:id="sections_list">
+				<form wicket:id="sections_form" class="form-inline">
+					<div class="span3 well" wicket:id="placeholder_section">
+						<h5 wicket:id="name" class="pull-left">nazwa sekcji</h5>
+
+						<a class="btn pull-right" wicket:id="link_section_addsubsection">
+							<i class="icon-ok"></i>
+							Powiąż jako podsekcję
+						</a>
+					</div>
+				</form>
+			</div>
+		</wicket:panel>
+	</body>
+</html>

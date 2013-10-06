@@ -1,0 +1,45 @@
+a.button {
+	margin-left: 5px;
+}
+
+div.w_content_3 {
+	border: 0px !important;
+}
+
+h3.w_captionText {
+	font-size: 14px;
+	line-height: -1 !important;
+	margin-left: 15px !important;
+}
+
+div.w_caption {
+	padding-top: 5px;
+	padding-bottom: 15px;
+	border-bottom: 1px solid #EEE;
+}
+
+div.modal-body {
+	position: absolute;
+	width: 100%;
+	top: 5px;
+	bottom: 0px;
+	min-height: 110px;
+	margin-bottom: 0px;
+	padding: 0px !important;
+	max-height: 100% !important;
+}
+
+div.modal-footer {
+	position: absolute;
+	bottom: 0px;
+	width: 100%;
+	padding: 0px !important;
+}
+
+div.input-append {
+	font-size: 0px;
+}
+
+a.inline {
+  display: inline-block !important;
+}

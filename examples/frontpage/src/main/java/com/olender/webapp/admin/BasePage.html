@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:wicket="http://wicket.apache.org">
+	<head>
+		<meta charset="utf-8" />
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+			<title>Olender Press - Administrator</title>
+			<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+			<meta name="description" content="" />
+			<meta name="author" content="" />
+
+			<!-- Le styles -->
+			<link href="admin/css/bootstrap.css" rel="stylesheet" />
+			<link href="admin/css/frontpage_admin.css" rel="stylesheet" />
+			<style type="text/css">
+				body {
+				padding-top: 60px;
+				padding-bottom: 40px;
+				}
+				.sidebar-nav {
+				padding: 9px 0;
+				}
+   	 	</style>
+			<link href="admin/css/bootstrap-responsive.css" rel="stylesheet" />
+
+			<!-- Le fav and touch icons -->
+			<link rel="shortcut icon" href="ico/favicon.ico" />
+			<link rel="apple-touch-icon-precomposed" sizes="144x144"
+				href="ico/apple-touch-icon-144-precomposed.png" />
+			<link rel="apple-touch-icon-precomposed" sizes="114x114"
+				href="ico/apple-touch-icon-114-precomposed.png" />
+			<link rel="apple-touch-icon-precomposed" sizes="72x72"
+				href="ico/apple-touch-icon-72-precomposed.png" />
+			<link rel="apple-touch-icon-precomposed" href="ico/apple-touch-icon-57-precomposed.png" />
+	</head>
+
+	<body>
+
+		<div class="navbar navbar-fixed-top">
+			<div class="navbar-inner">
+				<div class="container-fluid">
+					<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</a>
+
+					<div class="btn-group pull-right">
+						<a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+							<i class="icon-user"></i>
+							<span wicket:id="agentFirstName" />
+							<span wicket:id="agentLastName" />
+							<span class="caret"></span>
+						</a>
+						<ul class="dropdown-menu">
+							<li>
+								<a href="#" wicket:id="logout_link">Wyloguj</a>
+							</li>
+						</ul>
+					</div>
+
+					<div class="nav-collapse collapse">
+						<ul class="nav">
+							<li wicket:id="container_link_main">
+								<a href="#" wicket:id="link_main_data">Dane podstawowe</a>
+							</li>
+							<li class="divider-vertical"></li>
+							<li wicket:id="container_link_sections">
+								<a href="#" wicket:id="link_sections_manage">Sekcje</a>
+							</li>
+							<li wicket:id="container_link_images">
+								<a href="#" wicket:id="link_images_manage">Obrazy</a>
+							</li>
+							<li wicket:id="container_link_backup">
+								<a href="#" wicket:id="link_backup">Import/Export</a>
+							</li>
+						</ul>
+						<ul class="nav pull-right">
+							<li>
+								<a href="#" wicket:id="link_main">Strona główna</a>
+							</li>
+						</ul>
+					</div>
+
+				</div>
+			</div>
+		</div>
+
+		<div wicket:id="errors_panel">
+			...
+		</div>
+
+		<div class="container-fluid">
+			<div class="row-fluid">
+
+				<wicket:child />
+
+			</div><!--/row -->
+
+			<hr />
+
+			<footer>
+				<p>&copy;
+					Olender Press 2012 | Powered by <a href="http://www.doaplatform.org">DOA Platform</a>
+				</p>
+			</footer>
+
+		</div><!--/.fluid-container -->
+
+		<!-- Le javascript ================================================== -->
+		<!-- Placed at the end of the document so the pages load faster -->
+		<script src="admin/js/bootstrap-transition.js"></script>
+		<script src="admin/js/bootstrap-dropdown.js"></script>
+		<script src="admin/js/bootstrap-collapse.js"></script>
+		<script src="admin/js/bootstrap-affix.js"></script>
+		<script src="admin/js/jquery.blockUI.js"></script>
+	</body>
+</html>
+

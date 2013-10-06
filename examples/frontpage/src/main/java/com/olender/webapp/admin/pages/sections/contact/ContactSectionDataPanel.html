@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:wicket="http://wicket.apache.org">
+	<body>
+		<wicket:panel>
+			<form class="form-horizontal" wicket:id="form_section_details">
+				<fieldset>
+					<legend>Adres</legend>
+					<div class="control-group">
+						<label class="control-label" for="header">Pierwsza linia</label>
+						<div class="controls">
+							<input type="text" class="input-xlarge" id="addr1"
+								wicket:id="addr1"></input>
+						</div>
+					</div>
+					<div class="control-group">
+						<label class="control-label" for="header">Druga linia</label>
+						<div class="controls">
+							<input type="text" class="input-xlarge" id="addr2"
+								wicket:id="addr2"></input>
+						</div>
+					</div>
+					<div class="control-group">
+						<label class="control-label" for="header">Trzecia linia</label>
+						<div class="controls">
+							<input type="text" class="input-xlarge" id="addr3"
+								wicket:id="addr3"></input>
+						</div>
+					</div>
+
+					<hr />
+					<div class="control-group">
+						<label class="control-label" for="header">Numer telefonu 1</label>
+						<div class="controls">
+							<input type="text" class="input-xlarge" id="phone1"
+								wicket:id="phone1"></input>
+						</div>
+					</div>
+					<div class="control-group">
+						<label class="control-label" for="header">Numer telefonu 2</label>
+						<div class="controls">
+							<input type="text" class="input-xlarge" id="phone2"
+								wicket:id="phone2"></input>
+						</div>
+					</div>
+					<div class="control-group">
+						<label class="control-label" for="header">Email</label>
+						<div class="controls">
+							<input type="text" class="input-xlarge" id="email"
+								wicket:id="email"></input>
+						</div>
+					</div>
+					<div class="form-actions">
+						<a class="btn btn-primary" wicket:id="call_service">Zapisz zmiany</a>
+					</div>
+				</fieldset>
+			</form>
+		</wicket:panel>
+	</body>
+</html>

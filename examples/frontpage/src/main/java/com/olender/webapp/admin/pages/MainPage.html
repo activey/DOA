@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:wicket="http://wicket.apache.org">
+	<body>
+		<wicket:extend>
+			<form class="form-horizontal" wicket:id="form">
+
+				<div class="row-fluid">
+					<legend>Logo strony</legend>
+					<div class="control-group">
+						<label class="control-label" for="logo">Obraz logo</label>
+						<div class="controls">
+							<div class="input-append">
+								<div wicket:id="placeholder_popup"></div>
+								<input type="text" class="input-xlarge" id="logo"
+									wicket:id="logo" readonly="true" />
+								<a href="#" class="btn" wicket:id="link_popup_show">
+									<i class="icon-search"></i>
+								</a>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="row-fluid">
+					<legend>Media społecznościowe</legend>
+					<div class="control-group">
+						<label class="control-label" for="twitterUrl">Adres strony w serwisie
+							Twitter</label>
+						<div class="controls">
+							<input type="text" class="input-xlarge" id="twitterUrl"
+								wicket:id="twitterUrl" />
+						</div>
+					</div>
+					<div class="control-group">
+						<label class="control-label" for="twitterUrl">Adres strony w serwisie
+							Facebook</label>
+						<div class="controls">
+							<input type="text" class="input-xlarge" id="facebookUrl"
+								wicket:id="facebookUrl" />
+						</div>
+					</div>
+					<div class="control-group">
+						<label class="control-label" for="googlePlusUrl">Adres strony w serwisie
+							Google Plus</label>
+						<div class="controls">
+							<input type="text" class="input-xlarge" id="googlePlusUrl"
+								wicket:id="googlePlusUrl" />
+						</div>
+					</div>
+				</div>
+
+				<div class="row-fluid">
+					<div class="span12">
+						<div class="form-actions">
+							<a class="btn btn-primary" wicket:id="call_service">Zapisz zmiany</a>
+						</div>
+					</div>
+				</div>
+			</form>
+		</wicket:extend>
+	</body>
+</html>

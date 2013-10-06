@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:wicket="http://wicket.apache.org">
+	<body>
+		<wicket:panel>
+			<div class="main">
+				<h2 class="pad_top2" style="opacity: 0.2; left: 0px; "></h2>
+
+				<div class="box">
+					<a href="#close" class="close">
+						<span></span>
+					</a>
+					<div class="relative">
+						<div class="google_map" wicket:id="map_holder">
+						</div>
+						<h4 wicket:id="section_name">about</h4>
+						<h5>OLENDER-PRESS</h5>
+						<p>
+							<span wicket:id="addr1"></span>
+							<br />
+							<span wicket:id="addr2"></span>
+							<br />
+							<span wicket:id="addr3"></span>
+						</p>
+						<p>
+							<span class="col1">Telefon1 </span>
+							<span wicket:id="phone1"></span>
+							<br />
+							<span class="col1">Telefon 2 </span>
+							<span wicket:id="phone2"></span>
+							<br />
+							E-mail:
+							<a href="mailto:" class="link2" wicket:id="email"></a>
+						</p>
+					</div>
+				</div>
+			</div>
+		</wicket:panel>
+	</body>
+</html>

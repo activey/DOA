@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:wicket="http://wicket.apache.org">
+	<body>
+		<wicket:extend>
+
+			<div class="row-fluid">
+				<form class="form-horizontal" wicket:id="form_section_create">
+					<fieldset>
+						<legend>
+							Utwórz nową sekcję							
+						</legend>
+
+						<div class="control-group">
+							<label class="control-label" for="section_name">
+								<wicket:message key="form_section_create.section_name">section_name
+								</wicket:message>
+							</label>
+							<div class="controls">
+								<input type="text" class="input-xlarge" id="section_name"
+									wicket:id="section_name"></input>
+								<p class="help-block">Nazwa sekcji ...</p>
+							</div>
+
+							<div class="btn-group pull-right">
+								<a class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+									Utwórz sekcję
+									<span class="caret"></span>
+								</a>
+								<ul class="dropdown-menu">
+									<li wicket:id="section_type">
+										<a href="#" wicket:id="link_section_create">Section type</a>
+									</li>
+								</ul>
+							</div>
+
+						</div>
+					</fieldset>
+				</form>
+			</div>
+
+			<legend>Zdefiniowane sekcje tekstowe</legend>
+			<div wicket:id="sections_text_list">
+			</div>
+
+			<legend>Zdefiniowane galerie</legend>
+			<div wicket:id="sections_gallery_list">
+			</div>
+
+			<legend>Zdefiniowane listy klientów</legend>
+			<div wicket:id="sections_customers_list">
+			</div>
+
+			<legend>Zdefiniowane strony kontaktów</legend>
+			<div wicket:id="sections_contact_list">
+			</div>
+		</wicket:extend>
+	</body>
+</html>

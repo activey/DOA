@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:wicket="http://wicket.apache.org">
+	<body>
+		<wicket:extend>
+
+			<div class="row-fluid">
+				<form class="form-horizontal" wicket:id="form_backup">
+					<fieldset>
+						<legend>Wczytaj archiwum</legend>
+						<div class="control-group">
+							<label class="control-label" for="imageFile">
+								Plik archium
+							</label>
+							<div class="controls">
+								<input class="input-file" id="backupFile" type="file"
+									wicket:id="backupFile"></input>
+								<p class="help-block">Gdy plik archiwum nie zostanie wskazany, zostanie
+									utworzone nowe archiwum bieżącej bazy danych.</p>
+							</div>
+						</div>
+						<div class="form-actions">
+							<a href="#" class="btn btn-primary" wicket:id="link_backup">Wczytaj/Utwórz archiwum</a>
+						</div>
+					</fieldset>
+				</form>
+			</div>
+
+
+
+			<div class="row-fluid">
+				<legend>Dostępne archiwa</legend>
+				<table class="table table-bordered" wicket:id="archive">
+					<thead>
+						<tr>
+							<th>#</th>
+							<th>Data utworzenia</th>
+							<th>Rozmiar (bajty)</th>
+							<th></th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr wicket:id="row_placeholder">
+							<td wicket:id="id">0</td>
+							<td wicket:id="date">11 wrzesnia 2012</td>
+							<td wicket:id="size">11 KB</td>
+							<td>
+								<form wicket:id="form_restore" class="pull-left">
+									<a class="btn button btn-primary" href="#" wicket:id="link_restore_archive">
+										<i class="icon-repeat"></i>
+										Odtwórz archiwum
+									</a>
+								</form>
+								<div class="btn-group pull-right">
+									<a class="btn button" href="#" wicket:id="link_download_archive">
+										<i class="icon-download-alt"></i>
+										Pobierz archiwum
+									</a>
+									<a class="btn button btn-danger" href="#" wicket:id="link_remove">
+										<i class="icon-trash"></i>
+										Usuń archiwum
+									</a>
+								</div>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</wicket:extend>
+	</body>
+</html>

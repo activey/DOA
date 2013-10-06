@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:wicket="http://wicket.apache.org">
+	<body>
+		<wicket:panel>
+			<form class="form-horizontal" wicket:id="form_link">
+				<fieldset>
+					<legend>Edytuj element galerii</legend>
+					<div class="control-group">
+						<label class="control-label" for="customerUrl">Link do strony firmowej</label>
+						<div class="controls">
+							<input type="text" class="input-xlarge" id=customerUrl
+								rows="3" wicket:id="customerUrl"></input>
+						</div>
+					</div>
+					<div class="control-group">
+						<div wicket:id="placeholder_popup"></div>
+						<label class="control-label" for="customerLogoEdit">Wskaż logo</label>
+						<div class="controls">
+							<div class="input-append">
+								<input type="text" class="input-xlarge" id="customerLogoEdit"
+									wicket:id="customerLogo" readonly="true" />
+								<a href="#" class="btn" wicket:id="link_popup_show">
+									<i class="icon-search"></i>
+								</a>
+							</div>
+						</div>
+					</div>
+					<div class="form-actions">
+						<a href="#" class="btn btn-primary" wicket:id="save_link">Zapisz</a>
+						<a href="#" class="btn" wicket:id="cancel_link">Anuluj</a>
+					</div>
+				</fieldset>
+			</form>
+		</wicket:panel>
+	</body>
+</html>

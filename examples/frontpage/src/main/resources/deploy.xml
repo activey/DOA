@@ -1,0 +1,418 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<deploy xmlns="http://doaplatform.org/deploy" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://doaplatform.org/deploy http://doaplatform.org/schema/deploy.xsd"
+        defaultContainer="/applications">
+
+    <!-- the main app container where app resides -->
+    <container name="olender-frontpage">
+
+        <definition name="dummyDefinition" var="dummyDefinition"/>
+        <document name="dummy" definition="#dummyDefinition"/>
+
+        <container name="definitions">
+            <definition name="void" var=""/>
+
+            <container name="authentication">
+                <definition name="login_input" var="login_input">
+                    <stringField name="login" authorizable="true" required="true"/>
+                    <passwordField name="password" authorizable="true"
+                                   required="true"/>
+                </definition>
+
+                <definition name="profile_definition">
+                    <stringField name="firstName"/>
+                    <stringField name="lastName"/>
+                </definition>
+            </container>
+
+            <container name="application">
+                <definition name="frontpage_definition" var="frontpage_definition"/>
+
+                <definition name="main_data_definition" var="main_data_definition">
+                    <referenceField name="logo"/>
+                    <stringField name="twitterUrl"/>
+                    <stringField name="facebookUrl"/>
+                    <stringField name="googlePlusUrl"/>
+                </definition>
+
+                <container name="admin">
+                    <definition name="create_section_input" var="create_section_input">
+                        <stringField name="section_name" required="true"/>
+                        <referenceField name="section_definition"/>
+                    </definition>
+
+                    <definition name="backup_input" var="backup_input">
+                        <referenceField name="backupFile"/>
+                    </definition>
+
+                    <definition name="restore_input" var="restore_input">
+                        <referenceField name="backupFile" required="true"/>
+                    </definition>
+
+                    <definition name="create_folder_input" var="create_folder_input">
+                        <stringField name="folder_name" required="true"/>
+                        <referenceField name="parent"/>
+                    </definition>
+
+                    <definition name="process_kml_data_input" var="process_kml_data_input">
+                        <referenceField name="section"/>
+                        <referenceField name="kmlFile"/>
+                    </definition>
+                </container>
+            </container>
+
+            <container name="sections">
+                <definition name="section_definition" var="section_definition">
+                    <stringField name="name"/>
+                    <stringField name="href"/>
+                    <booleanField name="front"/>
+                    <referenceField name="backgroundImage"/>
+                    <longField name="priority"/>
+                </definition>
+
+                <container name="application">
+                    <definition name="section_definition_text" var="section_definition_text"
+                                ancestor="#section_definition">
+                        <stringField name="header"/>
+                        <stringField name="description"/>
+                        <referenceField name="leftImage"/>
+
+                        <attr name="frontpage.label">Sekcja tekstowa</attr>
+                        <attr name="target.container">text</attr>
+                    </definition>
+
+                    <definition name="section_definition_gallery" var="section_definition_gallery"
+                                ancestor="#section_definition">
+                        <attr name="frontpage.label">Galeria obrazów</attr>
+                        <attr name="target.container">gallery</attr>
+                    </definition>
+
+                    <definition name="section_definition_customer" var="section_definition_customer"
+                                ancestor="#section_definition">
+                        <stringField name="description"/>
+                        <attr name="frontpage.label">Lista klientów</attr>
+                        <attr name="target.container">customers</attr>
+                    </definition>
+
+                    <definition name="section_definition_contact" var="section_definition_contact"
+                                ancestor="#section_definition">
+                        <stringField name="addr1"/>
+                        <stringField name="addr2"/>
+                        <stringField name="addr3"/>
+                        <stringField name="phone1"/>
+                        <stringField name="phone2"/>
+                        <stringField name="email"/>
+
+                        <stringField name="apiKey"/>
+                        <doubleField name="latitude"/>
+                        <doubleField name="longitude"/>
+                        <stringField name="description"/>
+
+                        <attr name="frontpage.label">Kontakt</attr>
+                        <attr name="target.container">contact</attr>
+                    </definition>
+                </container>
+            </container>
+
+            <container name="images">
+                <definition name="upload_image_input" var="upload_image_input">
+                    <referenceField name="imagesContainer"/>
+                    <listField name="images" dataType="reference"/>
+                </definition>
+
+                <definition name="upload_image_output" var="upload_image_output">
+                    <referenceField name="imageFile"/>
+                </definition>
+
+                <definition name="move_resources_input" var="move_resources_input">
+                    <referenceField name="resource"/>
+                    <referenceField name="container"/>
+                </definition>
+            </container>
+
+            <container name="links">
+                <definition name="entity_link_definition" var="entity_link_definition">
+                    <referenceField name="fromEntity"/>
+                    <listField name="toEntities" dataType="reference"/>
+                    <longField name="priority"/>
+                </definition>
+
+                <definition name="section_link_definition" var="section_link_definition"
+                            ancestor="#entity_link_definition">
+                    <stringField name="linkType"/>
+                </definition>
+
+                <definition name="image_link_definition" var="image_link_definition"
+                            ancestor="#entity_link_definition">
+                    <stringField name="description"/>
+                </definition>
+
+                <definition name="logo_link_definition" var="logo_link_definition"
+                            ancestor="#entity_link_definition">
+                    <stringField name="customerUrl"/>
+                </definition>
+            </container>
+
+            <definition name="priority_change_definition" var="priority_change_definition">
+                <referenceField name="section"/>
+                <longField name="delta"/>
+            </definition>
+        </container>
+
+        <container name="documents">
+            <container name="application">
+                <document name="frontpage" definition="#frontpage_definition"/>
+                <document name="main" definition="#main_data_definition"/>
+
+                <container name="sections">
+                    <container name="text">
+                        <document name="testSection" definition="#section_definition_text">
+                            <fieldValue name="name">
+                                Test
+                            </fieldValue>
+                            <fieldValue name="href">
+                                test
+                            </fieldValue>
+                            <fieldValue name="header">
+                                Test
+                            </fieldValue>
+                            <fieldValue name="description">
+                                Test
+                            </fieldValue>
+                            <fieldValue name="front">
+                                true
+                            </fieldValue>
+                            <fieldValue name="priority">
+                                1
+                            </fieldValue>
+                        </document>
+                    </container>
+
+                    <container name="gallery"/>
+
+                    <container name="customers"/>
+
+                    <container name="contact"/>
+                </container>
+
+                <container name="links">
+                    <container name="subsections"/>
+
+                    <container name="galleries"/>
+
+                    <container name="links"/>
+
+                    <container name="logos"/>
+                </container>
+            </container>
+        </container>
+
+        <container name="images">
+            <container name="application">
+                <container name="Thumbnails">
+                    <attr name="system" value="true"/>
+                </container>
+            </container>
+        </container>
+
+        <container name="services">
+            <container name="authentication">
+                <service name="login"
+                         logicClass="com.olender.backend.services.authentication.LoginService"
+                         inputDefinition="#login_input">
+                    <possibleOutput definition="/documents/system/exception"/>
+                    <possibleOutput definition="#void"/>
+                </service>
+            </container>
+            <container name="application">
+                <service name="section_create"
+                         logicClass="com.olender.backend.services.sections.CreateSectionService"
+                         inputDefinition="#create_section_input">
+
+                    <possibleOutput definition="/documents/system/exception"/>
+                    <possibleOutput definition="#section_definition_text"/>
+                </service>
+
+                <service name="section_update"
+                         logicClass="com.olender.backend.services.sections.UpdateSectionService"
+                         inputDefinition="#section_definition">
+
+                    <possibleOutput definition="/documents/system/exception"/>
+                    <possibleOutput definition="#section_definition"/>
+                </service>
+
+                <service name="section_remove"
+                         logicClass="com.olender.backend.services.sections.RemoveSectionService"
+                         inputDefinition="#section_definition">
+
+                    <possibleOutput definition="/documents/system/exception"/>
+                    <possibleOutput definition="#void"/>
+                </service>
+
+                <service name="section_text_update"
+                         logicClass="com.olender.backend.services.sections.text.UpdateTextSectionService"
+                         inputDefinition="#section_definition_text">
+
+                    <possibleOutput definition="/documents/system/exception"/>
+                    <possibleOutput definition="#section_definition_text"/>
+                </service>
+
+                <service name="section_contact_update"
+                         logicClass="com.olender.backend.services.sections.contact.UpdateContactSectionService"
+                         inputDefinition="#section_definition_contact">
+
+                    <possibleOutput definition="/documents/system/exception"/>
+                    <possibleOutput definition="#section_definition_contact"/>
+                </service>
+
+                <service name="section_customers_update"
+                         logicClass="com.olender.backend.services.sections.customers.UpdateCustomersSectionService"
+                         inputDefinition="#section_definition_customer">
+
+                    <possibleOutput definition="/documents/system/exception"/>
+                    <possibleOutput definition="#section_definition_customer"/>
+                </service>
+
+                <service name="section_link"
+                         logicClass="com.olender.backend.services.sections.text.LinkSectionService"
+                         inputDefinition="#section_link_definition">
+
+                    <possibleOutput definition="/documents/system/exception"/>
+                    <possibleOutput definition="#section_link_definition"/>
+                </service>
+
+                <service name="image_upload"
+                         logicClass="com.olender.backend.services.images.ImageUploadService"
+                         inputDefinition="#upload_image_input">
+
+                    <possibleOutput definition="/documents/system/exception"/>
+                    <possibleOutput definition="#upload_image_output"/>
+                    <possibleOutput definition="#void"/>
+                </service>
+
+                <service name="image_link"
+                         logicClass="com.olender.backend.services.sections.gallery.LinkImageService"
+                         inputDefinition="#image_link_definition">
+
+                    <possibleOutput definition="/documents/system/exception"/>
+                    <possibleOutput definition="#image_link_definition"/>
+                </service>
+
+                <service name="update_image_link"
+                         logicClass="com.olender.backend.services.sections.gallery.UpdateLinkImageService"
+                         inputDefinition="#image_link_definition">
+
+                    <possibleOutput definition="/documents/system/exception"/>
+                    <possibleOutput definition="#image_link_definition"/>
+                </service>
+
+                <service name="customer_logo_link"
+                         logicClass="com.olender.backend.services.sections.customers.LinkLogoService"
+                         inputDefinition="#logo_link_definition">
+
+                    <possibleOutput definition="/documents/system/exception"/>
+                    <possibleOutput definition="#logo_link_definition"/>
+                </service>
+
+                <service name="update_customer_logo_link"
+                         logicClass="com.olender.backend.services.sections.customers.UpdateLinkLogoService"
+                         inputDefinition="#logo_link_definition">
+
+                    <possibleOutput definition="/documents/system/exception"/>
+                    <possibleOutput definition="#logo_link_definition"/>
+                </service>
+
+                <service name="priority_change"
+                         logicClass="com.olender.backend.services.sections.PriorityChangeService"
+                         inputDefinition="#priority_change_definition">
+                    <possibleOutput definition="/documents/system/exception"/>
+                    <possibleOutput definition="#section_definition"/>
+                </service>
+
+                <service name="backup"
+                         logicClass="com.olender.backend.services.backup.BackupService"
+                         inputDefinition="#backup_input">
+                    <possibleOutput definition="/documents/system/exception"/>
+                    <possibleOutput definition="#void"/>
+                </service>
+
+                <service name="restore"
+                         logicClass="com.olender.backend.services.backup.RestoreService"
+                         inputDefinition="#restore_input">
+                    <possibleOutput definition="/documents/system/exception"/>
+                    <possibleOutput definition="#void"/>
+                </service>
+
+                <service name="create_folder"
+                         logicClass="com.olender.backend.services.images.CreateFolderService"
+                         inputDefinition="#create_folder_input">
+                    <possibleOutput definition="/documents/system/exception"/>
+                    <possibleOutput definition="#void"/>
+                </service>
+
+                <service name="main_data_update"
+                         logicClass="com.olender.backend.services.main.UpdateMainDataService"
+                         inputDefinition="#main_data_definition">
+                    <possibleOutput definition="/documents/system/exception"/>
+                    <possibleOutput definition="#main_data_definition"/>
+                </service>
+
+                <service name="process_kml_data"
+                         logicClass="com.olender.backend.services.sections.contact.ProcessKmlDataService"
+                         inputDefinition="#process_kml_data_input">
+                    <possibleOutput definition="/documents/system/exception"/>
+                    <possibleOutput definition="#section_definition_contact"/>
+                    <possibleOutput definition="#void"/>
+                </service>
+
+                <service name="move_resource" inputDefinition="#move_resources_input"
+                         logicClass="com.olender.backend.services.images.MoveResourceService">
+                    <possibleOutput definition="/documents/system/exception"/>
+                    <possibleOutput definition="#void"/>
+                </service>
+            </container>
+        </container>
+
+        <container name="filters">
+            <document name="ext1_webdav" definition="/channels/http/extensions/webdav/webdav_filter">
+                <fieldValue name="filterMapping" value="/webdav/*"/>
+            </document>
+
+            <document name="ext2_wicket" definition="/channels/http/http_filter_definition">
+                <fieldValue name="filterClass">
+                    pl.doa.wicket.filter.WicketFilter
+                </fieldValue>
+                <fieldValue name="filterMapping" value="/*"/>
+                <fieldValue name="initParams">
+                    <fieldValue name="applicationClassName" dataType="string">
+                        com.olender.webapp.FrontpageApplication
+                    </fieldValue>
+                </fieldValue>
+            </document>
+        </container>
+
+        <container name="backup"/>
+
+        <container name="admin">
+            <load directory="static/admin"/>
+        </container>
+
+        <container name="common">
+            <load directory="static/common"/>
+        </container>
+
+        <container name="main">
+            <load directory="static/main"/>
+        </container>
+
+        <document name="olender" var="olender_application_document"
+                  definition="/channels/http/application_context_definition">
+            <fieldValue name="applicationName" value="Olender Press"/>
+        </document>
+
+    </container>
+
+    <reference name="olender" location="/channels/http/applications"
+               referencedEntity="#olender_application_document"/>
+</deploy>

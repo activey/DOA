@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:wicket="http://wicket.apache.org">
+	<body>
+		<wicket:panel>
+			<form class="form-horizontal" wicket:id="gis_data_form">
+				<fieldset>
+					<legend>Dane geograficzne</legend>
+					<div class="control-group">
+						<label class="control-label" for="apiKey">Klucz API</label>
+						<div class="controls">
+							<input type="text" class="input-xlarge" id="apiKey"
+								wicket:id="apiKey"></input>
+							<p class="help-block">Klucz API programisty w serwisie Google Maps.</p>
+						</div>
+					</div>
+					<div class="control-group">
+						<label class="control-label" for="header">Długość geograficzna</label>
+						<div class="controls">
+							<input type="text" class="input-xlarge" id="longitude"
+								wicket:id="longitude"></input>
+						</div>
+					</div>
+					<div class="control-group">
+						<label class="control-label" for="header">Szerokość geograficzna</label>
+						<div class="controls">
+							<input type="text" class="input-xlarge" id="latitude"
+								wicket:id="latitude"></input>
+						</div>
+					</div>
+					<div class="control-group">
+						<label class="control-label" for="header">Opis</label>
+						<div class="controls">
+							<textarea class="input-xxlarge" id="description" rows="6"
+								wicket:id="description"></textarea>
+						</div>
+					</div>
+					<div class="form-actions">
+						<a class="btn btn-primary" wicket:id="call_service">Zapisz zmiany</a>
+					</div>
+				</fieldset>
+			</form>
+			<form class="form-horizontal" wicket:id="kml_data_form">
+				<fieldset>
+					<legend>Import pliku KML</legend>
+					<div class="control-group">
+						<label class="control-label" for="kmlFile">Plik KML</label>
+						<div class="controls">
+							<input class="input-file" id="kmlFile" type="file"
+								wicket:id="kmlFile"></input>
+						</div>
+					</div>
+					<div class="form-actions">
+						<a class="btn btn-primary" wicket:id="process_kml">Wczytaj plik</a>
+					</div>
+				</fieldset>
+			</form>
+		</wicket:panel>
+	</body>
+</html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:wicket="http://wicket.apache.org">
+	<body>
+		<wicket:extend>
+			<div class="row-fluid">
+				<div class="span4">
+					<div class="sidebar-nav">
+						<legend>
+							Foldery obrazów
+							<a href="#" class="pull-right btn btn-mini" wicket:id="link_folder_create">
+								<i class="icon-plus"></i>
+								Utwórz folder
+							</a>
+						</legend>
+						<div wicket:id="window"></div>
+
+						<ul class="nav nav-list containers-list" wicket:id="panel_current_container">
+							<li class="nav-header">...</li>
+						</ul>
+					</div>
+				</div>
+
+				<div class="span8">
+					<div class="well-small">
+						<form class="form-horizontal" wicket:id="form_upload">
+							<fieldset>
+								<legend>Prześlij obraz</legend>
+								<div class="control-group">
+									<label class="control-label" for="images">
+										<wicket:message key="form_upload.imageFile">imageFile
+								</wicket:message>
+									</label>
+									<div class="controls">
+										<input class="input-file" id="images" type="file"
+											multiple="multiple" wicket:id="images"></input>
+										<a href="#" class="btn btn-primary" wicket:id="link_image_upload">Prześlij
+											obraz(y)</a>
+									</div>
+								</div>
+
+
+							</fieldset>
+						</form>
+
+						<legend>Obrazy dostępne w folderze</legend>
+						<ul class="thumbnails" wicket:id="container_images">
+							<li class="span3" wicket:id="placeholder_image">
+								<div class="thumbnail">
+									<img src="http://placehold.it/260x180" wicket:id="resource_thumbnail"></img>
+									<div class="caption">
+										<h5 wicket:id="resource_name">name</h5>
+										<div wicket:id="move_window"></div>
+										<p>
+											<div class="btn-group">
+												<a href="#" class="btn" title="Przenieś" wicket:id="show_move_window">
+													<i class="icon-move"></i>
+												</a>
+												<a href="#" class="btn btn-danger" title="Usuń" wicket:id="remove_link">
+													<i class="icon-trash"></i>
+												</a>
+											</div>
+										</p>
+									</div>
+								</div>
+							</li>
+						</ul>
+					</div>
+				</div>
+
+			</div>
+		</wicket:extend>
+	</body>
+</html>

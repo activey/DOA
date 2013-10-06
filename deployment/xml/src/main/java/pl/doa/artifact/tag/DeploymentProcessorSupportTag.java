@@ -81,6 +81,10 @@ public abstract class DeploymentProcessorSupportTag extends Tag {
         return getProcessor().createEntitiesContainer(name, getParentContainer());
     }
 
+    public IEntitiesContainer createEntitiesContainer(String name, IEntitiesContainer parent) throws GeneralDOAException {
+        return getProcessor().createEntitiesContainer(name, parent);
+    }
+
     public IEntityReference createReference(String name, IEntity entity) throws GeneralDOAException {
         return getProcessor().createReference(name, entity, getParentContainer());
     }
@@ -111,6 +115,10 @@ public abstract class DeploymentProcessorSupportTag extends Tag {
 
     public IStaticResource createStaticResource(String name, String mimetype) throws GeneralDOAException {
         return getProcessor().createStaticResource(name, mimetype, getParentContainer());
+    }
+
+    public IStaticResource createStaticResource(String name, String mimetype, IEntitiesContainer parent) throws GeneralDOAException {
+        return getProcessor().createStaticResource(name, mimetype, parent);
     }
 
     public IDocument createDocument(IDocumentDefinition definition, String name) throws GeneralDOAException {
@@ -145,7 +153,7 @@ public abstract class DeploymentProcessorSupportTag extends Tag {
         return (IEntitiesContainer) context.getVariable(DeploymentContext.VAR_ROOT);
     }
 
-    private IEntitiesContainer getParentContainer() {
+    protected IEntitiesContainer getParentContainer() {
         Tag parent = getParent();
         if (parent == null) {
             return null;
