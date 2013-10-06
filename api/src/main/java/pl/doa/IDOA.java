@@ -41,10 +41,6 @@
  *******************************************************************************/
 package pl.doa;
 
-import java.io.InputStream;
-import java.net.URL;
-import java.util.List;
-
 import pl.doa.agent.IAgent;
 import pl.doa.artifact.IArtifact;
 import pl.doa.artifact.IArtifact.Type;
@@ -55,16 +51,8 @@ import pl.doa.container.IEntitiesContainer;
 import pl.doa.document.IDocument;
 import pl.doa.document.IDocumentDefinition;
 import pl.doa.document.alignment.IDocumentAligner;
-import pl.doa.entity.IEntity;
-import pl.doa.entity.IEntityEvaluator;
-import pl.doa.entity.IEntityReference;
-import pl.doa.entity.ITransactionCallback;
-import pl.doa.entity.ITransactionErrorHandler;
-import pl.doa.entity.event.EntityEventType;
-import pl.doa.entity.event.IEntityEvent;
-import pl.doa.entity.event.IEntityEventDescription;
-import pl.doa.entity.event.IEntityEventListener;
-import pl.doa.entity.event.IEntityEventReceiver;
+import pl.doa.entity.*;
+import pl.doa.entity.event.*;
 import pl.doa.entity.startable.IStartableEntity;
 import pl.doa.entity.startable.IStartableEntityLogic;
 import pl.doa.renderer.IRenderer;
@@ -72,6 +60,10 @@ import pl.doa.resource.IStaticResource;
 import pl.doa.service.IRunningService;
 import pl.doa.service.IServiceDefinition;
 import pl.doa.service.IServiceDefinitionLogic;
+
+import java.io.InputStream;
+import java.net.URL;
+import java.util.List;
 
 public interface IDOA extends IEntitiesContainer, IStartableEntity {
 
@@ -298,16 +290,6 @@ public interface IDOA extends IEntitiesContainer, IStartableEntity {
 	public boolean removeFileStream(IStaticResource resource) throws Exception;
 
 	public InputStream retrieve(IStaticResource resource) throws Exception;
-
-	public void addTransactionId(String txId);
-
-	public void removeTransactionId(String txId);
-
-	public boolean isTransactionFinished();
-
-	public void setTransactionFinished(boolean finished);
-
-	public String getTransactionId();
 
 	public List<IEntityEventDescription> getAllEvents();
 

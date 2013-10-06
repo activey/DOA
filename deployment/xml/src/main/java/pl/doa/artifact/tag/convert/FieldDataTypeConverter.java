@@ -42,19 +42,9 @@
 package pl.doa.artifact.tag.convert;
 
 import org.apache.commons.beanutils.Converter;
-
-import pl.doa.IDOA;
 import pl.doa.document.field.DocumentFieldDataType;
-import pl.doa.entity.IEntity;
-import pl.doa.templates.TemplateContext;
 
 public class FieldDataTypeConverter implements Converter {
-
-    private final TemplateContext context;
-
-    public FieldDataTypeConverter(TemplateContext context) {
-        this.context = context;
-    }
 
     @Override
     public Object convert(Class type, Object value) {

@@ -43,7 +43,6 @@ package pl.doa.artifact.tag;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import pl.doa.GeneralDOAException;
 import pl.doa.document.IDocument;
 import pl.doa.document.IDocumentDefinition;
@@ -54,15 +53,12 @@ public class DocumentTag extends EntityTag {
 
     private final static Logger log = LoggerFactory
             .getLogger(DocumentTag.class);
-
     private IDocumentDefinition definition;
 
     @Override
     public IEntity createEntity() throws GeneralDOAException {
-        IDocument document = null;
         if (definition != null) {
-            document = definition.createDocumentInstance(getName());
-            return document;
+            return createDocument(definition, getName());
         } else {
             throw new GeneralDOAException("Definition for document not found!");
         }

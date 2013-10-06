@@ -41,18 +41,14 @@
  *******************************************************************************/
 package pl.doa.artifact.tag.convert;
 
-import java.text.MessageFormat;
-
 import org.apache.commons.beanutils.Converter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import pl.doa.GeneralDOAException;
-import pl.doa.IDOA;
+import pl.doa.artifact.deploy.DeploymentContext;
+import pl.doa.artifact.deploy.IDeploymentProcessor;
 import pl.doa.container.IEntitiesContainer;
 import pl.doa.entity.IEntity;
-import pl.doa.impl.AbstractPathIterator;
-import pl.doa.impl.EntityLocationIterator;
 import pl.doa.templates.TemplateContext;
 import pl.doa.utils.PathIterator;
 
@@ -62,9 +58,12 @@ public class EntityConverter implements Converter {
             .getLogger(EntityConverter.class);
 
     private final TemplateContext context;
+    private final IDeploymentProcessor processor;
 
     public EntityConverter(TemplateContext context) {
         this.context = context;
+        this.processor = (IDeploymentProcessor) context
+                .getVariable(DeploymentContext.VAR_PROCESSOR);
     }
 
     @Override
@@ -91,12 +90,16 @@ public class EntityConverter implements Converter {
                 return found;
             }
         }
-        IDOA doa = (IDOA) context.getVariable("doa");
-        found = doa.lookupEntityByLocation(lookupString);
+        found = processor.lookupEntityByLocation(lookupString);
+        if (found == null) {
+            log.debug(String.format("Unable to find entity under absolute location: [%s]", lookupString));
+        }
+        /*
+        TODO include cases with non existing entity
         if (found == null) {
             if (createIfNull) {
                 try {
-                    return createContainer(doa, doa, lookupString);
+                    return createContainer(doa, lookupString);
                 } catch (GeneralDOAException e) {
                     log.error("", e);
                 }
@@ -104,23 +107,25 @@ public class EntityConverter implements Converter {
             log.error(MessageFormat.format("Unable to find entity: [{0}]",
                     lookupString));
 
-        }
+        }*/
         return found;
     }
 
-    protected final IEntitiesContainer createContainer(IDOA doa, IEntitiesContainer baseContainer, String containerPath) throws GeneralDOAException {
+    /*
+    TODO not used because of comment in line 94
+    protected final IEntitiesContainer createContainer(IEntitiesContainer baseContainer, String containerPath) throws GeneralDOAException {
         PathIterator<String> iterator = new EntityLocationIterator(containerPath);
-        return createContainer(doa, baseContainer, iterator);
-    }
+        return createContainer(baseContainer, iterator);
+    } */
 
-    private final IEntitiesContainer createContainer(IDOA doa, IEntitiesContainer baseContainer, PathIterator<String> pathIterator) throws GeneralDOAException {
+    private final IEntitiesContainer createContainer(IEntitiesContainer baseContainer, PathIterator<String> pathIterator) throws GeneralDOAException {
         if (pathIterator.hasNext()) {
             String packagePart = pathIterator.next();
             IEntitiesContainer packageContainer = baseContainer.getEntityByName(packagePart, IEntitiesContainer.class);
             if (packageContainer == null) {
-                packageContainer = doa.createContainer(packagePart, baseContainer);
+                packageContainer = processor.createEntitiesContainer(packagePart, baseContainer);
             }
-            return createContainer(doa, packageContainer, pathIterator);
+            return createContainer(packageContainer, pathIterator);
 
         }
         return baseContainer;

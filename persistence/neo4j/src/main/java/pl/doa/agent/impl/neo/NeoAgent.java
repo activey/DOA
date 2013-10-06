@@ -41,14 +41,8 @@
  *******************************************************************************/
 package pl.doa.agent.impl.neo;
 
-import java.io.Serializable;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
-
 import pl.doa.GeneralDOAException;
 import pl.doa.IDOA;
 import pl.doa.INeoObject;
@@ -62,6 +56,12 @@ import pl.doa.entity.IEntityAttribute;
 import pl.doa.entity.event.IEntityEventListener;
 import pl.doa.entity.impl.AbstractEntity;
 import pl.doa.relation.DOARelationship;
+
+import java.io.Serializable;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 public class NeoAgent extends AbstractEntity implements IAgent, INeoObject,
         Serializable {
@@ -156,7 +156,7 @@ public class NeoAgent extends AbstractEntity implements IAgent, INeoObject,
     }
 
     public void setAnonymous(boolean outputRetrieved) {
-        delegator.setProperty(PROP_ANONYMOUS, outputRetrieved);
+        delegator.getNode().setProperty(PROP_ANONYMOUS, outputRetrieved);
     }
 
     /*
@@ -166,8 +166,8 @@ public class NeoAgent extends AbstractEntity implements IAgent, INeoObject,
      */
     @Override
     public boolean isAnonymous() {
-        return delegator.hasProperty(PROP_ANONYMOUS)
-                && (Boolean) delegator.getProperty(PROP_ANONYMOUS);
+        return delegator.getNode().hasProperty(PROP_ANONYMOUS)
+                && (Boolean) delegator.getNode().getProperty(PROP_ANONYMOUS);
     }
 
     @Override
@@ -187,7 +187,7 @@ public class NeoAgent extends AbstractEntity implements IAgent, INeoObject,
 
     @Override
     protected boolean removeImpl(boolean forceRemoveContents) {
-        if (delegator.hasRelationship(DOARelationship.IS_STARTED_BY)) {
+        if (delegator.getNode().hasRelationship(DOARelationship.IS_STARTED_BY)) {
             return false;
         }
         return delegator.remove();
@@ -229,18 +229,13 @@ public class NeoAgent extends AbstractEntity implements IAgent, INeoObject,
     }
 
     @Override
-    protected List<String> getAttributeNamesImpl() {
+    protected Collection<String> getAttributeNamesImpl() {
         return delegator.getAttributeNames();
     }
 
     @Override
     protected String getAttributeImpl(String attrName) {
         return delegator.getAttribute(attrName);
-    }
-
-    @Override
-    protected String getAttributeImpl(String attrName, String defaultValue) {
-        return delegator.getAttribute(attrName, defaultValue);
     }
 
     @Override
@@ -254,7 +249,7 @@ public class NeoAgent extends AbstractEntity implements IAgent, INeoObject,
     }
 
     @Override
-    protected void setContainerImpl(IEntitiesContainer container) {
+    protected void setContainerImpl(IEntitiesContainer container) throws GeneralDOAException {
         delegator.setContainer(container);
     }
 
@@ -294,21 +289,13 @@ public class NeoAgent extends AbstractEntity implements IAgent, INeoObject,
     }
 
     @Override
-    protected IEntity redeployImpl(IEntity newEntity) throws Throwable {
-        if (newEntity instanceof INeoObject) {
-            return delegator.redeploy(newEntity);
-        }
-        throw new GeneralDOAException("Not INeoObject");
-    }
-
-    @Override
     protected IEntity getAncestorImpl() {
         return delegator.getAncestor();
     }
 
     @Override
-    public NeoEntityDelegator getNode() {
-        return this.delegator;
+    public Node getNode() {
+        return this.delegator.getNode();
     }
 
 }

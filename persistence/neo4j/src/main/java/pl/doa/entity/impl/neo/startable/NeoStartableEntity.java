@@ -44,13 +44,8 @@
  */
 package pl.doa.entity.impl.neo.startable;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
-
 import pl.doa.GeneralDOAException;
 import pl.doa.IDOA;
 import pl.doa.INeoObject;
@@ -62,6 +57,11 @@ import pl.doa.entity.IEntityAttribute;
 import pl.doa.entity.event.IEntityEventListener;
 import pl.doa.entity.startable.impl.AbstractStartableEntity;
 import pl.doa.relation.DOARelationship;
+
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author activey
@@ -77,13 +77,6 @@ public class NeoStartableEntity extends AbstractStartableEntity implements INeoO
     public NeoStartableEntity(IDOA doa, Node underlyingNode) {
         super(doa);
         this.delegator = new NeoEntityDelegator(doa, underlyingNode);
-    }
-
-    public NeoStartableEntity(IDOA doa, GraphDatabaseService neo,
-                              String className, String name) {
-        super(doa);
-        this.delegator = new NeoEntityDelegator(doa, neo, className);
-        setName(name);
     }
 
     public NeoStartableEntity(IDOA doa, GraphDatabaseService neo,
@@ -109,7 +102,7 @@ public class NeoStartableEntity extends AbstractStartableEntity implements INeoO
 
     @Override
     protected boolean removeImpl(boolean forceRemoveContents) {
-        if (delegator.hasRelationship(DOARelationship.IS_STARTED_BY)) {
+        if (delegator.getNode().hasRelationship(DOARelationship.IS_STARTED_BY)) {
             return false;
         }
         return delegator.remove();
@@ -151,18 +144,13 @@ public class NeoStartableEntity extends AbstractStartableEntity implements INeoO
     }
 
     @Override
-    protected List<String> getAttributeNamesImpl() {
+    protected Collection<String> getAttributeNamesImpl() {
         return delegator.getAttributeNames();
     }
 
     @Override
     protected String getAttributeImpl(String attrName) {
         return delegator.getAttribute(attrName);
-    }
-
-    @Override
-    protected String getAttributeImpl(String attrName, String defaultValue) {
-        return delegator.getAttribute(attrName, defaultValue);
     }
 
     @Override
@@ -176,7 +164,7 @@ public class NeoStartableEntity extends AbstractStartableEntity implements INeoO
     }
 
     @Override
-    protected void setContainerImpl(IEntitiesContainer container) {
+    protected void setContainerImpl(IEntitiesContainer container) throws GeneralDOAException {
         delegator.setContainer(container);
     }
 
@@ -216,47 +204,39 @@ public class NeoStartableEntity extends AbstractStartableEntity implements INeoO
     }
 
     @Override
-    protected IEntity redeployImpl(IEntity newEntity) throws Throwable {
-        if (newEntity instanceof INeoObject) {
-            return delegator.redeploy(newEntity);
-        }
-        throw new GeneralDOAException("Not INeoObject");
-    }
-
-    @Override
     protected IEntity getAncestorImpl() {
         return delegator.getAncestor();
     }
 
     @Override
-    public NeoEntityDelegator getNode() {
-        return this.delegator;
+    public Node getNode() {
+        return this.delegator.getNode();
     }
 
     @Override
     protected boolean isAutostartImpl() {
-        if (!delegator.hasProperty(PROP_AUTOSTART)) {
+        if (!delegator.getNode().hasProperty(PROP_AUTOSTART)) {
             return false;
         }
-        return (Boolean) delegator.getProperty(PROP_AUTOSTART);
+        return (Boolean) delegator.getNode().getProperty(PROP_AUTOSTART);
     }
 
     @Override
     protected void setAutostartImpl(boolean autostart) {
-        delegator.setProperty(PROP_AUTOSTART, new Boolean(autostart));
+        delegator.getNode().setProperty(PROP_AUTOSTART, new Boolean(autostart));
     }
 
     @Override
     protected String getLogicClassImpl() {
-        if (!delegator.hasProperty(PROP_LOGIC_CLASS)) {
+        if (!delegator.getNode().hasProperty(PROP_LOGIC_CLASS)) {
             return null;
         }
-        return (String) delegator.getProperty(PROP_LOGIC_CLASS);
+        return (String) delegator.getNode().getProperty(PROP_LOGIC_CLASS);
     }
 
     @Override
     protected void setLogicClassImpl(String logicClass) {
-        delegator.setProperty(PROP_LOGIC_CLASS, logicClass);
+        delegator.getNode().setProperty(PROP_LOGIC_CLASS, logicClass);
     }
 
 }

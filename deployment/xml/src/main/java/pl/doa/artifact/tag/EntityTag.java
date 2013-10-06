@@ -45,13 +45,9 @@ import nu.xom.Nodes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pl.doa.GeneralDOAException;
-import pl.doa.artifact.IArtifact;
+import pl.doa.artifact.deploy.IDeploymentProcessor;
+import pl.doa.container.IEntitiesContainer;
 import pl.doa.entity.IEntity;
-import pl.doa.entity.IEntityReference;
-import pl.doa.entity.startable.IStartableEntity;
-
-import java.text.MessageFormat;
-import java.util.List;
 
 public abstract class EntityTag<T extends IEntity> extends DeploymentProcessorSupportTag {
 
@@ -64,24 +60,17 @@ public abstract class EntityTag<T extends IEntity> extends DeploymentProcessorSu
 
     @Override
     public final void processTagStart() throws Exception {
+        log.debug(String.format("Processing tag: %s", this.getClass().getName()));
         this.entity = createEntity();
         if (entity == null) {
             return;
         }
-        log.debug("Process tag: " + entity.getName());
-
-        if (getVar() != null) {
-            context.setVariable(getVar(), entity);
-        }
+        context.setVariable(getVar(), entity);
     }
 
     @Override
     public final Nodes processTagEnd() throws Exception {
         return null;
-    }
-
-    public final IArtifact getArtifact() {
-        return (IArtifact) context.getVariable("artifact");
     }
 
     public String getName() {
@@ -108,7 +97,11 @@ public abstract class EntityTag<T extends IEntity> extends DeploymentProcessorSu
 
     public String getVar() {
         if (var == null || var.isEmpty()) {
-            return null;
+            IDeploymentProcessor processor = getProcessor();
+            IEntitiesContainer root = getDeploymentRoot();
+            String entityLocation = entity.getLocation();
+            String relativeLocation = entityLocation.substring(root.getLocation().length());
+            return relativeLocation;
         }
         return var;
     }
@@ -126,28 +119,6 @@ public abstract class EntityTag<T extends IEntity> extends DeploymentProcessorSu
     }
 
     public abstract T createEntity() throws GeneralDOAException;
-
-
-
-    protected void addStartable(IStartableEntity startableEntity) throws GeneralDOAException {
-        log.debug(MessageFormat.format("registering startable entity: {0}",
-                startableEntity.getLocation()));
-        // dodawanie referencji do entity w /autostart
-        IEntityReference reference =  createReference(startableEntity.getName(),
-                startableEntity);
-       /* try {
-            reference = createReference(startableEntity.getName(),
-                    startableEntity);
-            // TODO useless right now, do it better
-            //reference.store(IDOA.AUTOSTART_CONTAINER);
-        } catch (GeneralDOAException e) {
-            log.error("", e);
-        }*/
-        // TODO that sucks ..
-        List<IStartableEntity> startableEntities =
-                (List<IStartableEntity>) context.getVariable("autostart");
-        startableEntities.add(startableEntity);
-    }
 
     public final T getEntity() {
         return this.entity;

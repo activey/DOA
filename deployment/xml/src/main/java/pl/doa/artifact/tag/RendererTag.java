@@ -56,7 +56,7 @@ public class RendererTag extends EntityTag {
 
     private String mimetype;
 
-    private boolean autostart;
+    private boolean autostart = true;
 
     public String getLogicClass() {
         return logicClass;
@@ -81,12 +81,10 @@ public class RendererTag extends EntityTag {
                         getMimetype());
         renderer.setAutostart(autostart);
         if (autostart) {
-            addStartable(renderer);
+            getProcessor().registerAutostartEntity(renderer);
         }
         return renderer;
     }
-
-
 
     public String getMimetype() {
         return mimetype;

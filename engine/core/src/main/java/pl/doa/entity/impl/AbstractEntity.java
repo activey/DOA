@@ -44,24 +44,21 @@
  */
 package pl.doa.entity.impl;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
 import pl.doa.GeneralDOAException;
 import pl.doa.IDOA;
 import pl.doa.artifact.IArtifact;
 import pl.doa.container.IEntitiesContainer;
 import pl.doa.document.impl.AbstractDocument;
 import pl.doa.entity.IEntity;
-import pl.doa.entity.IEntityAttachRule;
 import pl.doa.entity.IEntityAttribute;
 import pl.doa.entity.IEntityEvaluator;
+import pl.doa.entity.event.IEntityEventDescription;
 import pl.doa.entity.event.IEntityEventListener;
 import pl.doa.renderer.IRenderer;
 import pl.doa.renderer.template.BasicTemplateFinder;
 import pl.doa.resource.IStaticResource;
+
+import java.util.*;
 
 /**
  * @author activey
@@ -111,7 +108,7 @@ public abstract class AbstractEntity implements IEntity {
         return getLocationImpl();
     }
 
-    protected abstract List<String> getAttributeNamesImpl();
+    protected abstract Collection<String> getAttributeNamesImpl();
 
     public final List<String> getAttributeNames() {
         List<String> allAttrs = new ArrayList<String>();
@@ -123,10 +120,10 @@ public abstract class AbstractEntity implements IEntity {
         return allAttrs;
     }
 
-    protected abstract String getAttributeImpl(String attrName);
+    protected abstract Object getAttributeImpl(String attrName);
 
     public final String getAttribute(String attrName) {
-        String attrValue = getAttributeImpl(attrName);
+        String attrValue = getAttribute(attrName, null);
         if (attrValue == null) {
             IEntity ancestor = getAncestor();
             if (ancestor != null) {
@@ -136,11 +133,8 @@ public abstract class AbstractEntity implements IEntity {
         return attrValue;
     }
 
-    protected abstract String getAttributeImpl(String attrName,
-                                               String defaultValue);
-
     public final String getAttribute(String attrName, String defaultValue) {
-        String attrValue = getAttributeImpl(attrName);
+        Object attrValue = getAttributeImpl(attrName);
         if (attrValue == null) {
             IEntity ancestor = getAncestor();
             if (ancestor != null) {
@@ -153,7 +147,7 @@ public abstract class AbstractEntity implements IEntity {
         if (attrValue == null) {
             return defaultValue;
         }
-        return attrValue;
+        return attrValue.toString();
     }
 
     @Override
@@ -194,9 +188,9 @@ public abstract class AbstractEntity implements IEntity {
         }
     }
 
-    protected abstract void setContainerImpl(IEntitiesContainer container);
+    protected abstract void setContainerImpl(IEntitiesContainer container) throws GeneralDOAException;
 
-    public final void setContainer(IEntitiesContainer container) {
+    public final void setContainer(IEntitiesContainer container) throws GeneralDOAException {
         setContainerImpl(container);
     }
 
@@ -217,6 +211,23 @@ public abstract class AbstractEntity implements IEntity {
 
     public final boolean hasEventListeners() {
         return hasEventListenersImpl();
+    }
+
+    @Override
+    public List<IEntityEventListener> getEventListeners(IEntityEventDescription event) {
+        List<IEntityEventListener> listeners = getEventListeners();
+        if (listeners == null || listeners.size() == 0) {
+            return null;
+        }
+        List<IEntityEventListener> filtered = new ArrayList<IEntityEventListener>();
+        for (IEntity doaEntity : listeners) {
+            final IEntityEventListener listener = (IEntityEventListener) doaEntity;
+            if (!listener.eventMatch(event)) {
+                continue;
+            }
+            filtered.add(listener);
+        }
+        return filtered;
     }
 
     protected abstract List<IEntityEventListener> getEventListenersImpl();
@@ -270,6 +281,7 @@ public abstract class AbstractEntity implements IEntity {
     protected abstract boolean removeImpl(boolean forceRemoveContents);
 
     public final boolean remove() {
+        removeAttributes();
         return removeImpl(false);
     }
 
@@ -281,16 +293,6 @@ public abstract class AbstractEntity implements IEntity {
 
     public final boolean isStored() {
         return isStoredImpl();
-    }
-
-    protected abstract IEntity redeployImpl(IEntity newEntity) throws Throwable;
-
-    public final IEntity redeploy(IEntity newEntity) throws GeneralDOAException {
-        try {
-            return redeployImpl(newEntity);
-        } catch (Throwable t) {
-            throw new GeneralDOAException(t);
-        }
     }
 
     protected abstract IEntity getAncestorImpl();
@@ -345,12 +347,6 @@ public abstract class AbstractEntity implements IEntity {
         }
         return thisAncestor.isDescendantOf(ancestor);
     }
-
-    @Override
-    public <T extends IEntity> T attach(IEntityAttachRule<T> rule) {
-        return rule.attachEntity();
-    }
-
 
     @Override
     public final IStaticResource render(final String mimeType)

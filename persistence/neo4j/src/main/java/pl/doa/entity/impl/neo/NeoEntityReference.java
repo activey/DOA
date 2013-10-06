@@ -44,16 +44,10 @@
  */
 package pl.doa.entity.impl.neo;
 
-import java.io.Serializable;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
 import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Relationship;
-
 import pl.doa.GeneralDOAException;
 import pl.doa.IDOA;
 import pl.doa.INeoObject;
@@ -64,9 +58,14 @@ import pl.doa.entity.IEntity;
 import pl.doa.entity.IEntityAttribute;
 import pl.doa.entity.IEntityReference;
 import pl.doa.entity.event.IEntityEventListener;
-import pl.doa.entity.impl.AbstractEntity;
 import pl.doa.entity.impl.AbstractEntityReference;
 import pl.doa.relation.DOARelationship;
+
+import java.io.Serializable;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author activey
@@ -92,12 +91,12 @@ public class NeoEntityReference extends AbstractEntityReference implements
      */
     @Override
     public IEntity getEntity() {
-        if (!delegator.hasRelationship(DOARelationship.HAS_ENTITY_REFERENCE,
+        if (!delegator.getNode().hasRelationship(DOARelationship.HAS_ENTITY_REFERENCE,
                 Direction.OUTGOING)) {
             return null;
         }
         Relationship relation =
-                delegator.getSingleRelationship(
+                delegator.getNode().getSingleRelationship(
                         DOARelationship.HAS_ENTITY_REFERENCE,
                         Direction.OUTGOING);
         return NeoEntityDelegator.createEntityInstance(doa,
@@ -110,18 +109,18 @@ public class NeoEntityReference extends AbstractEntityReference implements
     @Override
     public void setEntityImpl(IEntity entity) {
         INeoObject neoEntity = (INeoObject) entity;
-        if (!delegator.hasRelationship(DOARelationship.HAS_ENTITY_REFERENCE,
+        if (!delegator.getNode().hasRelationship(DOARelationship.HAS_ENTITY_REFERENCE,
                 Direction.OUTGOING)) {
-            delegator.createRelationshipTo(neoEntity.getNode(),
+            delegator.getNode().createRelationshipTo(neoEntity.getNode(),
                     DOARelationship.HAS_ENTITY_REFERENCE);
             return;
         }
         Relationship relation =
-                delegator.getSingleRelationship(
+                delegator.getNode().getSingleRelationship(
                         DOARelationship.HAS_ENTITY_REFERENCE,
                         Direction.OUTGOING);
         relation.delete();
-        delegator.createRelationshipTo(neoEntity.getNode(),
+        delegator.getNode().createRelationshipTo(neoEntity.getNode(),
                 DOARelationship.HAS_ENTITY_REFERENCE);
     }
 
@@ -142,7 +141,7 @@ public class NeoEntityReference extends AbstractEntityReference implements
 
     @Override
     protected boolean removeImpl(boolean forceRemoveContents) {
-        if (delegator.hasRelationship(DOARelationship.IS_STARTED_BY)) {
+        if (delegator.getNode().hasRelationship(DOARelationship.IS_STARTED_BY)) {
             return false;
         }
         return delegator.remove();
@@ -184,18 +183,13 @@ public class NeoEntityReference extends AbstractEntityReference implements
     }
 
     @Override
-    protected List<String> getAttributeNamesImpl() {
+    protected Collection<String> getAttributeNamesImpl() {
         return delegator.getAttributeNames();
     }
 
     @Override
     protected String getAttributeImpl(String attrName) {
         return delegator.getAttribute(attrName);
-    }
-
-    @Override
-    protected String getAttributeImpl(String attrName, String defaultValue) {
-        return delegator.getAttribute(attrName, defaultValue);
     }
 
     @Override
@@ -209,7 +203,7 @@ public class NeoEntityReference extends AbstractEntityReference implements
     }
 
     @Override
-    protected void setContainerImpl(IEntitiesContainer container) {
+    protected void setContainerImpl(IEntitiesContainer container) throws GeneralDOAException {
         delegator.setContainer(container);
     }
 
@@ -248,13 +242,6 @@ public class NeoEntityReference extends AbstractEntityReference implements
         return delegator.getCreated();
     }
 
-    @Override
-    protected IEntity redeployImpl(IEntity newEntity) throws Throwable {
-        if (newEntity instanceof INeoObject) {
-            return delegator.redeploy(newEntity);
-        }
-        throw new GeneralDOAException("Not INeoObject");
-    }
 
     @Override
     protected IEntity getAncestorImpl() {
@@ -262,8 +249,8 @@ public class NeoEntityReference extends AbstractEntityReference implements
     }
 
     @Override
-    public NeoEntityDelegator getNode() {
-        return this.delegator;
+    public Node getNode() {
+        return this.delegator.getNode();
     }
 
 }

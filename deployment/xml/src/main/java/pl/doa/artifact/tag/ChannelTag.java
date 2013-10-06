@@ -101,7 +101,7 @@ public class ChannelTag extends EntityTag {
         }
         if (autostart) {
             channel.setAutostart(true);
-            addStartable(channel);
+            getProcessor().registerAutostartEntity(channel);
         }
         return channel;
     }

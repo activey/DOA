@@ -5,9 +5,9 @@ import org.slf4j.LoggerFactory;
 import pl.doa.GeneralDOAException;
 import pl.doa.artifact.tag.DeploymentTagLibrary;
 import pl.doa.container.IEntitiesContainer;
+import pl.doa.templates.TemplateContext;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -21,13 +21,8 @@ public class XMLDeploymentProcessor extends AbstractDeploymentProcessor {
     private final static Logger log = LoggerFactory.getLogger(XMLDeploymentProcessor.class);
 
     @Override
-    public void process(File deployedFile, IEntitiesContainer root) throws Exception {
-        JarFile jarFile;
-        try {
-            jarFile = new JarFile(deployedFile);
-        } catch (IOException e) {
-            throw new GeneralDOAException(e);
-        }
+    public void deployArtifact(File deployedFile, IEntitiesContainer root) throws Exception {
+        JarFile jarFile = new JarFile(deployedFile);
         JarEntry deployScriptEntry = jarFile.getJarEntry("deploy.core");
         if (deployScriptEntry == null) {
             deployScriptEntry = jarFile.getJarEntry("deploy.xml");
@@ -40,7 +35,8 @@ public class XMLDeploymentProcessor extends AbstractDeploymentProcessor {
             InputStream deployFile =
                     jarFile.getInputStream(deployScriptEntry);
             // uruchamianie skryptu z pliku "deploy.core"
-            DeploymentContext context = new DeploymentContext();
+
+            TemplateContext context = new DeploymentContext(this, deployedFile, root);
             try {
                 context.registerTagLibrary(new DeploymentTagLibrary());
             } catch (Exception e) {

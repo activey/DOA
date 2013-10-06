@@ -59,18 +59,12 @@ public class DeploymentTagLibrary extends TagLibrary {
 
     @Override
     protected void initializeTagLibrary() throws Exception {
-        ConvertUtils.register(new EntityConverter(templateContext),
-                IDocumentDefinition.class);
-        ConvertUtils.register(new EntityConverter(templateContext),
-                IEntitiesContainer.class);
-        ConvertUtils.register(new EntityConverter(templateContext),
-                IEntity.class);
-        ConvertUtils.register(new FileConverter(templateContext),
-                InputStream.class);
-        ConvertUtils.register(new FieldDataTypeConverter(templateContext),
-                DocumentFieldDataType.class);
-        ConvertUtils.register(new EntityEventTypeConverter(templateContext),
-                EntityEventType.class);
+        ConvertUtils.register(new EntityConverter(templateContext), IDocumentDefinition.class);
+        ConvertUtils.register(new EntityConverter(templateContext), IEntitiesContainer.class);
+        ConvertUtils.register(new EntityConverter(templateContext), IEntity.class);
+        ConvertUtils.register(new FileConverter(templateContext), InputStream.class);
+        ConvertUtils.register(new FieldDataTypeConverter(), DocumentFieldDataType.class);
+        ConvertUtils.register(new EntityEventTypeConverter(), EntityEventType.class);
         ConvertUtils.register(new TypeConverter(templateContext),
                 IDeploymentProcessor.class);
 

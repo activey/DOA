@@ -90,6 +90,7 @@ import pl.doa.entity.sort.IEntitiesSortComparator;
 import pl.doa.entity.startable.IStartableEntity;
 import pl.doa.impl.AbstractDOALogic;
 import pl.doa.impl.EntityLocationIterator;
+import pl.doa.neo.NodeDelegate;
 import pl.doa.neo.utils.EntitiesListIterable;
 import pl.doa.neo.utils.NodeUtils;
 import pl.doa.relation.DOARelationship;
@@ -488,7 +489,7 @@ public class NeoDOALogic extends AbstractDOALogic {
             return (IEntity) foundNode;
         }
         // TODO
-        if (!foundNode.hasProperty(NeoEntityDelegator.PROP_CLASS_NAME)) {
+        if (!foundNode.hasProperty(NodeDelegate.PROP_CLASS_NAME)) {
             return doa;
         }
         IEntity entity =

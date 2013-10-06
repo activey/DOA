@@ -41,19 +41,12 @@
  *******************************************************************************/
 package pl.doa.document.alignment.impl.neo;
 
-import java.io.Serializable;
-import java.text.MessageFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
 import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Relationship;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import pl.doa.GeneralDOAException;
 import pl.doa.IDOA;
 import pl.doa.INeoObject;
@@ -67,6 +60,13 @@ import pl.doa.entity.IEntity;
 import pl.doa.entity.IEntityAttribute;
 import pl.doa.entity.event.IEntityEventListener;
 import pl.doa.relation.DOARelationship;
+
+import java.io.Serializable;
+import java.text.MessageFormat;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 public class NeoDocumentAligner extends AbstractDocumentAligner implements
         INeoObject, Serializable {
@@ -96,7 +96,7 @@ public class NeoDocumentAligner extends AbstractDocumentAligner implements
      */
     @Override
     public String getLogicClassImpl() {
-        return (String) delegator.getProperty(PROP_LOGIC_CLASS);
+        return (String) delegator.getNode().getProperty(PROP_LOGIC_CLASS);
     }
 
     /*
@@ -107,16 +107,16 @@ public class NeoDocumentAligner extends AbstractDocumentAligner implements
      */
     @Override
     public void setLogicClassImpl(String logicClass) {
-        delegator.setProperty(PROP_LOGIC_CLASS, logicClass);
+        delegator.getNode().setProperty(PROP_LOGIC_CLASS, logicClass);
     }
 
     @Override
     public IDocumentDefinition getFromDefinitionImpl() {
         Node node =
                 delegator
-                        .getSingleRelationship(
-                                DOARelationship.HAS_FROM_DEFINITION,
-                                Direction.OUTGOING).getEndNode();
+                        .getNode().getSingleRelationship(
+                        DOARelationship.HAS_FROM_DEFINITION,
+                        Direction.OUTGOING).getEndNode();
         return new NeoDocumentDefinition(doa, node);
     }
 
@@ -129,19 +129,19 @@ public class NeoDocumentAligner extends AbstractDocumentAligner implements
     @Override
     public void setFromDefinitionImpl(IDocumentDefinition fromDefinition) {
         INeoObject neoEntity = (INeoObject) fromDefinition;
-        if (!delegator.hasRelationship(DOARelationship.HAS_FROM_DEFINITION,
+        if (!delegator.getNode().hasRelationship(DOARelationship.HAS_FROM_DEFINITION,
                 Direction.OUTGOING)) {
-            delegator.createRelationshipTo(neoEntity.getNode(),
+            delegator.getNode().createRelationshipTo(neoEntity.getNode(),
                     DOARelationship.HAS_FROM_DEFINITION);
             return;
         }
         Relationship relation =
                 delegator
-                        .getSingleRelationship(
-                                DOARelationship.HAS_FROM_DEFINITION,
-                                Direction.OUTGOING);
+                        .getNode().getSingleRelationship(
+                        DOARelationship.HAS_FROM_DEFINITION,
+                        Direction.OUTGOING);
         relation.delete();
-        delegator.createRelationshipTo(neoEntity.getNode(),
+        delegator.getNode().createRelationshipTo(neoEntity.getNode(),
                 DOARelationship.HAS_FROM_DEFINITION);
 
     }
@@ -154,7 +154,7 @@ public class NeoDocumentAligner extends AbstractDocumentAligner implements
     @Override
     public NeoDocumentDefinition getToDefinitionImpl() {
         Node node =
-                delegator.getSingleRelationship(
+                delegator.getNode().getSingleRelationship(
                         DOARelationship.HAS_TO_DEFINITION, Direction.OUTGOING)
                         .getEndNode();
         return new NeoDocumentDefinition(doa, node);
@@ -169,7 +169,7 @@ public class NeoDocumentAligner extends AbstractDocumentAligner implements
     @Override
     public void setToDefinitionImpl(IDocumentDefinition toDefinition) {
         INeoObject neoEntity = (INeoObject) toDefinition;
-        if (!delegator.hasRelationship(DOARelationship.HAS_TO_DEFINITION,
+        if (!delegator.getNode().hasRelationship(DOARelationship.HAS_TO_DEFINITION,
                 Direction.OUTGOING)) {
             if (toDefinition == null) {
                 log.error(MessageFormat
@@ -177,15 +177,15 @@ public class NeoDocumentAligner extends AbstractDocumentAligner implements
                                 getName()));
                 return;
             }
-            delegator.createRelationshipTo(neoEntity.getNode(),
+            delegator.getNode().createRelationshipTo(neoEntity.getNode(),
                     DOARelationship.HAS_TO_DEFINITION);
             return;
         }
         Relationship relation =
-                delegator.getSingleRelationship(
+                delegator.getNode().getSingleRelationship(
                         DOARelationship.HAS_TO_DEFINITION, Direction.OUTGOING);
         relation.delete();
-        delegator.createRelationshipTo(neoEntity.getNode(),
+        delegator.getNode().createRelationshipTo(neoEntity.getNode(),
                 DOARelationship.HAS_TO_DEFINITION);
     }
 
@@ -245,18 +245,13 @@ public class NeoDocumentAligner extends AbstractDocumentAligner implements
     }
 
     @Override
-    protected List<String> getAttributeNamesImpl() {
+    protected Collection<String> getAttributeNamesImpl() {
         return delegator.getAttributeNames();
     }
 
     @Override
     protected String getAttributeImpl(String attrName) {
         return delegator.getAttribute(attrName);
-    }
-
-    @Override
-    protected String getAttributeImpl(String attrName, String defaultValue) {
-        return delegator.getAttribute(attrName, defaultValue);
     }
 
     @Override
@@ -270,7 +265,7 @@ public class NeoDocumentAligner extends AbstractDocumentAligner implements
     }
 
     @Override
-    protected void setContainerImpl(IEntitiesContainer container) {
+    protected void setContainerImpl(IEntitiesContainer container) throws GeneralDOAException {
         delegator.setContainer(container);
     }
 
@@ -310,21 +305,13 @@ public class NeoDocumentAligner extends AbstractDocumentAligner implements
     }
 
     @Override
-    protected IEntity redeployImpl(IEntity newEntity) throws Throwable {
-        if (newEntity instanceof INeoObject) {
-            return delegator.redeploy(newEntity);
-        }
-        throw new GeneralDOAException("Not INeoObject");
-    }
-
-    @Override
     protected IEntity getAncestorImpl() {
         return delegator.getAncestor();
     }
 
     @Override
-    public NeoEntityDelegator getNode() {
-        return delegator;
+    public Node getNode() {
+        return delegator.getNode();
     }
 
 }

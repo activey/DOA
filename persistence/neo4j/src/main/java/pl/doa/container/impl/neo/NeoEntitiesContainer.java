@@ -44,23 +44,13 @@
  */
 package pl.doa.container.impl.neo;
 
-import java.io.Serializable;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
-import org.neo4j.graphdb.Direction;
-import org.neo4j.graphdb.GraphDatabaseService;
-import org.neo4j.graphdb.Node;
-import org.neo4j.graphdb.Path;
-import org.neo4j.graphdb.Relationship;
+import org.neo4j.graphdb.*;
 import org.neo4j.graphdb.traversal.Evaluators;
 import org.neo4j.graphdb.traversal.TraversalDescription;
 import org.neo4j.graphdb.traversal.Traverser;
 import org.neo4j.kernel.Traversal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import pl.doa.GeneralDOAException;
 import pl.doa.IDOA;
 import pl.doa.INeoObject;
@@ -79,6 +69,12 @@ import pl.doa.neo.utils.EntitiesComparator;
 import pl.doa.neo.utils.EntitiesListIterable;
 import pl.doa.relation.DOARelationship;
 import pl.doa.utils.DynamicInteger;
+
+import java.io.Serializable;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author activey
@@ -127,7 +123,7 @@ public class NeoEntitiesContainer extends AbstractEntitiesContainer implements
                         .evaluator(
                                 new NeoReturnableEvaluator(doa, evaluator, deep))
                         .sort(new EntitiesComparator(getDoa(), comparator));
-        Traverser nodesTraverser = travDesc.traverse(delegator);
+        Traverser nodesTraverser = travDesc.traverse(delegator.getNode());
         return new EntitiesListIterable(doa, nodesTraverser.iterator(), start,
                 howMany);
     }
@@ -153,7 +149,7 @@ public class NeoEntitiesContainer extends AbstractEntitiesContainer implements
     protected int countEntitiesImpl() {
         final DynamicInteger dyn = new DynamicInteger();
         Iterable<Relationship> relations =
-                delegator.getRelationships(DOARelationship.HAS_ENTITY,
+                delegator.getNode().getRelationships(DOARelationship.HAS_ENTITY,
                         Direction.OUTGOING);
         for (Relationship relationship : relations) {
             dyn.modify(1);
@@ -182,7 +178,7 @@ public class NeoEntitiesContainer extends AbstractEntitiesContainer implements
                                         .toDepth(1))
                         .evaluator(
                                 new NeoReturnableEvaluator(doa, evaluator, deep));
-        Traverser nodesTraverser = travDesc.traverse(delegator);
+        Traverser nodesTraverser = travDesc.traverse(delegator.getNode());
         for (Path node : nodesTraverser) {
             dyn.modify(1);
         }
@@ -210,7 +206,7 @@ public class NeoEntitiesContainer extends AbstractEntitiesContainer implements
         }
         final INeoObject neoObject = (INeoObject) doaEntity;
         log.debug("Adding entity: " + doaEntity.getName());
-        delegator.createRelationshipTo(neoObject.getNode(),
+        delegator.getNode().createRelationshipTo(neoObject.getNode(),
                 DOARelationship.HAS_ENTITY);
         return doaEntity;
     }
@@ -222,7 +218,7 @@ public class NeoEntitiesContainer extends AbstractEntitiesContainer implements
      * return false; } return true; }
      */
     public boolean hasEntities() {
-        return delegator.hasRelationship(DOARelationship.HAS_ENTITY,
+        return delegator.getNode().hasRelationship(DOARelationship.HAS_ENTITY,
                 Direction.OUTGOING);
     }
 
@@ -244,7 +240,7 @@ public class NeoEntitiesContainer extends AbstractEntitiesContainer implements
     @Override
     protected boolean removeImpl(boolean forceRemoveContents) {
         if (!forceRemoveContents
-                && delegator.hasRelationship(DOARelationship.HAS_ENTITY,
+                && delegator.getNode().hasRelationship(DOARelationship.HAS_ENTITY,
                 Direction.OUTGOING)) {
             return false;
         }
@@ -290,18 +286,13 @@ public class NeoEntitiesContainer extends AbstractEntitiesContainer implements
     }
 
     @Override
-    protected List<String> getAttributeNamesImpl() {
+    protected Collection<String> getAttributeNamesImpl() {
         return delegator.getAttributeNames();
     }
 
     @Override
     protected String getAttributeImpl(String attrName) {
         return delegator.getAttribute(attrName);
-    }
-
-    @Override
-    protected String getAttributeImpl(String attrName, String defaultValue) {
-        return delegator.getAttribute(attrName, defaultValue);
     }
 
     @Override
@@ -315,7 +306,7 @@ public class NeoEntitiesContainer extends AbstractEntitiesContainer implements
     }
 
     @Override
-    protected void setContainerImpl(IEntitiesContainer container) {
+    protected void setContainerImpl(IEntitiesContainer container) throws GeneralDOAException {
         delegator.setContainer(container);
     }
 
@@ -368,7 +359,7 @@ public class NeoEntitiesContainer extends AbstractEntitiesContainer implements
                                         .all())
                         .evaluator(Evaluators.atDepth(1))
                         .relationships(DOARelationship.HAS_ENTITY,
-                                Direction.OUTGOING).traverse(delegator);
+                                Direction.OUTGOING).traverse(delegator.getNode());
         Iterable<IEntity> entities =
                 new EntitiesListIterable(doa, traverser.iterator());
         for (IEntity entity : entities) {
@@ -381,22 +372,14 @@ public class NeoEntitiesContainer extends AbstractEntitiesContainer implements
             throws GeneralDOAException {
     }
 
-    @Override
-    protected IEntity redeployImpl(IEntity newEntity) throws Throwable {
-        if (newEntity instanceof INeoObject) {
-            delegator = (NeoEntityDelegator) delegator.redeploy(newEntity);
-            return this;
-        }
-        throw new GeneralDOAException("Not INeoObject");
-    }
 
     @Override
     protected IEntity getAncestorImpl() {
         return delegator.getAncestor();
     }
 
-    public NeoEntityDelegator getNode() {
-        return delegator;
+    public Node getNode() {
+        return delegator.getNode();
     }
 
 }

@@ -41,13 +41,14 @@
  *******************************************************************************/
 package pl.doa.artifact.tag.convert;
 
+import org.apache.commons.beanutils.Converter;
+import pl.doa.artifact.deploy.DeploymentContext;
+import pl.doa.templates.TemplateContext;
+
+import java.io.File;
 import java.io.InputStream;
 import java.net.URL;
 import java.text.MessageFormat;
-
-import org.apache.commons.beanutils.Converter;
-
-import pl.doa.templates.TemplateContext;
 
 public class FileConverter implements Converter {
 
@@ -71,8 +72,8 @@ public class FileConverter implements Converter {
     }
 
     protected InputStream findFile(String lookupPath) {
-        String artifactFileLocation =
-                (String) context.getVariable("artifactJarFile");
+        File file = (File) context.getVariable(DeploymentContext.VAR_DEPLOYED);
+        String artifactFileLocation = file.getAbsolutePath();
         if (artifactFileLocation != null) {
             String jarEntryUrl =
                     MessageFormat.format("jar:file:{0}!/{1}",

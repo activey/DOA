@@ -43,34 +43,35 @@ package pl.doa.entity;
 
 public interface IEntityAttribute {
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see pl.doa.temp.entity.IDOAAttribute#getName()
-	 */
-	public abstract String getName();
+    /*
+     * (non-Javadoc)
+     *
+     * @see pl.doa.temp.entity.IDOAAttribute#getName()
+     */
+    public String getName();
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see pl.doa.temp.entity.IDOAAttribute#setName(java.lang.String)
-	 */
-	public abstract void setName(String name);
+    /*
+     * (non-Javadoc)
+     *
+     * @see pl.doa.temp.entity.IDOAAttribute#setName(java.lang.String)
+     */
+    public void setName(String name);
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see pl.doa.temp.entity.IDOAAttribute#getValue()
-	 */
-	public abstract Object getValue();
+    /*
+     * (non-Javadoc)
+     *
+     * @see pl.doa.temp.entity.IDOAAttribute#getValue()
+     */
+    public Object getValue();
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see pl.doa.temp.entity.IDOAAttribute#setValue(java.lang.Object)
-	 */
-	public abstract void setValue(Object value);
+    /*
+     * (non-Javadoc)
+     *
+     * @see pl.doa.temp.entity.IDOAAttribute#setValue(java.lang.Object)
+     */
+    public void setValue(Object value);
 
-	public abstract boolean remove();
+    public boolean remove();
 
+    public String getValueAsString();
 }

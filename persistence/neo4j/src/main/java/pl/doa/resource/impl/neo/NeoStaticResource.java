@@ -40,20 +40,14 @@
  *    Inhibi Ltd - initial API and implementation
  *******************************************************************************/
 /**
- * 
+ *
  */
 package pl.doa.resource.impl.neo;
-
-import java.io.Serializable;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
 
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import pl.doa.GeneralDOAException;
 import pl.doa.IDOA;
 import pl.doa.INeoObject;
@@ -65,226 +59,216 @@ import pl.doa.entity.IEntityAttribute;
 import pl.doa.entity.event.IEntityEventListener;
 import pl.doa.resource.impl.AbstractStaticResource;
 
+import java.io.Serializable;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
 /**
  * @author activey
- * 
  */
 public class NeoStaticResource extends AbstractStaticResource implements
-		INeoObject, Serializable {
+        INeoObject, Serializable {
 
-	private static final Logger log = LoggerFactory
-			.getLogger(NeoStaticResource.class);
+    private static final Logger log = LoggerFactory
+            .getLogger(NeoStaticResource.class);
+    private static final String PROP_MIMETYPE = "mimetype";
+    private static final String PROP_CONTENT_SIZE = "contentSize";
+    private NeoEntityDelegator delegator = null;
 
-	private static final String PROP_MIMETYPE = "mimetype";
-	private static final String PROP_CONTENT_SIZE = "contentSize";
+    public NeoStaticResource(IDOA doa, Node underlyingNode) {
+        super(doa);
+        this.delegator = new NeoEntityDelegator(doa, underlyingNode);
+    }
 
-	private NeoEntityDelegator delegator = null;
+    public NeoStaticResource(IDOA doa, GraphDatabaseService neo, String name) {
+        super(doa);
+        this.delegator =
+                new NeoEntityDelegator(doa, neo, this.getClass().getName());
+        if (name != null) {
+            setName(name);
+        } else {
+            setName(getId() + "");
+        }
+    }
 
-	public NeoStaticResource(IDOA doa, Node underlyingNode) {
-		super(doa);
-		this.delegator = new NeoEntityDelegator(doa, underlyingNode);
-	}
+    public NeoStaticResource(IDOA doa, GraphDatabaseService neo) {
+        this(doa, neo, null);
+    }
 
-	public NeoStaticResource(IDOA doa, GraphDatabaseService neo, String name) {
-		super(doa);
-		this.delegator =
-				new NeoEntityDelegator(doa, neo, this.getClass().getName());
-		if (name != null) {
-			setName(name);
-		} else {
-			setName(getId() + "");
-		}
-	}
+    /*
+     * (non-Javadoc)
+     * @see pl.doa.resource.impl.neo.IStaticResource#getMimetype()
+     */
+    @Override
+    protected String getMimetypeImpl() {
+        return (String) delegator.getNode().getProperty(PROP_MIMETYPE);
+    }
 
-	public NeoStaticResource(IDOA doa, GraphDatabaseService neo) {
-		this(doa, neo, null);
-	}
+    /*
+     * (non-Javadoc)
+     * @see
+     * pl.doa.resource.impl.neo.IStaticResource#setMimetype(java.lang.String)
+     */
+    @Override
+    protected void setMimetypeImpl(String mimetype) {
+        if (mimetype == null) {
+            if (delegator.getNode().hasProperty(PROP_MIMETYPE)) {
+                delegator.getNode().removeProperty(PROP_MIMETYPE);
+            }
+            return;
+        }
+        delegator.getNode().setProperty(PROP_MIMETYPE, mimetype);
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * @see
-	 * pl.doa.resource.impl.neo.IStaticResource#setMimetype(java.lang.String)
-	 */
-	@Override
-	protected void setMimetypeImpl(String mimetype) {
-		if (mimetype == null) {
-			if (delegator.hasProperty(PROP_MIMETYPE)) {
-				delegator.removeProperty(PROP_MIMETYPE);
-			}
-			return;
-		}
-		delegator.setProperty(PROP_MIMETYPE, mimetype);
-	}
+    /*
+     * (non-Javadoc)
+     * @see pl.doa.resource.impl.neo.IStaticResource#getContentSize()
+     */
+    @Override
+    protected long getContentSizeImpl() {
+        if (!delegator.getNode().hasProperty(PROP_CONTENT_SIZE)) {
+            return 0;
+        }
+        return (Long) delegator.getNode().getProperty(PROP_CONTENT_SIZE);
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * @see pl.doa.resource.impl.neo.IStaticResource#getMimetype()
-	 */
-	@Override
-	protected String getMimetypeImpl() {
-		return (String) delegator.getProperty(PROP_MIMETYPE);
-	}
+    @Override
+    protected void setContentSizeImpl(long contentSize) {
+        delegator.getNode().setProperty(PROP_CONTENT_SIZE, contentSize);
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * @see pl.doa.resource.impl.neo.IStaticResource#getContentSize()
-	 */
-	@Override
-	protected long getContentSizeImpl() {
-		if (!delegator.hasProperty(PROP_CONTENT_SIZE)) {
-			return 0;
-		}
-		return (Long) delegator.getProperty(PROP_CONTENT_SIZE);
-	}
+    @Override
+    protected void setAttributeImpl(String attrName, String attrValue) {
+        delegator.setAttribute(attrName, attrValue);
+    }
 
-	@Override
-	protected void setAttributeImpl(String attrName, String attrValue) {
-		delegator.setAttribute(attrName, attrValue);
-	}
+    @Override
+    protected void setAttributeImpl(IEntityAttribute attributte) {
+        delegator.setAttribute(attributte);
+    }
 
-	@Override
-	protected void setAttributeImpl(IEntityAttribute attributte) {
-		delegator.setAttribute(attributte);
-	}
+    @Override
+    protected void removeAttributesImpl() {
+        delegator.removeAttributes();
+    }
 
-	@Override
-	protected void removeAttributesImpl() {
-		delegator.removeAttributes();
-	}
+    @Override
+    protected boolean removeImpl(boolean forceRemoveContents) {
+        try {
+            if (removeStreamContent()) {
+                return delegator.remove();
+            }
+        } catch (Exception ex) {
+            log.error("", ex);
+        }
+        return false;
+    }
 
-	@Override
-	protected boolean removeImpl(boolean forceRemoveContents) {
-		try {
-			if (removeStreamContent()) {
-				return delegator.remove();
-			}
-		} catch (Exception ex) {
-			log.error("", ex);
-		}
-		return false;
-	}
+    @Override
+    protected boolean isStoredImpl() {
+        return delegator.isStored();
+    }
 
-	@Override
-	protected boolean isStoredImpl() {
-		return delegator.isStored();
-	}
+    @Override
+    protected long getIdImpl() {
+        return delegator.getId();
+    }
 
-	@Override
-	protected long getIdImpl() {
-		return delegator.getId();
-	}
+    @Override
+    protected String getNameImpl() {
+        return delegator.getName();
+    }
 
-	@Override
-	protected String getNameImpl() {
-		return delegator.getName();
-	}
+    @Override
+    protected void setNameImpl(String name) {
+        delegator.setName(name);
+    }
 
-	@Override
-	protected void setNameImpl(String name) {
-		delegator.setName(name);
-	}
+    @Override
+    protected IEntitiesContainer getContainerImpl() {
+        return delegator.getContainer();
+    }
 
-	@Override
-	protected IEntitiesContainer getContainerImpl() {
-		return delegator.getContainer();
-	}
+    @Override
+    protected void setContainerImpl(IEntitiesContainer container) throws GeneralDOAException {
+        delegator.setContainer(container);
+    }
 
-	@Override
-	protected String getLocationImpl() {
-		return delegator.getLocation();
-	}
+    @Override
+    protected String getLocationImpl() {
+        return delegator.getLocation();
+    }
 
-	@Override
-	protected boolean hasAttributesImpl() {
-		return delegator.hasAttributes();
-	}
+    @Override
+    protected boolean hasAttributesImpl() {
+        return delegator.hasAttributes();
+    }
 
-	@Override
-	protected List<String> getAttributeNamesImpl() {
-		return delegator.getAttributeNames();
-	}
+    @Override
+    protected Collection<String> getAttributeNamesImpl() {
+        return delegator.getAttributeNames();
+    }
 
-	@Override
-	protected String getAttributeImpl(String attrName) {
-		return delegator.getAttribute(attrName);
-	}
+    @Override
+    protected String getAttributeImpl(String attrName) {
+        return delegator.getAttribute(attrName);
+    }
 
-	@Override
-	protected String getAttributeImpl(String attrName, String defaultValue) {
-		return delegator.getAttribute(attrName, defaultValue);
-	}
+    @Override
+    protected IEntityAttribute getAttributeObjectImpl(String attrName) {
+        return delegator.getAttributeObject(attrName);
+    }
 
-	@Override
-	protected IEntityAttribute getAttributeObjectImpl(String attrName) {
-		return delegator.getAttributeObject(attrName);
-	}
+    @Override
+    protected IEntity storeImpl(String location) throws Throwable {
+        return delegator.store(location);
+    }
 
-	@Override
-	protected IEntity storeImpl(String location) throws Throwable {
-		return delegator.store(location);
-	}
+    @Override
+    protected void setAttributesImpl(Map<String, String> attributes) {
+        delegator.setAttributes(attributes);
+    }
 
-	@Override
-	protected void setContainerImpl(IEntitiesContainer container) {
-		delegator.setContainer(container);
-	}
+    @Override
+    protected boolean hasEventListenersImpl() {
+        return delegator.hasEventListeners();
+    }
 
-	@Override
-	protected void setAttributesImpl(Map<String, String> attributes) {
-		delegator.setAttributes(attributes);
-	}
+    @Override
+    protected List<IEntityEventListener> getEventListenersImpl() {
+        return delegator.getEventListeners();
+    }
 
-	@Override
-	protected boolean hasEventListenersImpl() {
-		return delegator.hasEventListeners();
-	}
+    @Override
+    protected boolean isPublicImpl() {
+        return delegator.isPublic();
+    }
 
-	@Override
-	protected List<IEntityEventListener> getEventListenersImpl() {
-		return delegator.getEventListeners();
-	}
+    @Override
+    protected IArtifact getArtifactImpl() {
+        return delegator.getArtifact();
+    }
 
-	@Override
-	protected boolean isPublicImpl() {
-		return delegator.isPublic();
-	}
+    @Override
+    protected Date getLastModifiedImpl() {
+        return delegator.getLastModified();
+    }
 
-	@Override
-	protected IArtifact getArtifactImpl() {
-		return delegator.getArtifact();
-	}
+    @Override
+    protected Date getCreatedImpl() {
+        return delegator.getCreated();
+    }
 
-	@Override
-	protected Date getLastModifiedImpl() {
-		return delegator.getLastModified();
-	}
+    @Override
+    protected IEntity getAncestorImpl() {
+        return delegator.getAncestor();
+    }
 
-	@Override
-	protected Date getCreatedImpl() {
-		return delegator.getCreated();
-	}
-
-	@Override
-	protected IEntity redeployImpl(IEntity newEntity) throws Throwable {
-		if (newEntity instanceof INeoObject) {
-			return delegator.redeploy(newEntity);
-		}
-		throw new GeneralDOAException("Not INeoObject");
-	}
-
-	@Override
-	protected IEntity getAncestorImpl() {
-		return delegator.getAncestor();
-	}
-
-	@Override
-	public NeoEntityDelegator getNode() {
-		return this.delegator;
-	}
-
-	@Override
-	protected void setContentSizeImpl(long contentSize) {
-		delegator.setProperty(PROP_CONTENT_SIZE, contentSize);
-	}
+    @Override
+    public Node getNode() {
+        return this.delegator.getNode();
+    }
 
 }

@@ -1,10 +1,7 @@
 package pl.doa.agent.impl;
 
-import java.io.Serializable;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import pl.doa.GeneralDOAException;
 import pl.doa.IDOA;
 import pl.doa.agent.IAgent;
@@ -14,6 +11,8 @@ import pl.doa.document.impl.DetachedDocument;
 import pl.doa.entity.DetachedEntity;
 import pl.doa.entity.IEntity;
 import pl.doa.entity.IEntityProxy;
+
+import java.io.Serializable;
 
 public class DetachedAgent extends DetachedEntity implements IAgent,
         IEntityProxy<IAgent>, Serializable {
@@ -115,5 +114,4 @@ public class DetachedAgent extends DetachedEntity implements IAgent,
             return null;
         }
     }
-
 }

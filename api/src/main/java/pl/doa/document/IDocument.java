@@ -41,116 +41,110 @@
  *******************************************************************************/
 package pl.doa.document;
 
-import java.util.Iterator;
-import java.util.List;
-
 import pl.doa.GeneralDOAException;
 import pl.doa.document.alignment.IDocumentAligner;
 import pl.doa.document.field.DocumentFieldDataType;
 import pl.doa.document.field.IDocumentFieldValue;
 import pl.doa.entity.IEntity;
 
+import java.util.Iterator;
+import java.util.List;
+
 public interface IDocument extends IEntity {
 
-	/**
-	 * Metoda zwraca referencje do definicji dokumentu.
-	 * 
-	 * @return
-	 */
-	public IDocumentDefinition getDefinition();
+    /**
+     * Metoda zwraca referencje do definicji dokumentu.
+     *
+     * @return
+     */
+    public IDocumentDefinition getDefinition();
 
-	/**
-	 * Metoda sprawdza czy pole o podanej nazwie jest dostepne w danym
-	 * dokumencie.
-	 * 
-	 * @param fieldName
-	 * @return
-	 */
-	public boolean isFieldAvailable(String fieldName);
+    public void setDefinition(IDocumentDefinition definition);
 
-	/**
-	 * Metoda ustawia wartosc pola. Wartosc jest sprawdzana z definicja
-	 * dokumentu.
-	 * 
-	 * @param fieldName
-	 *            Nazwa pola.
-	 * @param fieldValue
-	 *            Wartosc pola.s
-	 * @throws GeneralDOAException
-	 * @throws GeneralDOAException
-	 */
+    /**
+     * Metoda sprawdza czy pole o podanej nazwie jest dostepne w danym dokumencie.
+     *
+     * @param fieldName
+     * @return
+     */
+    public boolean isFieldAvailable(String fieldName);
 
-	public void setFieldValue(String fieldName, Object fieldValue)
-			throws GeneralDOAException;
+    /**
+     * Metoda ustawia wartosc pola. Wartosc jest sprawdzana z definicja dokumentu.
+     *
+     * @param fieldName  Nazwa pola.
+     * @param fieldValue Wartosc pola.s
+     * @throws GeneralDOAException
+     * @throws GeneralDOAException
+     */
 
-	public void setFieldValue(String fieldName, Object fieldValue,
-			DocumentFieldDataType dataType) throws GeneralDOAException;
+    public void setFieldValue(String fieldName, Object fieldValue)
+            throws GeneralDOAException;
 
-	public void setFieldValue(String fieldName, IDocumentFieldValue otherField)
-			throws GeneralDOAException;
+    public void setFieldValue(String fieldName, Object fieldValue,
+                              DocumentFieldDataType dataType) throws GeneralDOAException;
 
-	public IDocumentFieldValue getField(String fieldName, boolean createIfNull)
-			throws GeneralDOAException;
+    public void setFieldValue(String fieldName, IDocumentFieldValue otherField)
+            throws GeneralDOAException;
 
-	public IDocumentFieldValue getField(String fieldName);
+    public IDocumentFieldValue getField(String fieldName, boolean createIfNull)
+            throws GeneralDOAException;
 
-	/**
-	 * Metoda zwraca wartosc pola o podanej nazwie.
-	 * 
-	 * @param fieldName
-	 * @return
-	 */
-	public Object getFieldValue(String fieldName);
+    public IDocumentFieldValue getField(String fieldName);
 
-	public Object getFieldValue(String fieldName, Object whenNull);
+    /**
+     * Metoda zwraca wartosc pola o podanej nazwie.
+     *
+     * @param fieldName
+     * @return
+     */
+    public Object getFieldValue(String fieldName);
 
-	/**
-	 * Metoda zwraca liste wszystkich pol dokumentu
-	 * 
-	 * @return
-	 */
-	public Iterator<String> getFieldsNames();
+    public Object getFieldValue(String fieldName, Object whenNull);
 
-	public Iterator<IDocumentFieldValue> getFields();
+    /**
+     * Metoda zwraca liste wszystkich pol dokumentu
+     *
+     * @return
+     */
+    public Iterator<String> getFieldsNames();
 
-	public String getFieldValueAsString(String fieldName);
+    public Iterator<IDocumentFieldValue> getFields();
 
-	public void setDefinition(IDocumentDefinition definition);
+    public void setFields(List<IDocumentFieldValue> list);
 
-	public void validateDocument(IDocumentDefinition definition)
-			throws DocumentValidationException;
+    public String getFieldValueAsString(String fieldName);
 
-	public void validateDocument() throws DocumentValidationException;
+    public void validateDocument(IDocumentDefinition definition)
+            throws DocumentValidationException;
 
-	/**
-	 * Metoda zwraca flage, ktora informuje, czy dokument jest zbudowany na
-	 * podstawie definicji dokumentu, ktorej lokalizacja jest podana jako
-	 * parametr.
-	 * 
-	 * @param documentDefinitionPath
-	 *            Lokalizacja definicji dokumentu.
-	 * @return
-	 */
-	public boolean isDefinedBy(IDocumentDefinition documentDefinition);
+    public void validateDocument() throws DocumentValidationException;
 
-	public boolean isDefinedBy(String documentDefinitionLocation);
+    /**
+     * Metoda zwraca flage, ktora informuje, czy dokument jest zbudowany na podstawie definicji dokumentu, ktorej
+     * lokalizacja jest podana jako parametr.
+     *
+     * @param documentDefinitionPath Lokalizacja definicji dokumentu.
+     * @return
+     */
+    public boolean isDefinedBy(IDocumentDefinition documentDefinition);
 
-	public void setFields(List<IDocumentFieldValue> list);
+    public boolean isDefinedBy(String documentDefinitionLocation);
 
-	public IDocument align(IDocumentDefinition toDefinition)
-			throws GeneralDOAException;
+    public IDocument align(IDocumentDefinition toDefinition)
+            throws GeneralDOAException;
 
-	public IDocumentAligner getAligner(IDocumentDefinition toDefinition);
+    public IDocumentAligner getAligner(IDocumentDefinition toDefinition);
 
-	public void copyFieldFrom(IDocument input, String fieldName)
-			throws GeneralDOAException;
+    public void copyFieldFrom(IDocument input, String fieldName)
+            throws GeneralDOAException;
 
-	public void copyFieldFrom(IDocument input, String sourceFieldName,
-			String destFileName) throws GeneralDOAException;
+    public void copyFieldFrom(IDocument input, String sourceFieldName,
+                              String destFileName) throws GeneralDOAException;
 
-	public IDocument createCopy() throws GeneralDOAException;
+    public IDocument createCopy() throws GeneralDOAException;
 
-	public IDocument createCopy(IDocumentFieldEvaluator evaluator)
-			throws GeneralDOAException;
+    public IDocument createCopy(IDocumentFieldEvaluator evaluator)
+            throws GeneralDOAException;
 
 }

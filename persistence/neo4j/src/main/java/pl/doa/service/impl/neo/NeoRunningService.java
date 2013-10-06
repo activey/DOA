@@ -40,15 +40,9 @@
  *    Inhibi Ltd - initial API and implementation
  *******************************************************************************/
 /**
- * 
+ *
  */
 package pl.doa.service.impl.neo;
-
-import java.io.Serializable;
-import java.text.MessageFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
 
 import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.GraphDatabaseService;
@@ -56,7 +50,6 @@ import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Relationship;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import pl.doa.GeneralDOAException;
 import pl.doa.IDOA;
 import pl.doa.INeoObject;
@@ -75,397 +68,387 @@ import pl.doa.relation.DOARelationship;
 import pl.doa.service.IServiceDefinition;
 import pl.doa.service.impl.AbstractRunningService;
 
+import java.io.Serializable;
+import java.text.MessageFormat;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
 /**
- * Klasa jest odpowiedzialna za wykonanie uslugi na podstawie jej definicji.
- * Definicja uslugi zawiera tylko i wylacznie implementacje logiki uslugi. Klasa
- * DOARunningService czuwa nad calemy procesem wykonania uslugi.
- * 
+ * Klasa jest odpowiedzialna za wykonanie uslugi na podstawie jej definicji. Definicja uslugi zawiera tylko i wylacznie
+ * implementacje logiki uslugi. Klasa DOARunningService czuwa nad calemy procesem wykonania uslugi.
+ *
  * @author activey
- * 
  */
 public class NeoRunningService extends AbstractRunningService implements
-		INeoObject, Serializable {
+        INeoObject, Serializable {
 
-	private final static Logger log = LoggerFactory
-			.getLogger(NeoRunningService.class);
+    public static final String PROP_ASYNCHRONOUS = "asynchronous";
+    public static final String PROP_SERIALIZED_STATE = "serializedState";
+    private final static Logger log = LoggerFactory
+            .getLogger(NeoRunningService.class);
+    private NeoEntityDelegator delegator;
 
-	public static final String PROP_ASYNCHRONOUS = "asynchronous";
+    public NeoRunningService(IDOA doa, Node underlyingNode) {
+        super(doa);
+        this.delegator = new NeoEntityDelegator(doa, underlyingNode);
+    }
 
-	public static final String PROP_SERIALIZED_STATE = "serializedState";
+    public NeoRunningService(IDOA doa, GraphDatabaseService neo, String name) {
+        super(doa);
+        this.delegator = new NeoEntityDelegator(doa, neo, this.getClass()
+                .getName());
+        setName(name);
+    }
 
-	private NeoEntityDelegator delegator;
+    public NeoRunningService(IDOA doa, GraphDatabaseService neo) {
+        super(doa);
+        this.delegator = new NeoEntityDelegator(doa, neo, this.getClass()
+                .getName());
+        setName(delegator.getId() + "");
+    }
 
-	public NeoRunningService(IDOA doa, Node underlyingNode) {
-		super(doa);
-		this.delegator = new NeoEntityDelegator(doa, underlyingNode);
-	}
+    /*
+     * (non-Javadoc)
+     *
+     * @see pl.doa.service.impl.neo.IRunningService#getServiceDefinition()
+     */
+    @Override
+    protected NeoServiceDefinition getServiceDefinitionImpl() {
+        Relationship relation = delegator.getNode().getSingleRelationship(
+                DOARelationship.HAS_RUNNING_SERVICE, Direction.INCOMING);
+        if (relation == null) {
+            log.error("HAS_RUNNING_SERVICE relation doesn't exist!");
+            return null;
+        }
+        Node serviceDefNode = relation.getStartNode();
+        return new NeoServiceDefinition(doa, serviceDefNode);
+    }
 
-	public NeoRunningService(IDOA doa, GraphDatabaseService neo, String name) {
-		super(doa);
-		this.delegator = new NeoEntityDelegator(doa, neo, this.getClass()
-				.getName());
-		setName(name);
-	}
+    /*
+     * (non-Javadoc)
+     *
+     * @see
+     * pl.doa.service.impl.neo.IRunningService#setServiceDefinition(pl.doa.service
+     * .impl.neo.NeoServiceDefinition)
+     */
+    @Override
+    protected void setServiceDefinitionImpl(IServiceDefinition serviceDefinition) {
+        serviceDefinition.addRunning(this);
+    }
 
-	public NeoRunningService(IDOA doa, GraphDatabaseService neo) {
-		super(doa);
-		this.delegator = new NeoEntityDelegator(doa, neo, this.getClass()
-				.getName());
-		setName(delegator.getId() + "");
-	}
+    /*
+     * (non-Javadoc)
+     *
+     * @see pl.doa.service.impl.neo.IRunningService#getAgent()
+     */
+    @Override
+    protected IAgent getAgentImpl() {
+        if (!delegator.getNode().hasRelationship(DOARelationship.IS_STARTED_BY,
+                Direction.OUTGOING)) {
+            return null;
+        }
+        Node agentNode = delegator.getNode().getSingleRelationship(
+                DOARelationship.IS_STARTED_BY, Direction.OUTGOING).getEndNode();
+        return new NeoAgent(doa, agentNode);
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see pl.doa.service.impl.neo.IRunningService#getServiceDefinition()
-	 */
-	@Override
-	protected NeoServiceDefinition getServiceDefinitionImpl() {
-		Relationship relation = delegator.getSingleRelationship(
-				DOARelationship.HAS_RUNNING_SERVICE, Direction.INCOMING);
-		if (relation == null) {
-			log.error("HAS_RUNNING_SERVICE relation doesn't exist!");
-			return null;
-		}
-		Node serviceDefNode = relation.getStartNode();
-		return new NeoServiceDefinition(doa, serviceDefNode);
-	}
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see pl.doa.service.impl.neo.IRunningService#getAgent()
-	 */
-	@Override
-	protected IAgent getAgentImpl() {
-		if (!delegator.hasRelationship(DOARelationship.IS_STARTED_BY,
-				Direction.OUTGOING)) {
-			return null;
-		}
-		Node agentNode = delegator.getSingleRelationship(
-				DOARelationship.IS_STARTED_BY, Direction.OUTGOING).getEndNode();
-		return new NeoAgent(doa, agentNode);
+    /*
+     * (non-Javadoc)
+     *
+     * @see
+     * pl.doa.service.impl.neo.IRunningService#setAgent(pl.doa.agent.impl.neo
+     * .NeoAgent)
+     */
+    @Override
+    protected void setAgentImpl(IAgent agent) {
+        if (agent == null) {
+            if (delegator.getNode().hasRelationship(DOARelationship.IS_STARTED_BY,
+                    Direction.OUTGOING)) {
+                Relationship rel = delegator.getNode().getSingleRelationship(
+                        DOARelationship.IS_STARTED_BY, Direction.OUTGOING);
+                rel.delete();
+                return;
+            }
+            return;
+        }
+        INeoObject neoEntity = (INeoObject) agent;
+        delegator.getNode().createRelationshipTo(neoEntity.getNode(),
+                DOARelationship.IS_STARTED_BY);
+    }
 
-	}
+    @Override
+    protected IDocument getInputImpl() {
+        if (!delegator.getNode().hasRelationship(DOARelationship.HAS_INPUT,
+                Direction.OUTGOING)) {
+            return null;
+        }
+        Node inputNode = delegator.getNode().getSingleRelationship(
+                DOARelationship.HAS_INPUT, Direction.OUTGOING).getEndNode();
+        return new NeoDocument(doa, inputNode);
+    }
 
-	@Override
-	protected IDocument getInputImpl() {
-		if (!delegator.hasRelationship(DOARelationship.HAS_INPUT,
-				Direction.OUTGOING)) {
-			return null;
-		}
-		Node inputNode = delegator.getSingleRelationship(
-				DOARelationship.HAS_INPUT, Direction.OUTGOING).getEndNode();
-		return new NeoDocument(doa, inputNode);
-	}
+    /*
+     * (non-Javadoc)
+     *
+     * @see
+     * pl.doa.service.impl.neo.IRunningService#setInput(pl.doa.document.impl
+     * .neo.NeoDocument)
+     */
+    @Override
+    protected void setInputImpl(IDocument input) {
+        INeoObject neoEntity = (INeoObject) input;
+        if (input == null) {
+            if (delegator.getNode().hasRelationship(DOARelationship.HAS_INPUT,
+                    Direction.OUTGOING)) {
+                Relationship relation = delegator.getNode().getSingleRelationship(DOARelationship.HAS_INPUT,
+                        Direction.OUTGOING);
+                relation.delete();;
+                return;
+            }
+            return;
+        }
+        delegator.getNode().createRelationshipTo(neoEntity.getNode(),
+                DOARelationship.HAS_INPUT);
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * pl.doa.service.impl.neo.IRunningService#setInput(pl.doa.document.impl
-	 * .neo.NeoDocument)
-	 */
-	@Override
-	protected void setInputImpl(IDocument input) {
-		INeoObject neoEntity = (INeoObject) input;
-		if (input == null) {
-			if (delegator.hasRelationship(DOARelationship.HAS_INPUT,
-					Direction.OUTGOING)) {
-				delegator.removeRelationship(DOARelationship.HAS_INPUT,
-						Direction.OUTGOING);
-				return;
-			}
-			return;
-		}
-		delegator.createRelationshipTo(neoEntity.getNode(),
-				DOARelationship.HAS_INPUT);
-	}
+    /**
+     * Metoda zwraca dokument wynikowy uslugi. W przypadku gdy usluga jest w trybie oczekiwania na dokument wynikowy innej
+     * uslugi, nalezy zwrocic dokument, ktory bedzie o tym informowal agenta.
+     *
+     * @return
+     */
 
-	/**
-	 * Metoda zwraca dokument wynikowy uslugi. W przypadku gdy usluga jest w
-	 * trybie oczekiwania na dokument wynikowy innej uslugi, nalezy zwrocic
-	 * dokument, ktory bedzie o tym informowal agenta.
-	 * 
-	 * @return
-	 */
+    @Override
+    protected IDocument getOutputImpl() {
+        if (!delegator.getNode().hasRelationship(DOARelationship.HAS_OUTPUT,
+                Direction.OUTGOING)) {
+            // return createWaitingDocument();
+            return null;
+        }
+        Node outputNode = delegator.getNode().getSingleRelationship(
+                DOARelationship.HAS_OUTPUT, Direction.OUTGOING).getEndNode();
+        if (outputNode == null) {
+            return createWaitingDocument();
+        }
+        IDocument doc = new NeoDocument(doa, outputNode);
+        return doc;
+    }
 
-	@Override
-	protected IDocument getOutputImpl() {
-		if (!delegator.hasRelationship(DOARelationship.HAS_OUTPUT,
-				Direction.OUTGOING)) {
-			// return createWaitingDocument();
-			return null;
-		}
-		Node outputNode = delegator.getSingleRelationship(
-				DOARelationship.HAS_OUTPUT, Direction.OUTGOING).getEndNode();
-		if (outputNode == null) {
-			return createWaitingDocument();
-		}
-		IDocument doc = new NeoDocument(doa, outputNode);
-		return doc;
-	}
+    /*
+     * (non-Javadoc)
+     *
+     * @see
+     * pl.doa.service.impl.neo.IRunningService#setOutput(pl.doa.document.impl
+     * .neo.NeoDocument)
+     */
+    @Override
+    protected void setOutputImpl(IDocument output) {
+        if (output == null) {
+            if (delegator.getNode().hasRelationship(DOARelationship.HAS_OUTPUT,
+                    Direction.OUTGOING)) {
+                delegator.getNode().getSingleRelationship(DOARelationship.HAS_OUTPUT,
+                        Direction.OUTGOING).delete();
+                return;
+            }
+            return;
+        }
+        if (delegator.getNode().hasRelationship(DOARelationship.HAS_OUTPUT,
+                Direction.OUTGOING)) {
+            log.debug(MessageFormat.format(
+                    "service with id = {0} has already output set!", getId()));
+            return;
+        }
+        INeoObject neoEntity = (INeoObject) output;
+        delegator.getNode().createRelationshipTo(neoEntity.getNode(),
+                DOARelationship.HAS_OUTPUT);
+    }
 
-	protected final IDocument createWaitingDocument() {
-		try {
-			IDocumentDefinition def = (IDocumentDefinition) doa
-					.lookupEntityByLocation("/documents/system/waiting_for_document");
-			IDocument doc = def.createDocumentInstance();
-			// sprawdzanie, czy uruchomoina usluga jest skojarzona z jakims
-			// sluchaczem
+    protected final IDocument createWaitingDocument() {
+        try {
+            IDocumentDefinition def = (IDocumentDefinition) doa
+                    .lookupEntityByLocation("/documents/system/waiting_for_document");
+            IDocument doc = def.createDocumentInstance();
+            // sprawdzanie, czy uruchomoina usluga jest skojarzona z jakims
+            // sluchaczem
 
-			// TODO !!!
-			doc.setFieldValue("message", "proces trwa");
+            // TODO !!!
+            doc.setFieldValue("message", "proces trwa");
 
-			return doc;
-		} catch (GeneralDOAException e) {
-			log.error("", e);
-		}
-		return null;
-	}
+            return doc;
+        } catch (GeneralDOAException e) {
+            log.error("", e);
+        }
+        return null;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * pl.doa.service.impl.neo.IRunningService#setServiceDefinition(pl.doa.service
-	 * .impl.neo.NeoServiceDefinition)
-	 */
-	@Override
-	protected void setServiceDefinitionImpl(IServiceDefinition serviceDefinition) {
-		serviceDefinition.addRunning(this);
-	}
+    /*
+     * (non-Javadoc)
+     *
+     * @see pl.doa.service.impl.neo.IRunningService#isAsynchronous()
+     */
+    @Override
+    protected boolean isAsynchronousImpl() {
+        return (Boolean) delegator.getNode().getProperty(PROP_ASYNCHRONOUS);
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * pl.doa.service.impl.neo.IRunningService#setAgent(pl.doa.agent.impl.neo
-	 * .NeoAgent)
-	 */
-	@Override
-	protected void setAgentImpl(IAgent agent) {
-		if (agent == null) {
-			if (delegator.hasRelationship(DOARelationship.IS_STARTED_BY,
-					Direction.OUTGOING)) {
-				Relationship rel = delegator.getSingleRelationship(
-						DOARelationship.IS_STARTED_BY, Direction.OUTGOING);
-				rel.delete();
-				return;
-			}
-			return;
-		}
-		INeoObject neoEntity = (INeoObject) agent;
-		delegator.createRelationshipTo(neoEntity.getNode(),
-				DOARelationship.IS_STARTED_BY);
-	}
+    /*
+     * (non-Javadoc)
+     *
+     * @see pl.doa.service.impl.neo.IRunningService#setAsynchronous(boolean)
+     */
+    @Override
+    protected void setAsynchronousImpl(boolean asynchronous) {
+        delegator.getNode().setProperty(PROP_ASYNCHRONOUS, asynchronous);
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * pl.doa.service.impl.neo.IRunningService#setOutput(pl.doa.document.impl
-	 * .neo.NeoDocument)
-	 */
-	@Override
-	protected void setOutputImpl(IDocument output) {
-		if (output == null) {
-			if (delegator.hasRelationship(DOARelationship.HAS_OUTPUT,
-					Direction.OUTGOING)) {
-				delegator.getSingleRelationship(DOARelationship.HAS_OUTPUT,
-						Direction.OUTGOING).delete();
-				return;
-			}
-			return;
-		}
-		if (delegator.hasRelationship(DOARelationship.HAS_OUTPUT,
-				Direction.OUTGOING)) {
-			log.debug(MessageFormat.format(
-					"service with id = {0} has already output set!", getId()));
-			return;
-		}
-		INeoObject neoEntity = (INeoObject) output;
-		delegator.createRelationshipTo(neoEntity.getNode(),
-				DOARelationship.HAS_OUTPUT);
-	}
+    @Override
+    protected void setAttributeImpl(String attrName, String attrValue) {
+        delegator.setAttribute(attrName, attrValue);
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see pl.doa.service.impl.neo.IRunningService#setAsynchronous(boolean)
-	 */
-	@Override
-	protected void setAsynchronousImpl(boolean asynchronous) {
-		delegator.setProperty(PROP_ASYNCHRONOUS, asynchronous);
-	}
+    @Override
+    protected void setAttributeImpl(IEntityAttribute attributte) {
+        delegator.setAttribute(attributte);
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see pl.doa.service.impl.neo.IRunningService#isAsynchronous()
-	 */
-	@Override
-	protected boolean isAsynchronousImpl() {
-		return (Boolean) delegator.getProperty(PROP_ASYNCHRONOUS);
-	}
+    @Override
+    protected void removeAttributesImpl() {
+        delegator.removeAttributes();
+    }
 
-	@Override
-	protected void setAttributeImpl(String attrName, String attrValue) {
-		delegator.setAttribute(attrName, attrValue);
-	}
+    @Override
+    protected boolean removeImpl(boolean forceRemoveContents) {
+        if (delegator.getNode().hasRelationship(DOARelationship.IS_STARTED_BY)) {
+            return false;
+        }
+        return delegator.remove();
+    }
 
-	@Override
-	protected void setAttributeImpl(IEntityAttribute attributte) {
-		delegator.setAttribute(attributte);
-	}
+    @Override
+    protected boolean isStoredImpl() {
+        return delegator.isStored();
+    }
 
-	@Override
-	protected void removeAttributesImpl() {
-		delegator.removeAttributes();
-	}
+    @Override
+    protected long getIdImpl() {
+        return delegator.getId();
+    }
 
-	@Override
-	protected boolean removeImpl(boolean forceRemoveContents) {
-		if (delegator.hasRelationship(DOARelationship.IS_STARTED_BY)) {
-			return false;
-		}
-		return delegator.remove();
-	}
+    @Override
+    protected String getNameImpl() {
+        return delegator.getName();
+    }
 
-	@Override
-	protected boolean isStoredImpl() {
-		return delegator.isStored();
-	}
+    @Override
+    protected void setNameImpl(String name) {
+        delegator.setName(name);
+    }
 
-	@Override
-	protected long getIdImpl() {
-		return delegator.getId();
-	}
+    @Override
+    protected IEntitiesContainer getContainerImpl() {
+        return delegator.getContainer();
+    }
 
-	@Override
-	protected String getNameImpl() {
-		return delegator.getName();
-	}
+    @Override
+    protected void setContainerImpl(IEntitiesContainer container) throws GeneralDOAException {
+        delegator.setContainer(container);
+    }
 
-	@Override
-	protected void setNameImpl(String name) {
-		delegator.setName(name);
-	}
+    @Override
+    protected String getLocationImpl() {
+        return delegator.getLocation();
+    }
 
-	@Override
-	protected IEntitiesContainer getContainerImpl() {
-		return delegator.getContainer();
-	}
+    @Override
+    protected boolean hasAttributesImpl() {
+        return delegator.hasAttributes();
+    }
 
-	@Override
-	protected String getLocationImpl() {
-		return delegator.getLocation();
-	}
+    @Override
+    protected Collection<String> getAttributeNamesImpl() {
+        return delegator.getAttributeNames();
+    }
 
-	@Override
-	protected boolean hasAttributesImpl() {
-		return delegator.hasAttributes();
-	}
+    @Override
+    protected String getAttributeImpl(String attrName) {
+        return delegator.getAttribute(attrName);
+    }
 
-	@Override
-	protected List<String> getAttributeNamesImpl() {
-		return delegator.getAttributeNames();
-	}
+    @Override
+    protected IEntityAttribute getAttributeObjectImpl(String attrName) {
+        return delegator.getAttributeObject(attrName);
+    }
 
-	@Override
-	protected String getAttributeImpl(String attrName) {
-		return delegator.getAttribute(attrName);
-	}
+    @Override
+    protected IEntity storeImpl(String location) throws Throwable {
+        return delegator.store(location);
+    }
 
-	@Override
-	protected String getAttributeImpl(String attrName, String defaultValue) {
-		return delegator.getAttribute(attrName, defaultValue);
-	}
+    @Override
+    protected void setAttributesImpl(Map<String, String> attributes) {
+        delegator.setAttributes(attributes);
+    }
 
-	@Override
-	protected IEntityAttribute getAttributeObjectImpl(String attrName) {
-		return delegator.getAttributeObject(attrName);
-	}
+    @Override
+    protected boolean hasEventListenersImpl() {
+        return delegator.hasEventListeners();
+    }
 
-	@Override
-	protected IEntity storeImpl(String location) throws Throwable {
-		return delegator.store(location);
-	}
+    @Override
+    protected List<IEntityEventListener> getEventListenersImpl() {
+        return delegator.getEventListeners();
+    }
 
-	@Override
-	protected void setContainerImpl(IEntitiesContainer container) {
-		delegator.setContainer(container);
-	}
+    @Override
+    protected boolean isPublicImpl() {
+        return delegator.isPublic();
+    }
 
-	@Override
-	protected void setAttributesImpl(Map<String, String> attributes) {
-		delegator.setAttributes(attributes);
-	}
+    @Override
+    protected IArtifact getArtifactImpl() {
+        return delegator.getArtifact();
+    }
 
-	@Override
-	protected boolean hasEventListenersImpl() {
-		return delegator.hasEventListeners();
-	}
+    @Override
+    protected Date getLastModifiedImpl() {
+        return delegator.getLastModified();
+    }
 
-	@Override
-	protected List<IEntityEventListener> getEventListenersImpl() {
-		return delegator.getEventListeners();
-	}
+    @Override
+    protected Date getCreatedImpl() {
+        return delegator.getCreated();
+    }
 
-	@Override
-	protected boolean isPublicImpl() {
-		return delegator.isPublic();
-	}
 
-	@Override
-	protected IArtifact getArtifactImpl() {
-		return delegator.getArtifact();
-	}
+    @Override
+    protected IEntity getAncestorImpl() {
+        return delegator.getAncestor();
+    }
 
-	@Override
-	protected Date getLastModifiedImpl() {
-		return delegator.getLastModified();
-	}
 
-	@Override
-	protected Date getCreatedImpl() {
-		return delegator.getCreated();
-	}
+    @Override
+    public void serializeState(byte[] stateData) {
+        delegator.getNode().setProperty(PROP_SERIALIZED_STATE, stateData);
+    }
 
-	@Override
-	protected IEntity redeployImpl(IEntity newEntity) throws Throwable {
-		if (newEntity instanceof INeoObject) {
-			return delegator.redeploy(newEntity);
-		}
-		throw new GeneralDOAException("Not INeoObject");
-	}
+    @Override
+    public byte[] deserializeState() {
+        if (!delegator.getNode().hasProperty(PROP_SERIALIZED_STATE)) {
+            return null;
+        }
+        return (byte[]) delegator.getNode().getProperty(PROP_SERIALIZED_STATE);
+    }
 
-	@Override
-	protected IEntity getAncestorImpl() {
-		return delegator.getAncestor();
-	}
+    @Override
+    public IEntityEventListener getAwaitedEventListener() {
+        return delegator.getAwaitedEventListener();
+    }
 
-	@Override
-	public NeoEntityDelegator getNode() {
-		return this.delegator;
-	}
-
-	@Override
-	public void serializeState(byte[] stateData) {
-		delegator.setProperty(PROP_SERIALIZED_STATE, stateData);
-	}
-
-	@Override
-	public byte[] deserializeState() {
-		if (!delegator.hasProperty(PROP_SERIALIZED_STATE)) {
-			return null;
-		}
-		return (byte[]) delegator.getProperty(PROP_SERIALIZED_STATE);
-	}
-
-	@Override
-	public IEntityEventListener getAwaitedEventListener() {
-		return delegator.getAwaitedEventListener();
-	}
-
+    @Override
+    public Node getNode() {
+        return delegator.getNode();
+    }
 }

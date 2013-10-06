@@ -3,13 +3,13 @@
  */
 package pl.doa.entity.event;
 
+import pl.doa.IDOA;
+import pl.doa.entity.IEntity;
+
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
-
-import pl.doa.IDOA;
-import pl.doa.entity.IEntity;
 
 /**
  * @author activey

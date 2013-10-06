@@ -3,20 +3,13 @@
  */
 package pl.doa.channel.impl.neo;
 
-import java.io.Serializable;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import pl.doa.GeneralDOAException;
 import pl.doa.IDOA;
 import pl.doa.INeoObject;
-import pl.doa.NeoEntityDelegator;
 import pl.doa.NeoStartableEntityDelegator;
 import pl.doa.artifact.IArtifact;
 import pl.doa.channel.impl.AbstractOutgoingChannel;
@@ -25,6 +18,12 @@ import pl.doa.entity.IEntity;
 import pl.doa.entity.IEntityAttribute;
 import pl.doa.entity.event.IEntityEventListener;
 
+import java.io.Serializable;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
 /**
  * @author Damian
  */
@@ -32,7 +31,6 @@ public class NeoOutgoingChannel extends AbstractOutgoingChannel implements
         INeoObject, Serializable {
 
     private final static Logger log = LoggerFactory.getLogger(NeoChannel.class);
-
     private NeoStartableEntityDelegator delegator;
 
     public NeoOutgoingChannel(IDOA doa, Node underlyingNode) {
@@ -91,12 +89,17 @@ public class NeoOutgoingChannel extends AbstractOutgoingChannel implements
     }
 
     @Override
+    protected void setContainerImpl(IEntitiesContainer container) throws GeneralDOAException {
+        delegator.setContainer(container);
+    }
+
+    @Override
     protected String getLocationImpl() {
         return delegator.getLocation();
     }
 
     @Override
-    protected List<String> getAttributeNamesImpl() {
+    protected Collection<String> getAttributeNamesImpl() {
         return delegator.getAttributeNames();
     }
 
@@ -111,11 +114,6 @@ public class NeoOutgoingChannel extends AbstractOutgoingChannel implements
     }
 
     @Override
-    protected String getAttributeImpl(String attrName, String defaultValue) {
-        return delegator.getAttribute(attrName, defaultValue);
-    }
-
-    @Override
     protected IEntityAttribute getAttributeObjectImpl(String attrName) {
         return delegator.getAttributeObject(attrName);
     }
@@ -123,11 +121,6 @@ public class NeoOutgoingChannel extends AbstractOutgoingChannel implements
     @Override
     protected IEntity storeImpl(String location) throws Throwable {
         return delegator.store(location);
-    }
-
-    @Override
-    protected void setContainerImpl(IEntitiesContainer container) {
-        delegator.setContainer(container);
     }
 
     @Override
@@ -166,14 +159,6 @@ public class NeoOutgoingChannel extends AbstractOutgoingChannel implements
     }
 
     @Override
-    protected IEntity redeployImpl(IEntity newEntity) throws Throwable {
-        if (newEntity instanceof INeoObject) {
-            return delegator.redeploy(newEntity);
-        }
-        throw new GeneralDOAException("Not INeoObject");
-    }
-
-    @Override
     protected IEntity getAncestorImpl() {
         return delegator.getAncestor();
     }
@@ -204,9 +189,8 @@ public class NeoOutgoingChannel extends AbstractOutgoingChannel implements
     }
 
     @Override
-    public NeoEntityDelegator getNode() {
-        return this.delegator;
+    public Node getNode() {
+        return this.delegator.getNode();
     }
-
 
 }

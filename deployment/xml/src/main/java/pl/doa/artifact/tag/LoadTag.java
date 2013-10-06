@@ -167,7 +167,6 @@ public class LoadTag extends DeploymentProcessorSupportTag {
                                 destContainer.getLocation(), destLocation));
                     }
                 }
-                getArtifact().registerEntity(entity);
                 continue;
             }
         }

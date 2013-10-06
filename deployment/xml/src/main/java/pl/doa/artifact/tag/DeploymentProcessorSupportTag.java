@@ -44,12 +44,13 @@ package pl.doa.artifact.tag;
 import pl.doa.GeneralDOAException;
 import pl.doa.IDOA;
 import pl.doa.agent.IAgent;
-import pl.doa.artifact.IArtifact;
+import pl.doa.artifact.deploy.DeploymentContext;
 import pl.doa.artifact.deploy.IDeploymentProcessor;
 import pl.doa.channel.IChannel;
 import pl.doa.channel.IIncomingChannel;
 import pl.doa.channel.IOutgoingChannel;
 import pl.doa.container.IEntitiesContainer;
+import pl.doa.document.IDocument;
 import pl.doa.document.IDocumentDefinition;
 import pl.doa.document.alignment.IDocumentAligner;
 import pl.doa.entity.IEntity;
@@ -67,78 +68,81 @@ import pl.doa.templates.tags.Tag;
  */
 public abstract class DeploymentProcessorSupportTag extends Tag {
 
-    public static final String VAR_DOA = "doa";
 
-    public static final String VAR_ARTIFACT = "artifact";
-
-    private IDeploymentProcessor processor;
-
-    protected IArtifact getArtifact() {
-        return (IArtifact) context.getVariable(VAR_ARTIFACT);
+    protected IDeploymentProcessor getProcessor() {
+        return (IDeploymentProcessor) context.getVariable(DeploymentContext.VAR_PROCESSOR);
     }
 
-    public void setProcessor(IDeploymentProcessor processor) {
-        this.processor = processor;
+    protected DeploymentContext getContext() {
+        return (DeploymentContext) context;
     }
 
     public IEntitiesContainer createEntitiesContainer(String name) throws GeneralDOAException {
-        return processor.createEntitiesContainer(name, getParentContainer());
+        return getProcessor().createEntitiesContainer(name, getParentContainer());
     }
 
     public IEntityReference createReference(String name, IEntity entity) throws GeneralDOAException {
-        return processor.createReference(name, entity, getParentContainer());
+        return getProcessor().createReference(name, entity, getParentContainer());
     }
 
     public IAgent createAgent(String name) throws GeneralDOAException {
-        return processor.createAgent(name, getParentContainer());
+        return getProcessor().createAgent(name, getParentContainer());
     }
 
     public IDOA createDOA(String name, String logicClass) throws GeneralDOAException {
-        return processor.createDOA(name, logicClass, getParentContainer());
+        return getProcessor().createDOA(name, logicClass, getParentContainer());
     }
 
     public IRenderer createRenderer(String name, String logicClass, String mimetype) throws GeneralDOAException {
-        return processor.createRenderer(name, logicClass, mimetype, getParentContainer());
+        return getProcessor().createRenderer(name, logicClass, mimetype, getParentContainer());
     }
 
     public IChannel createChannel(String name, String logicClass) throws GeneralDOAException {
-        return processor.createChannel(name, logicClass, getParentContainer());
+        return getProcessor().createChannel(name, logicClass, getParentContainer());
     }
 
     public IIncomingChannel createIncomingChannel(String name, String logicClass) throws GeneralDOAException {
-        return processor.createIncomingChannel(name, logicClass, getParentContainer());
+        return getProcessor().createIncomingChannel(name, logicClass, getParentContainer());
     }
 
     public IOutgoingChannel createOutgoingChannel(String name, String logicClass) throws GeneralDOAException {
-        return processor.createOutgoingChannel(name, logicClass, getParentContainer());
+        return getProcessor().createOutgoingChannel(name, logicClass, getParentContainer());
     }
 
     public IStaticResource createStaticResource(String name, String mimetype) throws GeneralDOAException {
-        return processor.createStaticResource(name, mimetype, getParentContainer());
+        return getProcessor().createStaticResource(name, mimetype, getParentContainer());
+    }
+
+    public IDocument createDocument(IDocumentDefinition definition, String name) throws GeneralDOAException {
+        return getProcessor().createDocument(definition, name, getParentContainer());
     }
 
     public IDocumentDefinition createDocumentDefinition(String name) throws GeneralDOAException {
-        return processor.createDocumentDefinition(name, getParentContainer());
+        return getProcessor().createDocumentDefinition(name, getParentContainer());
     }
 
     public IDocumentDefinition createDocumentDefinition(String name, IDocumentDefinition ancestor) throws GeneralDOAException {
-        return processor.createDocumentDefinition(name, getParentContainer(), ancestor);
+        return getProcessor().createDocumentDefinition(name, getParentContainer(), ancestor);
     }
 
     public IServiceDefinition createServiceDefinition(String name, String logicClass) throws GeneralDOAException {
-        return processor.createServiceDefinition(name, logicClass, getParentContainer());
+        return getProcessor().createServiceDefinition(name, logicClass, getParentContainer());
     }
 
     public IServiceDefinition createServiceDefinition(IServiceDefinition ancestor, String name) throws GeneralDOAException {
-        return processor.createServiceDefinition(ancestor, name, getParentContainer());
+        return getProcessor().createServiceDefinition(ancestor, name, getParentContainer());
     }
 
     public IDocumentAligner createDocumentAligner(String name, IDocumentDefinition fromDefinition, IDocumentDefinition toDefinition) throws GeneralDOAException {
-        return processor.createDocumentAligner(name, fromDefinition, toDefinition, getParentContainer());
+        return getProcessor().createDocumentAligner(name, fromDefinition, toDefinition, getParentContainer());
     }
 
     public IEntityEventListener createEntityEventListener(IEntity sourceEntity, IEntityEventReceiver receiver, EntityEventType eventType) throws GeneralDOAException {
-        return processor.createEntityEventListener(sourceEntity, receiver, eventType, getParentContainer());
+        return getProcessor().createEntityEventListener(sourceEntity, receiver, eventType, getParentContainer());
+    }
+
+    public IEntitiesContainer getDeploymentRoot() {
+        return (IEntitiesContainer) context.getVariable(DeploymentContext.VAR_ROOT);
     }
 
     private IEntitiesContainer getParentContainer() {
@@ -153,12 +157,7 @@ public abstract class DeploymentProcessorSupportTag extends Tag {
             throw new UnsupportedOperationException("Setting values in value tag not supported yet!");
             // TODO do it somehow ...
             //((FieldValueTag) parent).setValue(this.entity);
-        } else if (parent instanceof DeployTag) {
-            DeployTag deployTag = (DeployTag) parent;
-            IEntitiesContainer defaultContainer =
-                    deployTag.getDefaultContainer();
-            return defaultContainer;
         }
-        return null;
+        return getDeploymentRoot();
     }
 }

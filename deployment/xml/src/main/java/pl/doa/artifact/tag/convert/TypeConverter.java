@@ -44,15 +44,14 @@ package pl.doa.artifact.tag.convert;
 import org.apache.commons.beanutils.Converter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import pl.doa.IDOA;
+import pl.doa.artifact.deploy.DeploymentContext;
+import pl.doa.artifact.deploy.IDeploymentProcessor;
 import pl.doa.templates.TemplateContext;
 
 public class TypeConverter implements Converter {
 
     private final static Logger log = LoggerFactory
             .getLogger(TypeConverter.class);
-
     private final TemplateContext context;
 
     public TypeConverter(TemplateContext context) {
@@ -68,8 +67,9 @@ public class TypeConverter implements Converter {
             return value;
         } else if (value instanceof String) {
             try {
-                IDOA doa = (IDOA) context.getVariable("doa");
-                Object obj = doa.instantiateObject((String) value);
+                IDeploymentProcessor processor = (IDeploymentProcessor) context
+                        .getVariable(DeploymentContext.VAR_PROCESSOR);
+                Object obj = processor.instantiateJavaObject((String) value);
                 return obj;
             } catch (Exception e) {
                 log.error("", e);

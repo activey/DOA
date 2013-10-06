@@ -10,6 +10,7 @@ import pl.doa.channel.IChannel;
 import pl.doa.channel.IIncomingChannel;
 import pl.doa.channel.IOutgoingChannel;
 import pl.doa.container.IEntitiesContainer;
+import pl.doa.document.IDocument;
 import pl.doa.document.IDocumentDefinition;
 import pl.doa.document.alignment.IDocumentAligner;
 import pl.doa.entity.IEntity;
@@ -22,6 +23,7 @@ import pl.doa.renderer.IRenderer;
 import pl.doa.resource.IStaticResource;
 import pl.doa.service.IServiceDefinition;
 
+import java.io.File;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -59,8 +61,8 @@ public abstract class AbstractDeploymentProcessor implements IDeploymentProcesso
     }
 
     @Override
-    public IDocumentDefinition createDocumentDefinition(String name, IEntitiesContainer container) throws GeneralDOAException {
-        IDocumentDefinition definition = doa.createDocumentDefinition(name, container);
+    public IDocumentDefinition createDocumentDefinition(String name, IEntitiesContainer parent) throws GeneralDOAException {
+        IDocumentDefinition definition = doa.createDocumentDefinition(name, parent);
         artifact.registerEntity(definition);
         return definition;
     }
@@ -83,8 +85,17 @@ public abstract class AbstractDeploymentProcessor implements IDeploymentProcesso
     @Override
     public IDocumentAligner createDocumentAligner(String name, IDocumentDefinition from, IDocumentDefinition to, IEntitiesContainer parent) throws GeneralDOAException {
         IDocumentAligner aligner = doa.createDocumentAligner(name, from, to);
+        parent.addEntity(aligner);
         artifact.registerEntity(aligner);
         return aligner;
+    }
+
+    @Override
+    public IDocument createDocument(IDocumentDefinition definition, String name, IEntitiesContainer parent) throws GeneralDOAException {
+        IDocument document = definition.createDocumentInstance(name);
+        parent.addEntity(document);
+        artifact.registerEntity(document);
+        return document;
     }
 
     @Override
@@ -146,14 +157,36 @@ public abstract class AbstractDeploymentProcessor implements IDeploymentProcesso
     }
 
     @Override
+    public IEntity lookupEntityByLocation(String location) {
+        return doa.lookupEntityByLocation(location);
+    }
+
+    @Override
     public void registerAutostartEntity(IStartableEntity entity) {
         startableEntities.add(entity);
     }
 
     @Override
-    public void processingDone() {
+    public void process(File deployedFile, IEntitiesContainer deploymentRoot) throws Exception {
+        artifact.setBaseContainer(deploymentRoot);
+        deployArtifact(deployedFile, deploymentRoot);
+        processingDone();
+    }
+
+    @Override
+    public Object instantiateJavaObject(String value) {
+        return doa.instantiateObject(value);
+    }
+
+    public abstract void deployArtifact(File deployedFile, IEntitiesContainer deploymentRoot) throws Exception;
+
+    private void processingDone() {
+        IEntitiesContainer autostart = (IEntitiesContainer) doa.lookupEntityByLocation(IDOA.AUTOSTART_CONTAINER);
+
         for (IStartableEntity startableEntity : startableEntities) {
             try {
+                createReference("startable_" + startableEntity.getId(), startableEntity, autostart);
+
                 log.debug(MessageFormat.format("Starting up entity: {0}",
                         startableEntity.getLocation()));
                 startableEntity.startup();

@@ -42,17 +42,9 @@
 package pl.doa.artifact.tag.convert;
 
 import org.apache.commons.beanutils.Converter;
-
 import pl.doa.entity.event.EntityEventType;
-import pl.doa.templates.TemplateContext;
 
 public class EntityEventTypeConverter implements Converter {
-
-    private final TemplateContext context;
-
-    public EntityEventTypeConverter(TemplateContext context) {
-        this.context = context;
-    }
 
     @Override
     public Object convert(Class type, Object value) {

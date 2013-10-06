@@ -44,17 +44,8 @@
  */
 package pl.doa.impl;
 
-import java.io.InputStream;
-import java.lang.reflect.Field;
-import java.net.URL;
-import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import pl.doa.GeneralDOAException;
 import pl.doa.IDOA;
 import pl.doa.IDOALogic;
@@ -70,18 +61,8 @@ import pl.doa.document.DocumentValidationException;
 import pl.doa.document.IDocument;
 import pl.doa.document.IDocumentDefinition;
 import pl.doa.document.alignment.IDocumentAligner;
-import pl.doa.entity.IEntity;
-import pl.doa.entity.IEntityEvaluator;
-import pl.doa.entity.IEntityProxy;
-import pl.doa.entity.IEntityReference;
-import pl.doa.entity.ITransactionCallback;
-import pl.doa.entity.ITransactionErrorHandler;
-import pl.doa.entity.event.DetachedEvent;
-import pl.doa.entity.event.EntityEventType;
-import pl.doa.entity.event.IEntityEvent;
-import pl.doa.entity.event.IEntityEventDescription;
-import pl.doa.entity.event.IEntityEventListener;
-import pl.doa.entity.event.IEntityEventReceiver;
+import pl.doa.entity.*;
+import pl.doa.entity.event.*;
 import pl.doa.entity.sort.IEntitiesSortComparator;
 import pl.doa.entity.startable.IStartableEntity;
 import pl.doa.entity.startable.IStartableEntityLogic;
@@ -96,6 +77,14 @@ import pl.doa.utils.PathIterator;
 import pl.doa.utils.profile.PerformanceProfiler;
 import pl.doa.utils.profile.impl.ProfileAgentAction;
 
+import java.io.InputStream;
+import java.lang.reflect.Field;
+import java.net.URL;
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 /**
  * @author activey
  */
@@ -104,23 +93,6 @@ public abstract class AbstractDOA extends AbstractStartableEntity implements
 
     // zmienna watku, przechowuje informacje o agencie, ktory wykonuje usluge
     private final static ThreadLocal<Long> agentId = new ThreadLocal<Long>();
-
-    private final static ThreadLocal<List<String>> transactionIdList = new ThreadLocal<List<String>>() {
-
-        protected List<String> initialValue() {
-            return new ArrayList<String>();
-        }
-    };
-
-    private final static ThreadLocal<Boolean> transactionFinished = new ThreadLocal<Boolean>() {
-
-        protected Boolean initialValue() {
-            return true;
-        }
-
-        ;
-    };
-
     private final static Logger log = LoggerFactory
             .getLogger(AbstractDOA.class);
 
@@ -132,11 +104,10 @@ public abstract class AbstractDOA extends AbstractStartableEntity implements
 
     @Override
     public final void publishEvent(final IEntityEventDescription event) {
-
         final IEntity eventEntity = event.getSourceEntity();
         // wyciaganie listy sluchaczy dla konkretnego zdarzenia
         final List<IEntityEventListener> listeners = eventEntity
-                .getEventListeners();
+                .getEventListeners(event);
         if (listeners == null || listeners.size() == 0) {
             log.debug(MessageFormat.format(
                     "There are no event listeners for: [{0}][{1}][{2}]",
@@ -144,10 +115,9 @@ public abstract class AbstractDOA extends AbstractStartableEntity implements
                     eventEntity.getLocation()));
             return;
         }
-        if (!isTransactionFinished()) {
-            saveEvent(event);
-            return;
-        }
+        final IEntityEvent storedEvent = saveEvent(event);
+
+        // TODO reimplement it!!!
         Runnable publishedEvent = new Runnable() {
 
             @Override
@@ -159,10 +129,6 @@ public abstract class AbstractDOA extends AbstractStartableEntity implements
                 log.debug("Event listeners count: " + listeners.size());
                 for (IEntity doaEntity : listeners) {
                     final IEntityEventListener listener = (IEntityEventListener) doaEntity;
-                    if (!listener.eventMatch(event)) {
-                        log.debug("Event does not match, skipping ...");
-                        continue;
-                    }
                     IEntityEventReceiver receiver = listener.getEventReceiver();
                     try {
                         receiver.handleEvent(event);
@@ -189,6 +155,7 @@ public abstract class AbstractDOA extends AbstractStartableEntity implements
                         log.error("", e);
                     }
                 }
+
                 event.getSourceEntity().getDoa()
                         .doInTransaction(new ITransactionCallback() {
 
@@ -197,7 +164,7 @@ public abstract class AbstractDOA extends AbstractStartableEntity implements
                                 log.debug("Removing published event: "
                                         + event.getEventType());
                                 try {
-                                    return ((IEntityEvent) event).remove();
+                                    return storedEvent.remove();
                                 } catch (Exception ex) {
                                     log.error(ex.getMessage());
                                     return null;
@@ -206,23 +173,9 @@ public abstract class AbstractDOA extends AbstractStartableEntity implements
                         });
             }
         };
-        executeThread(publishedEvent);
-    }
+        publishedEvent.run();
 
-    public final Iterable<? extends IEntity> getAutostartEntities() {
-        Iterable<? extends IEntity> startableEntities = lookupEntitiesByLocation(
-                "/", new IEntityEvaluator() {
-
-            @Override
-            public boolean isReturnableEntity(IEntity currentEntity) {
-                if (!(currentEntity instanceof IStartableEntity)) {
-                    return false;
-                }
-                IStartableEntity startable = (IStartableEntity) currentEntity;
-                return startable.isAutostart();
-            }
-        });
-        return startableEntities;
+        //executeThread(publishedEvent);
     }
 
     @Override
@@ -743,18 +696,12 @@ public abstract class AbstractDOA extends AbstractStartableEntity implements
     @Override
     public final <T> T doInTransaction(ITransactionCallback<T> callback) {
         String txId = new Date().getTime() + "_" + Math.random();
-        addTransactionId(txId);
         // log.debug("Starting transaction with id: " + txId);
         T obj = getLogicInstance().doInTransaction(callback);
         // log.debug("Finished transaction with id: " + txId);
-        setTransactionFinished(true);
         final List<IEntityEvent> eventsList = getTransactionEvents(txId);
         for (IEntityEvent event : eventsList) {
             publishEvent(event);
-        }
-        removeTransactionId(txId);
-        if (getTransactionId() != null) {
-            setTransactionFinished(false);
         }
         return obj;
     }
@@ -764,18 +711,11 @@ public abstract class AbstractDOA extends AbstractStartableEntity implements
             ITransactionCallback<T> callback,
             ITransactionErrorHandler errorHandler) {
         String txId = new Date().getTime() + "_" + Math.random();
-        addTransactionId(txId);
         log.debug("Starting transaction with id: " + txId);
         T obj = getLogicInstance().doInTransaction(callback, errorHandler);
         log.debug("Finished transaction with id: " + txId);
-        setTransactionFinished(true); // handling events from finished tx
         for (IEntityEvent event : getTransactionEvents(txId)) {
             publishEvent(event);
-        }
-        removeTransactionId(txId);
-        if (getTransactionId() != null) { // blocks publishing events if any
-            // other tx exists
-            setTransactionFinished(false);
         }
         return obj;
     }
@@ -824,12 +764,9 @@ public abstract class AbstractDOA extends AbstractStartableEntity implements
         return events;
     }
 
-    private void saveEvent(IEntityEventDescription event) {
+    private IEntityEvent saveEvent(IEntityEventDescription event) {
         try {
             IEntityEvent entityEvent = ((DetachedEvent) event).buildEvent(this);
-            entityEvent.setAttribute(IEntityEventDescription.EVENT_TX_ID,
-                    getTransactionId());
-            entityEvent.setName("Event_" + getTransactionId());
             IEntity foundEntity = lookupEntityByLocation(EVENTS_CONTAINER);
             if (foundEntity instanceof IEntitiesContainer) {
                 IEntitiesContainer destContainer = (IEntitiesContainer) foundEntity;
@@ -837,8 +774,10 @@ public abstract class AbstractDOA extends AbstractStartableEntity implements
                     destContainer.addEntity(entityEvent, false);
                 }
             }
+            return entityEvent;
         } catch (GeneralDOAException e) {
-            log.error("Unable to store event: " + event.getEventType());
+            log.error("Unable to store event: " + event.getEventType(), e);
+            return null;
         }
     }
 
@@ -964,7 +903,7 @@ public abstract class AbstractDOA extends AbstractStartableEntity implements
         IDocumentDefinition inputDefinition = definition.getInputDefinition();
         if (inputDefinition != null) {
             /*
-			 * sprawdzanie czy definicja dokumentu wejsciowego jest tozsama z
+             * sprawdzanie czy definicja dokumentu wejsciowego jest tozsama z
 			 * definicja dokumentu dla uslugi. Jezeli definicje sie nie zgadzaja
 			 * - nalezy dokonac alignmentu.
 			 */
@@ -1041,7 +980,7 @@ public abstract class AbstractDOA extends AbstractStartableEntity implements
                         ((asynchronous) ? "asynchronous" : "synchronous")));
 
 		/*
-		 * jezeli jest tryb synchroniczny - zawsze uruchamiany usluge bez
+         * jezeli jest tryb synchroniczny - zawsze uruchamiany usluge bez
 		 * sprawdzania czy instancja jest juz uruchomiona
 		 */
         if (!asynchronous) {
@@ -1155,14 +1094,6 @@ public abstract class AbstractDOA extends AbstractStartableEntity implements
     }
 
     @Override
-    protected IEntity redeployImpl(IEntity newEntity) throws Throwable {
-        if (doa != null) {
-            doa.redeploy(newEntity);
-        }
-        return null;
-    }
-
-    @Override
     public IStartableEntityLogic startup(IStartableEntity startableEntity)
             throws GeneralDOAException {
         if (doa != null) {
@@ -1211,46 +1142,4 @@ public abstract class AbstractDOA extends AbstractStartableEntity implements
     public InputStream retrieve(IStaticResource resource) throws Exception {
         return null;
     }
-
-    @Override
-    public void addTransactionId(String transactionId) {
-        if (transactionId != null) {
-            transactionIdList.get().add(transactionId);
-            transactionFinished.set(false);
-        }
-    }
-
-    @Override
-    public void removeTransactionId(String txId) {
-        // removes most internal transaction
-        if (txId != null) {
-            int size = transactionIdList.get().size();
-            if (size > 0) {
-                if (txId.equals(transactionIdList.get().get(size - 1))) {
-                    transactionIdList.get().remove(size - 1);
-                }
-            }
-        }
-    }
-
-    @Override
-    public String getTransactionId() {
-        // returns most internal transaction id
-        if (transactionIdList.get().size() > 0) {
-            return transactionIdList.get().get(
-                    transactionIdList.get().size() - 1);
-        }
-        return null;
-    }
-
-    @Override
-    public boolean isTransactionFinished() {
-        return transactionFinished.get();
-    }
-
-    @Override
-    public void setTransactionFinished(boolean finished) {
-        transactionFinished.set(finished);
-    }
-
 }

@@ -94,10 +94,6 @@ public abstract class AbstractBootstrapDOA extends AbstractDOA {
         return "/";
     }
 
-    public final String getAttributeImpl(String attrName) {
-        return getAttributeImpl(attrName, null);
-    }
-
     @Override
     public final boolean removeImpl(boolean forceRemoveContents) {
         throw new UnsupportedOperationException();
@@ -261,12 +257,6 @@ public abstract class AbstractBootstrapDOA extends AbstractDOA {
             return;
         }
         manager.shutdown(startableEntity);
-    }
-
-    @Override
-    public final IEntity redeployImpl(IEntity newEntity)
-            throws GeneralDOAException {
-        throw new GeneralDOAException("Could not redeploy StandaloneDOA!!!");
     }
 
     public final long storeOrUpdate(IStaticResource resource,

@@ -40,103 +40,111 @@
  *    Inhibi Ltd - initial API and implementation
  *******************************************************************************/
 /**
- * 
+ *
  */
 package pl.doa.entity;
+
+import pl.doa.GeneralDOAException;
+import pl.doa.IDOA;
+import pl.doa.artifact.IArtifact;
+import pl.doa.container.IEntitiesContainer;
+import pl.doa.entity.event.IEntityEventDescription;
+import pl.doa.entity.event.IEntityEventListener;
+import pl.doa.renderer.IRenderer;
+import pl.doa.resource.IStaticResource;
 
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import pl.doa.GeneralDOAException;
-import pl.doa.IDOA;
-import pl.doa.artifact.IArtifact;
-import pl.doa.container.IEntitiesContainer;
-import pl.doa.entity.event.IEntityEventListener;
-import pl.doa.renderer.IRenderer;
-import pl.doa.resource.IStaticResource;
-
 /**
  * @author activey
- * 
  */
 
 public interface IEntity {
 
-	public long getId();
+    public long getId();
 
-	public IDOA getDoa();
+    public IDOA getDoa();
 
-	public String getName();
+    public String getName();
 
-	public void setName(String name);
+    public void setName(String name);
 
-	public IEntitiesContainer getContainer();
+    public IEntitiesContainer getContainer();
 
-	public String getLocation();
+    public void setContainer(IEntitiesContainer container)
+            throws GeneralDOAException;
 
-	public boolean hasAttributes();
+    public String getLocation();
 
-	public Collection<String> getAttributeNames();
+    public boolean hasAttributes();
 
-	public String getAttribute(String attrName);
+    public Collection<String> getAttributeNames();
 
-	public String getAttribute(String attrName, String defaultValue);
+    public String getAttribute(String attrName);
 
-	public IEntityAttribute getAttributeObject(final String attrName);
+    public String getAttribute(String attrName, String defaultValue);
 
-	public void setAttribute(String attrName, String attrValue);
+    public IEntityAttribute getAttributeObject(final String attrName);
 
-	public void setAttribute(IEntityAttribute attributte);
+    public void setAttribute(String attrName, String attrValue);
 
-	public void removeAttributes();
+    public void setAttribute(IEntityAttribute attributte);
 
-	public boolean remove();
+    public void removeAttributes();
 
-	public boolean remove(boolean forceRemoveContents);
+    public boolean remove();
 
-	public boolean isStored();
+    public boolean remove(boolean forceRemoveContents);
 
-	public IEntity store(String location) throws GeneralDOAException;
+    public boolean isStored();
 
-	public void setContainer(IEntitiesContainer container)
-			throws GeneralDOAException;
+    public IEntity store(String location) throws GeneralDOAException;
 
-	public void setAttributes(Map<String, String> attributes);
+    public void setAttributes(Map<String, String> attributes);
 
-	public boolean equals(IEntity entity);
+    public boolean equals(IEntity entity);
 
-	public boolean hasEventListeners();
+    public boolean hasEventListeners();
 
-	public List<IEntityEventListener> getEventListeners();
+    /**
+     * Retrieves list of all event listeners listening on events propagated from this entity.
+     * @return
+     */
+    public List<IEntityEventListener> getEventListeners();
 
-	public boolean isPublic();
+    /**
+     * Retrievies list of all event listeners that match criteria of given event.
+     *
+     * @param event Event object to match by listeners to be retrieved.
+     * @return
+     */
+    public List<IEntityEventListener> getEventListeners(IEntityEventDescription event);
 
-	public IArtifact getArtifact();
+    public boolean isPublic();
 
-	public Date getLastModified();
+    public IArtifact getArtifact();
 
-	public Date getCreated();
+    public Date getLastModified();
 
-	public IEntity redeploy(IEntity newEntity) throws GeneralDOAException;
+    public Date getCreated();
 
-	public IEntity getAncestor();
+    public IEntity getAncestor();
 
-	public boolean isInside(IEntitiesContainer container);
+    public boolean isInside(IEntitiesContainer container);
 
-	public boolean isDescendantOf(IEntity ancestor);
+    public boolean isDescendantOf(IEntity ancestor);
 
-	public <T extends IEntity> T attach(IEntityAttachRule<T> rule);
+    public IStaticResource render(String mimeType) throws GeneralDOAException;
 
-	public IStaticResource render(String mimeType) throws GeneralDOAException;
+    public IStaticResource render(IRenderer renderer)
+            throws GeneralDOAException;
 
-	public IStaticResource render(IRenderer renderer)
-			throws GeneralDOAException;
+    public IStaticResource render(String mimeType, IStaticResource template)
+            throws GeneralDOAException;
 
-	public IStaticResource render(String mimeType, IStaticResource template)
-			throws GeneralDOAException;
-
-	public IStaticResource render(IRenderer renderer, IStaticResource template)
-			throws GeneralDOAException;
+    public IStaticResource render(IRenderer renderer, IStaticResource template)
+            throws GeneralDOAException;
 }

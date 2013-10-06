@@ -44,16 +44,10 @@
  */
 package pl.doa.service.impl;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectStreamClass;
-
 import org.lightwolf.Flow;
 import org.lightwolf.FlowMethod;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import pl.doa.IDOA;
 import pl.doa.agent.IAgent;
 import pl.doa.document.IDocument;
@@ -72,6 +66,11 @@ import pl.doa.jvm.DOAClassLoader;
 import pl.doa.service.AbstractServiceDefinitionLogic;
 import pl.doa.service.IRunningService;
 import pl.doa.service.IServiceDefinition;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectStreamClass;
 
 /**
  * Klasa jest odpowiedzialna za wykonanie uslugi na podstawie jej definicji.
@@ -152,7 +151,6 @@ public abstract class AbstractRunningService extends AbstractEntity implements
                             throws IOException {
                         if (obj instanceof DetachedEntity) {
                             DetachedEntity entity = (DetachedEntity) obj;
-                            entity.setDoa(getDoa());
                             return entity;
                         } else if (obj instanceof AbstractServiceDefinitionLogic) {
                             AbstractServiceDefinitionLogic serviceLogic =

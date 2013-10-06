@@ -59,7 +59,7 @@ public class DOATag extends EntityTag {
         try {
             doa = createDOA(getName(), getLogicClass());
             doa.setAutostart(true);
-            addStartable(doa);
+            getProcessor().registerAutostartEntity(doa);
         } catch (Exception e) {
             log.error("", e);
             return null;

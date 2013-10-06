@@ -40,18 +40,12 @@
  *    Inhibi Ltd - initial API and implementation
  *******************************************************************************/
 /**
- * 
+ *
  */
 package pl.doa;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import pl.doa.artifact.deployment.IArtifactManager;
 import pl.doa.entity.IEntityAttribute;
 import pl.doa.entity.startable.IStartableEntityManager;
@@ -60,171 +54,177 @@ import pl.doa.resource.IStaticResourceStorage;
 import pl.doa.service.IServicesManager;
 import pl.doa.thread.IThreadManager;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * @author activey
- * 
  */
 public class StandaloneDOA extends AbstractBootstrapDOA implements
-		DisposableBean {
+        DisposableBean {
 
-	private String logicClass;
+    private String logicClass;
+    private Map<String, String> attributes = new HashMap<String, String>();
+    private String name;
+    @Autowired
+    private IServicesManager servicesManager;
+    @Autowired
+    private IArtifactManager artifactManager;
+    @Autowired
+    private IStaticResourceStorage resourceStorage;
+    @Autowired
+    private IStartableEntityManager startableManager;
+    @Autowired
+    private IThreadManager threadManager;
 
-	private Map<String, String> attributes = new HashMap<String, String>();
+    @Override
+    protected final String getNameImpl() {
+        return this.name;
+    }
 
-	private String name;
+    @Override
+    protected final void setNameImpl(String name) {
+        this.name = name;
+    }
 
-	@Autowired
-	private IServicesManager servicesManager;
+    @Override
+    protected String getAttributeImpl(String attrName) {
+        IEntityAttribute attr = getAttributeObjectImpl(attrName);
+        if (attr == null) {
+            return null;
+        }
+        return attr.getValueAsString();
+    }
 
-	@Autowired
-	private IArtifactManager artifactManager;
+    @Override
+    protected final boolean hasAttributesImpl() {
+        return attributes != null && !attributes.isEmpty();
+    }
 
-	@Autowired
-	private IStaticResourceStorage resourceStorage;
+    @Override
+    protected Collection<String> getAttributeNamesImpl() {
+        return new ArrayList<String>(attributes.keySet());
+    }
 
-	@Autowired
-	private IStartableEntityManager startableManager;
+    @Override
+    protected final IEntityAttribute getAttributeObjectImpl(final String attrName) {
+        final String attrValue = attributes.get(attrName);
+        if (attrValue == null) {
+            return null;
+        }
+        IEntityAttribute attr = new IEntityAttribute() {
 
-	@Autowired
-	private IThreadManager threadManager;
+            @Override
+            public boolean remove() {
+                throw new UnsupportedOperationException();
+            }
 
-	@Override
-	protected final String getNameImpl() {
-		return this.name;
-	}
+            @Override
+            public String getValueAsString() {
+                Object value = getValue();
+                if (value == null) {
+                    return "";
+                }
+                return value.toString();
+            }
 
-	@Override
-	protected final void setNameImpl(String name) {
-		this.name = name;
-	}
+            @Override
+            public Object getValue() {
+                return attrValue;
+            }
 
-	@Override
-	protected final boolean hasAttributesImpl() {
-		return attributes != null && !attributes.isEmpty();
-	}
+            @Override
+            public void setValue(Object value) {
+                throw new UnsupportedOperationException();
+            }
 
-	@Override
-	protected List<String> getAttributeNamesImpl() {
-		return new ArrayList<String>(attributes.keySet());
-	}
+            @Override
+            public String getName() {
+                return attrName;
+            }
 
-	@Override
-	protected String getAttributeImpl(String attrName, String defaultValue) {
-		String attrValue = attributes.get(attrName);
-		if (attrValue == null) {
-			attrValue = defaultValue;
-		}
-		return attrValue;
-	}
+            @Override
+            public void setName(String name) {
+                throw new UnsupportedOperationException();
+            }
+        };
+        return attr;
+    }
 
-	@Override
-	protected final IEntityAttribute getAttributeObjectImpl(final String attrName) {
-		final String attrValue = attributes.get(attrName);
-		if (attrValue == null) {
-			return null;
-		}
-		IEntityAttribute attr = new IEntityAttribute() {
+    @Override
+    protected final void setAttributeImpl(String attrName, String attrValue) {
+        attributes.put(attrName, attrValue);
+    }
 
-			@Override
-			public void setValue(Object value) {
-				throw new UnsupportedOperationException();
-			}
+    protected final void setAttributeImpl(IEntityAttribute attributte) {
+        attributes.put(attributte.getName(), attributte.getValue().toString());
+    }
 
-			@Override
-			public void setName(String name) {
-				throw new UnsupportedOperationException();
-			}
+    @Override
+    protected final void removeAttributesImpl() {
+        attributes.clear();
+    }
 
-			@Override
-			public boolean remove() {
-				throw new UnsupportedOperationException();
-			}
+    @Override
+    protected final void setAttributesImpl(Map<String, String> attributes) {
+        this.attributes.putAll(attributes);
+    }
 
-			@Override
-			public Object getValue() {
-				return attrValue;
-			}
+    @Override
+    protected final String getLogicClassImpl() {
+        return this.logicClass;
+    }
 
-			@Override
-			public String getName() {
-				return attrName;
-			}
-		};
-		return attr;
-	}
+    @Override
+    protected void setLogicClassImpl(String logicClass) {
+        this.logicClass = logicClass;
+    }
 
-	@Override
-	protected final void setAttributeImpl(String attrName, String attrValue) {
-		attributes.put(attrName, attrValue);
-	}
+    @Override
+    public void destroy() throws Exception {
+        shutdown();
+    }
 
-	protected final void setAttributeImpl(IEntityAttribute attributte) {
-		attributes.put(attributte.getName(), attributte.getValue().toString());
-	}
+    public IServicesManager getServicesManager() {
+        return servicesManager;
+    }
 
-	@Override
-	protected final void removeAttributesImpl() {
-		attributes.clear();
-	}
+    public void setServicesManager(IServicesManager servicesManager) {
+        this.servicesManager = servicesManager;
+    }
 
-	@Override
-	protected final void setAttributesImpl(Map<String, String> attributes) {
-		this.attributes.putAll(attributes);
-	}
+    public IArtifactManager getArtifactManager() {
+        return artifactManager;
+    }
 
-	@Override
-	protected final String getLogicClassImpl() {
-		return this.logicClass;
-	}
+    public void setArtifactManager(IArtifactManager artifactManager) {
+        this.artifactManager = artifactManager;
+    }
 
-	@Override
-	protected void setLogicClassImpl(String logicClass) {
-		this.logicClass = logicClass;
-	}
+    public IStaticResourceStorage getResourceStorage() {
+        return resourceStorage;
+    }
 
-	@Override
-	public void destroy() throws Exception {
-		shutdown();
-	}
+    public void setResourceStorage(IStaticResourceStorage resourceStorage) {
+        this.resourceStorage = resourceStorage;
+    }
 
-	public void setServicesManager(IServicesManager servicesManager) {
-		this.servicesManager = servicesManager;
-	}
+    public IStartableEntityManager getStartableManager() {
+        return startableManager;
+    }
 
-	public void setArtifactManager(IArtifactManager artifactManager) {
-		this.artifactManager = artifactManager;
-	}
+    public void setStartableManager(IStartableEntityManager startableManager) {
+        this.startableManager = startableManager;
+    }
 
-	public void setResourceStorage(IStaticResourceStorage resourceStorage) {
-		this.resourceStorage = resourceStorage;
-	}
+    public IThreadManager getThreadManager() {
+        return threadManager;
+    }
 
-	public void setStartableManager(IStartableEntityManager startableManager) {
-		this.startableManager = startableManager;
-	}
-
-	public void setThreadManager(IThreadManager threadManager) {
-		this.threadManager = threadManager;
-	}
-
-	public IServicesManager getServicesManager() {
-		return servicesManager;
-	}
-
-	public IArtifactManager getArtifactManager() {
-		return artifactManager;
-	}
-
-	public IStaticResourceStorage getResourceStorage() {
-		return resourceStorage;
-	}
-
-	public IStartableEntityManager getStartableManager() {
-		return startableManager;
-	}
-
-	public IThreadManager getThreadManager() {
-		return threadManager;
-	}
+    public void setThreadManager(IThreadManager threadManager) {
+        this.threadManager = threadManager;
+    }
 
 }

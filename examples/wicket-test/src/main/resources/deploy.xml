@@ -2,24 +2,35 @@
 <deploy xmlns="http://doaplatform.org/deploy" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://doaplatform.org/deploy http://doaplatform.org/schema/deploy.xsd">
 
-    <!-- wicket extension container -->
-    <container name="wicket-test-data">
-        <container name="documents">
-            <definition name="first_definition">
-                <stringField name="firstName" />
-                <stringField name="lastName" />
-                <dateField name="birthDate" />
-            </definition>
+    <container name="wicket-test-application">
+        <!-- wicket extension container -->
+        <container name="wicket-test-data">
+            <container name="documents">
+                <definition name="first_definition" var="first_definition">
+                    <stringField name="firstName"/>
+                    <stringField name="lastName"/>
+                    <dateField name="birthDate"/>
+                </definition>
 
-            <document name="first" definition="#/wicket-test-data/documents/first_definition" />
+                <document name="first" definition="#first_definition"/>
+            </container>
+
+
+            <container name="filters">
+                <document name="wicket" var="wicket"
+                          definition="/channels/http/extensions/wicket/wicketApplication">
+                    <fieldValue name="applicationClassName">org.doa.examples.wicket.TestApplication</fieldValue>
+                </document>
+            </container>
+
+            <document name="wicket-app" var="wicket-app"
+                      definition="/channels/http/application_context_definition">
+                <fieldValue name="applicationName" value="Wicket Test"/>
+            </document>
+
         </container>
-
-
-        <document name="app-definition" definition="/channels/http/ext/wicket/wicketApplication">
-            <fieldValue name="applicationClassName">org.doa.examples.wicket.TestApplication</fieldValue>
-        </document>
     </container>
 
 
-    <reference name="wicket-test" referencedEntity="#/wicket-test-data/app-definition"/>
+    <reference name="wicket-app" referencedEntity="#wicket-app"/>
 </deploy>

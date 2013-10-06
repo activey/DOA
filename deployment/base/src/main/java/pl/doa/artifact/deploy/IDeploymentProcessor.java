@@ -8,6 +8,7 @@ import pl.doa.channel.IChannel;
 import pl.doa.channel.IIncomingChannel;
 import pl.doa.channel.IOutgoingChannel;
 import pl.doa.container.IEntitiesContainer;
+import pl.doa.document.IDocument;
 import pl.doa.document.IDocumentDefinition;
 import pl.doa.document.alignment.IDocumentAligner;
 import pl.doa.entity.IEntity;
@@ -24,15 +25,15 @@ import java.io.File;
 
 public interface IDeploymentProcessor {
 
-    public void process(File deployedFile, IEntitiesContainer root) throws Exception;
-
-    public void processingDone();
+    public void process(File deployedFile, IEntitiesContainer deploymentRoot) throws Exception;
 
     public IEntitiesContainer createEntitiesContainer(String name, IEntitiesContainer parent) throws GeneralDOAException;
 
     public IEntityReference createReference(String name, IEntity entity, IEntitiesContainer parent) throws GeneralDOAException;
 
     public IAgent createAgent(String name, IEntitiesContainer parent) throws GeneralDOAException;
+
+    public IDocument createDocument(IDocumentDefinition definition, String name, IEntitiesContainer parentContainer) throws GeneralDOAException;
 
     public IDocumentDefinition createDocumentDefinition(String name, IEntitiesContainer container, IDocumentDefinition ancestor) throws GeneralDOAException;
 
@@ -60,7 +61,11 @@ public interface IDeploymentProcessor {
 
     public void registerAutostartEntity(IStartableEntity entity);
 
+    public Object instantiateJavaObject(String value);
+
     public void setDoa(IDOA doa);
 
     public void setArtifact(IArtifact artifact);
+
+    public IEntity lookupEntityByLocation(String location);
 }

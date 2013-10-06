@@ -41,34 +41,12 @@
  *******************************************************************************/
 package pl.doa.document.impl.neo;
 
-import java.io.Serializable;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
-
-import org.neo4j.graphdb.Direction;
-import org.neo4j.graphdb.GraphDatabaseService;
-import org.neo4j.graphdb.Node;
-import org.neo4j.graphdb.Path;
-import org.neo4j.graphdb.Relationship;
-import org.neo4j.graphdb.ReturnableEvaluator;
-import org.neo4j.graphdb.StopEvaluator;
-import org.neo4j.graphdb.TraversalPosition;
-import org.neo4j.graphdb.Traverser;
+import org.neo4j.graphdb.*;
 import org.neo4j.graphdb.Traverser.Order;
 import org.neo4j.graphdb.traversal.Evaluators;
 import org.neo4j.kernel.Traversal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import pl.doa.GeneralDOAException;
 import pl.doa.IDOA;
 import pl.doa.INeoObject;
@@ -84,9 +62,10 @@ import pl.doa.document.impl.AbstractDocumentDefinition;
 import pl.doa.entity.IEntity;
 import pl.doa.entity.IEntityAttribute;
 import pl.doa.entity.event.IEntityEventListener;
-import pl.doa.entity.impl.neo.NeoReturnableEvaluator;
-import pl.doa.neo.utils.EntitiesComparator;
 import pl.doa.relation.DOARelationship;
+
+import java.io.Serializable;
+import java.util.*;
 
 /**
  * TODO opis
@@ -156,26 +135,26 @@ public class NeoDocumentDefinition extends AbstractDocumentDefinition implements
             throw new GeneralDOAException("Field with name [" + fieldName
                     + "] is already registered!");
         NeoDocumentFieldType newField =
-                new NeoDocumentFieldType(doa, delegator.getGraphDatabase());
+                new NeoDocumentFieldType(doa, delegator.getNode().getGraphDatabase());
         newField.setName(fieldName);
         newField.setRequired(required);
         newField.setFieldDataType(dataType);
         newField.setAuthorizable(authorizable);
-        delegator.createRelationshipTo(newField,
+        delegator.getNode().createRelationshipTo(newField,
                 DOARelationship.HAS_FIELD_DEFINITION);
         return newField;
     }
 
     private Node getFieldNode(final String fieldName) {
         boolean hasRel =
-                delegator.hasRelationship(DOARelationship.HAS_FIELD_DEFINITION,
+                delegator.getNode().hasRelationship(DOARelationship.HAS_FIELD_DEFINITION,
                         Direction.OUTGOING);
         if (!hasRel) {
             return null;
         }
         Node fieldNode = null;
         Iterable<Relationship> fields =
-                delegator.getRelationships(
+                delegator.getNode().getRelationships(
                         DOARelationship.HAS_FIELD_DEFINITION,
                         Direction.OUTGOING);
         for (Relationship relationship : fields) {
@@ -224,13 +203,13 @@ public class NeoDocumentDefinition extends AbstractDocumentDefinition implements
 
     public void removeFieldImpl(String fieldName) {
         Iterable<Relationship> fields =
-                delegator.getRelationships(
+                delegator.getNode().getRelationships(
                         DOARelationship.HAS_FIELD_DEFINITION,
                         Direction.OUTGOING);
         for (Relationship relationship : fields) {
             Node fieldNode = relationship.getEndNode();
             if (fieldName.equals(delegator
-                    .getProperty(NeoEntityDelegator.PROP_NAME))) {
+                    .getName())) {
                 relationship.delete();
                 fieldNode.delete();
                 return;
@@ -252,7 +231,7 @@ public class NeoDocumentDefinition extends AbstractDocumentDefinition implements
                         .evaluator(Evaluators.excludeStartPosition())
                         .relationships(DOARelationship.HAS_FIELD_DEFINITION,
                                 Direction.OUTGOING).depthFirst()
-                        .sort(new FieldNameComparator()).traverse(delegator);
+                        .sort(new FieldNameComparator()).traverse(delegator.getNode());
         for (Path path : traverser) {
             Node node = path.endNode();
             names.add((String) node.getProperty(NeoDocumentFieldType.PROP_NAME));
@@ -286,7 +265,7 @@ public class NeoDocumentDefinition extends AbstractDocumentDefinition implements
     @Override
     public void setDocumentFieldsImpl(List<IDocumentFieldType> documentFields) {
         for (IDocumentFieldType documentFieldType : documentFields) {
-            delegator.createRelationshipTo((Node) documentFieldType,
+            delegator.getNode().createRelationshipTo((Node) documentFieldType,
                     DOARelationship.HAS_FIELD_DEFINITION);
         }
     }
@@ -304,7 +283,7 @@ public class NeoDocumentDefinition extends AbstractDocumentDefinition implements
                         .evaluator(Evaluators.excludeStartPosition())
                         .relationships(DOARelationship.HAS_FIELD_DEFINITION,
                                 Direction.OUTGOING).depthFirst()
-                        .sort(new FieldNameComparator()).traverse(delegator);
+                        .sort(new FieldNameComparator()).traverse(delegator.getNode());
         Set<IDocumentFieldType> fields =
                 new LinkedHashSet<IDocumentFieldType>();
         for (Path path : traverser) {
@@ -322,7 +301,7 @@ public class NeoDocumentDefinition extends AbstractDocumentDefinition implements
     @Override
     public Iterator<IDocumentFieldType> getRequiredFieldsImpl() {
         Traverser traverser =
-                delegator.traverse(
+                delegator.getNode().traverse(
                         Order.BREADTH_FIRST,
                         StopEvaluator.DEPTH_ONE,
                         new ReturnableEvaluator() {
@@ -356,7 +335,7 @@ public class NeoDocumentDefinition extends AbstractDocumentDefinition implements
     @Override
     public Iterator<IDocumentFieldType> getAuthorizableFieldsImpl() {
         Traverser traverser =
-                delegator.traverse(
+                delegator.getNode().traverse(
                         Order.BREADTH_FIRST,
                         StopEvaluator.DEPTH_ONE,
                         new ReturnableEvaluator() {
@@ -385,49 +364,20 @@ public class NeoDocumentDefinition extends AbstractDocumentDefinition implements
         return fields.iterator();
     }
 
-    @Override
-    protected IEntity redeployImpl(IEntity newEntity) throws Throwable {
-        if (newEntity instanceof INeoObject) {
-            reconnectAligners(newEntity);
-            return delegator.redeploy(newEntity);
-        }
-        throw new GeneralDOAException("Not INeoObject");
-    }
-
-    protected void reconnectAligners(IEntity newEntity) {
-        if (newEntity instanceof NeoDocumentDefinition) {
-            NeoDocumentDefinition newDefinition =
-                    (NeoDocumentDefinition) newEntity;
-            for (Relationship rel : delegator.getRelationships(
-                    Direction.INCOMING, DOARelationship.HAS_FROM_DEFINITION)) {
-                Node aligner = rel.getStartNode();
-                rel.delete();
-                aligner.createRelationshipTo(newDefinition.delegator,
-                        DOARelationship.HAS_FROM_DEFINITION);
-            }
-            for (Relationship rel : delegator.getRelationships(
-                    Direction.INCOMING, DOARelationship.HAS_TO_DEFINITION)) {
-                Node aligner = rel.getStartNode();
-                rel.delete();
-                aligner.createRelationshipTo(newDefinition.delegator,
-                        DOARelationship.HAS_TO_DEFINITION);
-            }
-        }
-    }
 
     @Override
     protected boolean removeImpl(boolean forceRemoveContents) {
-        if (delegator.hasRelationship(DOARelationship.HAS_DEFINITION)
+        if (delegator.getNode().hasRelationship(DOARelationship.HAS_DEFINITION)
                 || delegator
-                .hasRelationship(DOARelationship.HAS_FROM_DEFINITION)
-                || delegator.hasRelationship(DOARelationship.HAS_TO_DEFINITION)
+                .getNode().hasRelationship(DOARelationship.HAS_FROM_DEFINITION)
+                || delegator.getNode().hasRelationship(DOARelationship.HAS_TO_DEFINITION)
                 || delegator
-                .hasRelationship(DOARelationship.HAS_INPUT_DEFINITION)
+                .getNode().hasRelationship(DOARelationship.HAS_INPUT_DEFINITION)
                 || delegator
-                .hasRelationship(DOARelationship.HAS_OUTPUT_DEFINITION)) {
+                .getNode().hasRelationship(DOARelationship.HAS_OUTPUT_DEFINITION)) {
             return false;
         }
-        for (Relationship relation : delegator.getRelationships(
+        for (Relationship relation : delegator.getNode().getRelationships(
                 DOARelationship.HAS_FIELD_DEFINITION, Direction.OUTGOING)) {
             Node fieldDefinition = relation.getEndNode();
             for (Relationship fieldRel : fieldDefinition.getRelationships()) {
@@ -489,7 +439,7 @@ public class NeoDocumentDefinition extends AbstractDocumentDefinition implements
     }
 
     @Override
-    protected List<String> getAttributeNamesImpl() {
+    protected Collection<String> getAttributeNamesImpl() {
         return delegator.getAttributeNames();
     }
 
@@ -498,10 +448,6 @@ public class NeoDocumentDefinition extends AbstractDocumentDefinition implements
         return delegator.getAttribute(attrName);
     }
 
-    @Override
-    protected String getAttributeImpl(String attrName, String defaultValue) {
-        return delegator.getAttribute(attrName, defaultValue);
-    }
 
     @Override
     protected IEntityAttribute getAttributeObjectImpl(String attrName) {
@@ -514,7 +460,7 @@ public class NeoDocumentDefinition extends AbstractDocumentDefinition implements
     }
 
     @Override
-    protected void setContainerImpl(IEntitiesContainer container) {
+    protected void setContainerImpl(IEntitiesContainer container) throws GeneralDOAException {
         delegator.setContainer(container);
     }
 
@@ -559,9 +505,10 @@ public class NeoDocumentDefinition extends AbstractDocumentDefinition implements
     }
 
     @Override
-    public NeoEntityDelegator getNode() {
-        return this.delegator;
+    public Node getNode() {
+        return delegator.getNode();
     }
+
 
     private class FieldNameComparator implements Comparator<Path> {
 

@@ -1,24 +1,19 @@
 package pl.doa.entity;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import pl.doa.GeneralDOAException;
 import pl.doa.IDOA;
 import pl.doa.artifact.IArtifact;
 import pl.doa.container.IEntitiesContainer;
-import pl.doa.document.impl.AbstractDocument;
+import pl.doa.entity.event.IEntityEventDescription;
 import pl.doa.entity.event.IEntityEventListener;
 import pl.doa.entity.impl.AbstractEntity;
 import pl.doa.renderer.IRenderer;
 import pl.doa.resource.IStaticResource;
+
+import java.io.Serializable;
+import java.util.*;
 
 public abstract class DetachedEntity implements IEntity, Serializable {
 
@@ -275,6 +270,15 @@ public abstract class DetachedEntity implements IEntity, Serializable {
     }
 
     @Override
+    public List<IEntityEventListener> getEventListeners(IEntityEventDescription event) {
+        IEntity storedEntity = getStoredEntity();
+        if (storedEntity != null) {
+            return storedEntity.getEventListeners(event);
+        }
+        return null;
+    }
+
+    @Override
     public final boolean isPublic() {
         IEntity storedEntity = getStoredEntity();
         if (storedEntity != null) {
@@ -308,15 +312,6 @@ public abstract class DetachedEntity implements IEntity, Serializable {
             return storedEntity.getCreated();
         }
         return created;
-    }
-
-    @Override
-    public final IEntity redeploy(IEntity newEntity) throws GeneralDOAException {
-        IEntity storedEntity = getStoredEntity();
-        if (storedEntity != null) {
-            return storedEntity.redeploy(newEntity);
-        }
-        return null;
     }
 
     @Override
@@ -370,11 +365,6 @@ public abstract class DetachedEntity implements IEntity, Serializable {
             return storedEntity.isDescendantOf(ancestor);
         }
         return AbstractEntity.isDescendantOf(ancestor, this);
-    }
-
-    @Override
-    public <T extends IEntity> T attach(IEntityAttachRule<T> rule) {
-        return rule.attachEntity();
     }
 
     @Override

@@ -41,17 +41,12 @@
  *******************************************************************************/
 package pl.doa.entity.event.impl.neo;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
 import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Relationship;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import pl.doa.GeneralDOAException;
 import pl.doa.IDOA;
 import pl.doa.INeoObject;
@@ -65,259 +60,253 @@ import pl.doa.entity.event.EntityEventType;
 import pl.doa.entity.event.IEntityEventListener;
 import pl.doa.relation.DOARelationship;
 
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
 /**
  * @author activey
- * 
  */
 public class NeoEntityEvent extends AbstractEntityEvent implements INeoObject {
 
-	private final static String PROP_EVENT_TYPE = "eventType";
+    private final static String PROP_EVENT_TYPE = "eventType";
+    private final static Logger log = LoggerFactory
+            .getLogger(NeoEntityEvent.class);
+    private final NeoEntityDelegator delegate;
 
-	private final static Logger log = LoggerFactory
-			.getLogger(NeoEntityEvent.class);
+    public NeoEntityEvent(IDOA doa, Node underlyingNode) {
+        super(doa);
+        this.delegate = new NeoEntityDelegator(doa, underlyingNode);
+    }
 
-	private final NeoEntityDelegator delegate;
+    public NeoEntityEvent(IDOA doa, GraphDatabaseService neo,
+                          IEntity eventSourceEntity, EntityEventType eventType) {
+        super(doa);
+        this.delegate =
+                new NeoEntityDelegator(doa, neo, this.getClass().getName());
+        setName(delegate.getId() + "");
 
-	public NeoEntityEvent(IDOA doa, Node underlyingNode) {
-		super(doa);
-		this.delegate = new NeoEntityDelegator(doa, underlyingNode);
-	}
+        INeoObject neoEntity = (INeoObject) eventSourceEntity;
+        // ustawianie referencji do obiektu, ktory wygenerowal zdarzenie
+        delegate.getNode().createRelationshipTo(neoEntity.getNode(),
+                DOARelationship.HAS_EVENT_SOURCE);
+        delegate.getNode().setProperty(PROP_EVENT_TYPE, eventType.name());
+    }
 
-	public NeoEntityEvent(IDOA doa, GraphDatabaseService neo,
-			IEntity eventSourceEntity, EntityEventType eventType) {
-		super(doa);
-		this.delegate =
-				new NeoEntityDelegator(doa, neo, this.getClass().getName());
-		setName(delegate.getId() + "");
+    protected String getNameImpl() {
+        return delegate.getName();
+    }
 
-		INeoObject neoEntity = (INeoObject) eventSourceEntity;
-		// ustawianie referencji do obiektu, ktory wygenerowal zdarzenie
-		delegate.createRelationshipTo(neoEntity.getNode(),
-				DOARelationship.HAS_EVENT_SOURCE);
-		delegate.setProperty(PROP_EVENT_TYPE, eventType.name());
-	}
+    protected void setNameImpl(String name) {
+        delegate.setName(name);
+    }
 
-	protected String getNameImpl() {
-		return delegate.getName();
-	}
+    protected long getIdImpl() {
+        return delegate.getId();
+    }
 
-	protected long getIdImpl() {
-		return delegate.getId();
-	}
+    protected IEntitiesContainer getContainerImpl() {
+        return delegate.getContainer();
+    }
 
-	protected void setNameImpl(String name) {
-		delegate.setName(name);
-	}
+    protected void setContainerImpl(IEntitiesContainer container) throws GeneralDOAException {
+        delegate.setContainer(container);
+    }
 
-	protected IEntitiesContainer getContainerImpl() {
-		return delegate.getContainer();
-	}
+    protected String getLocationImpl() {
+        return delegate.getLocation();
+    }
 
-	protected String getLocationImpl() {
-		return delegate.getLocation();
-	}
-	
-	@Override
-	protected boolean hasAttributesImpl() {
-		return delegate.hasAttributes();
-	}
+    @Override
+    protected boolean hasAttributesImpl() {
+        return delegate.hasAttributes();
+    }
 
-	protected List<String> getAttributeNamesImpl() {
-		return delegate.getAttributeNames();
-	}
+    protected Collection<String> getAttributeNamesImpl() {
+        return delegate.getAttributeNames();
+    }
 
-	protected final String getAttributeImpl(String attrName) {
-		return delegate.getAttribute(attrName);
-	}
+    protected final String getAttributeImpl(String attrName) {
+        return delegate.getAttribute(attrName);
+    }
 
-	protected final String getAttributeImpl(String attrName, String defaultValue) {
-		return delegate.getAttribute(attrName, defaultValue);
-	}
+    protected final String getAttributeImpl(String attrName, String defaultValue) {
+        return delegate.getAttribute(attrName, defaultValue);
+    }
 
-	protected IEntityAttribute getAttributeObjectImpl(String attrName) {
-		return delegate.getAttributeObject(attrName);
-	}
+    protected IEntityAttribute getAttributeObjectImpl(String attrName) {
+        return delegate.getAttributeObject(attrName);
+    }
 
-	protected final void setAttributeImpl(String attrName, String attrValue) {
-		delegate.setAttribute(attrName, attrValue);
-	}
+    protected final void setAttributeImpl(String attrName, String attrValue) {
+        delegate.setAttribute(attrName, attrValue);
+    }
 
-	protected final void setAttributeImpl(IEntityAttribute attributte) {
-		delegate.setAttribute(attributte);
-	}
+    protected final void setAttributeImpl(IEntityAttribute attributte) {
+        delegate.setAttribute(attributte);
+    }
 
-	protected void removeAttributesImpl() {
-		delegate.removeAttributes();
-	}
+    protected void removeAttributesImpl() {
+        delegate.removeAttributes();
+    }
 
-	protected boolean removeImpl(boolean forceRemoveContents) {
-		return delegate.remove();
-	}
+    protected boolean removeImpl(boolean forceRemoveContents) {
+        return delegate.remove();
+    }
 
-	protected Date getCreatedImpl() {
-		return delegate.getCreated();
-	}
+    protected Date getCreatedImpl() {
+        return delegate.getCreated();
+    }
 
-	protected boolean isStoredImpl() {
-		return delegate.isStored();
-	}
+    protected boolean isStoredImpl() {
+        return delegate.isStored();
+    }
 
-	protected IEntity storeImpl(String location) throws GeneralDOAException {
-		return delegate.store(location);
-	}
+    protected IEntity storeImpl(String location) throws GeneralDOAException {
+        return delegate.store(location);
+    }
 
-	protected Date getLastModifiedImpl() {
-		return delegate.getLastModified();
-	}
+    protected Date getLastModifiedImpl() {
+        return delegate.getLastModified();
+    }
 
-	protected void setContainerImpl(IEntitiesContainer container) {
-		delegate.setContainer(container);
-	}
+    protected boolean hasEventListenersImpl() {
+        return delegate.hasEventListeners();
+    }
 
-	protected boolean hasEventListenersImpl() {
-		return delegate.hasEventListeners();
-	}
+    protected List<IEntityEventListener> getEventListenersImpl() {
+        return delegate.getEventListeners();
+    }
 
-	protected List<IEntityEventListener> getEventListenersImpl() {
-		return delegate.getEventListeners();
-	}
+    protected IArtifact getArtifactImpl() {
+        return delegate.getArtifact();
+    }
 
-	protected IArtifact getArtifactImpl() {
-		return delegate.getArtifact();
-	}
+    protected boolean isPublicImpl() {
+        return delegate.isPublic();
+    }
 
-	protected boolean isPublicImpl() {
-		return delegate.isPublic();
-	}
+    protected void setAttributesImpl(Map<String, String> attributes) {
+        delegate.setAttributes(attributes);
+    }
 
-	protected IEntity redeployImpl(IEntity newEntity)
-			throws GeneralDOAException {
-		if (newEntity instanceof INeoObject) {
-			return delegate.redeploy(newEntity);
-		}
-		throw new GeneralDOAException("Not INeoObject");
-	}
+    @Override
+    protected IEntity getAncestorImpl() {
+        return delegate.getAncestor();
+    }
 
-	protected void setAttributesImpl(Map<String, String> attributes) {
-		delegate.setAttributes(attributes);
-	}
+    @Override
+    public Node getNode() {
+        return this.delegate.getNode();
+    }
 
-	@Override
-	protected IEntity getAncestorImpl() {
-		return delegate.getAncestor();
-	}
+    @Override
+    protected IEntity getSourceEntityImpl() {
+        if (!delegate.getNode().hasRelationship(DOARelationship.HAS_EVENT_SOURCE,
+                Direction.OUTGOING)) {
+            return null;
+        }
+        Relationship relation =
+                delegate.getNode().getSingleRelationship(
+                        DOARelationship.HAS_EVENT_SOURCE, Direction.OUTGOING);
+        return NeoEntityDelegator.createEntityInstance(doa,
+                relation.getEndNode());
+    }
 
-	@Override
-	public NeoEntityDelegator getNode() {
-		return this.delegate;
-	}
+    @Override
+    protected void setSourceEntityImpl(IEntity sourceEntity) {
+        if (sourceEntity == null) {
+            if (delegate.getNode().hasRelationship(DOARelationship.HAS_EVENT_SOURCE,
+                    Direction.OUTGOING)) {
+                Relationship rel =
+                        delegate.getNode().getSingleRelationship(
+                                DOARelationship.HAS_EVENT_SOURCE,
+                                Direction.OUTGOING);
+                rel.delete();
+                return;
+            }
+        }
+        if (!(sourceEntity instanceof INeoObject)) {
+            return;
+        }
+        INeoObject neoObj = (INeoObject) sourceEntity;
+        delegate.getNode().createRelationshipTo(neoObj.getNode(),
+                DOARelationship.HAS_EVENT_SOURCE);
 
-	@Override
-	protected IEntity getSourceEntityImpl() {
-		if (!delegate.hasRelationship(DOARelationship.HAS_EVENT_SOURCE,
-				Direction.OUTGOING)) {
-			return null;
-		}
-		Relationship relation =
-				delegate.getSingleRelationship(
-						DOARelationship.HAS_EVENT_SOURCE, Direction.OUTGOING);
-		return NeoEntityDelegator.createEntityInstance(doa,
-				relation.getEndNode());
-	}
+    }
 
-	@Override
-	protected void setSourceEntityImpl(IEntity sourceEntity) {
-		if (sourceEntity == null) {
-			if (delegate.hasRelationship(DOARelationship.HAS_EVENT_SOURCE,
-					Direction.OUTGOING)) {
-				Relationship rel =
-						delegate.getSingleRelationship(
-								DOARelationship.HAS_EVENT_SOURCE,
-								Direction.OUTGOING);
-				rel.delete();
-				return;
-			}
-		}
-		if (!(sourceEntity instanceof INeoObject)) {
-			return;
-		}
-		INeoObject neoObj = (INeoObject) sourceEntity;
-		delegate.createRelationshipTo(neoObj.getNode(),
-				DOARelationship.HAS_EVENT_SOURCE);
+    @Override
+    protected EntityEventType getEventTypeImpl() {
+        if (!delegate.getNode().hasProperty(PROP_EVENT_TYPE)) {
+            return null;
+        }
+        String eventType = (String) delegate.getNode().getProperty(PROP_EVENT_TYPE);
+        return EntityEventType.valueOf(eventType);
+    }
 
-	}
+    @Override
+    protected Iterable<String> getEventPropertyNamesImpl() {
+        return delegate.getNode().getPropertyKeys();
+    }
 
-	@Override
-	protected EntityEventType getEventTypeImpl() {
-		if (!delegate.hasProperty(PROP_EVENT_TYPE)) {
-			return null;
-		}
-		String eventType = (String) delegate.getProperty(PROP_EVENT_TYPE);
-		return EntityEventType.valueOf(eventType);
-	}
+    @Override
+    protected Object getEventPropertyImpl(String propertyName) {
+        if (!delegate.getNode().hasProperty("event_" + propertyName)) {
+            return null;
+        }
+        return delegate.getNode().getProperty("event_" + propertyName);
+    }
 
-	@Override
-	protected Iterable<String> getEventPropertyNamesImpl() {
-		return delegate.getPropertyKeys();
-	}
+    @Override
+    protected void setEventPropertyImpl(String propertyName,
+                                        Object propertyValue) {
+        if (delegate.getNode().hasProperty("event_" + propertyName) && propertyValue == null) {
+            delegate.getNode().removeProperty("event_" + propertyName);
+            return;
+        }
+        delegate.getNode().setProperty("event_" + propertyName, propertyValue);
+    }
 
-	@Override
-	protected Object getEventPropertyImpl(String propertyName) {
-		if (!delegate.hasProperty("event_" + propertyName)) {
-			return null;
-		}
-		return delegate.getProperty("event_" + propertyName);
-	}
+    @Override
+    protected String getStringPropertyImpl(String propertyName) {
+        return (String) getEventPropertyImpl(propertyName);
+    }
 
-	@Override
-	protected void setEventPropertyImpl(String propertyName,
-			Object propertyValue) {
-		if (delegate.hasProperty("event_" + propertyName) && propertyValue == null) {
-			delegate.removeProperty("event_" + propertyName);
-			return;
-		}
-		delegate.setProperty("event_" + propertyName, propertyValue);
-	}
+    @Override
+    protected void setStringPropertyImpl(String propertyName,
+                                         String propertyValue) {
+        setEventPropertyImpl(propertyName, propertyValue);
+    }
 
-	@Override
-	protected String getStringPropertyImpl(String propertyName) {
-		return (String) getEventPropertyImpl(propertyName);
-	}
+    @Override
+    protected Integer getIntPropertyImpl(String propertyName) {
+        return (Integer) getEventPropertyImpl(propertyName);
+    }
 
-	@Override
-	protected void setStringPropertyImpl(String propertyName,
-			String propertyValue) {
-		setEventPropertyImpl(propertyName, propertyValue);
-	}
+    @Override
+    protected void setIntPropertyImpl(String propertyName, int propertyValue) {
+        setEventPropertyImpl(propertyName, propertyValue);
+    }
 
-	@Override
-	protected Integer getIntPropertyImpl(String propertyName) {
-		return (Integer) getEventPropertyImpl(propertyName);
-	}
+    @Override
+    protected IEntity getReferencePropertyImpl(String propertyName) {
+        Long entityId = (Long) getEventPropertyImpl(propertyName);
+        if (entityId == null) {
+            return null;
+        }
+        if (entityId > 0) {
+            return getDoa().lookupByUUID(entityId);
+        }
+        return null;
+    }
 
-	@Override
-	protected void setIntPropertyImpl(String propertyName, int propertyValue) {
-		setEventPropertyImpl(propertyName, propertyValue);
-	}
-
-	@Override
-	protected IEntity getReferencePropertyImpl(String propertyName) {
-		Long entityId = (Long) getEventPropertyImpl(propertyName);
-		if (entityId == null) {
-			return null;
-		}
-		if(entityId > 0){
-			return getDoa().lookupByUUID(entityId);
-		}
-		return null;
-	}
-
-	@Override
-	protected void setReferencePropertyImpl(String propertyName,
-			IEntity propertyValue) {
-		if(propertyValue != null){
-			setEventPropertyImpl(propertyName, propertyValue.getId());
-		}
-	}
+    @Override
+    protected void setReferencePropertyImpl(String propertyName,
+                                            IEntity propertyValue) {
+        if (propertyValue != null) {
+            setEventPropertyImpl(propertyName, propertyValue.getId());
+        }
+    }
 
 }

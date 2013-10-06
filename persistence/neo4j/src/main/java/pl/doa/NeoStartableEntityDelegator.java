@@ -44,35 +44,26 @@
  */
 package pl.doa;
 
-import java.io.Serializable;
-
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
-
-import pl.doa.entity.IEntity;
 import pl.doa.entity.impl.neo.startable.NeoStartableEntity;
 import pl.doa.entity.startable.IStartableEntity;
-import pl.doa.entity.startable.IStartableEntityLogic;
+
+import java.io.Serializable;
 
 /**
  * @author activey
  */
 
-public class NeoStartableEntityDelegator extends NeoEntityDelegator implements
+public class NeoStartableEntityDelegator extends NeoStartableEntity implements
         IStartableEntity, Serializable {
 
     private NeoStartableEntity delegator = null;
 
     public NeoStartableEntityDelegator(IDOA doa, GraphDatabaseService neo,
-                                       String className, IEntity ancestor) {
-        super(doa, neo, className, ancestor);
-        this.delegator = new NeoStartableEntity(doa, this);
-    }
-
-    public NeoStartableEntityDelegator(IDOA doa, GraphDatabaseService neo,
                                        String className) {
         super(doa, neo, className);
-        this.delegator = new NeoStartableEntity(doa, this);
+        this.delegator = new NeoStartableEntity(doa, neo, className);
     }
 
     public NeoStartableEntityDelegator(IDOA doa, Node node) {
@@ -80,52 +71,5 @@ public class NeoStartableEntityDelegator extends NeoEntityDelegator implements
         this.delegator = new NeoStartableEntity(doa, node);
     }
 
-    /*
-     * (non-Javadoc)
-     * @see pl.doa.entity.IStartableEntity#getLogicClass()
-     */
-    @Override
-    public final String getLogicClass() {
-        return delegator.getLogicClass();
-    }
 
-    /*
-     * (non-Javadoc)
-     * @see pl.doa.entity.IStartableEntity#setLogicClass(java.lang.String)
-     */
-    @Override
-    public final void setLogicClass(String logicClass) {
-        delegator.setLogicClass(logicClass);
-    }
-
-    @Override
-    public void setAutostart(boolean autostart) {
-        delegator.setAutostart(new Boolean(autostart));
-    }
-
-    @Override
-    public IStartableEntityLogic getRunningInstance()
-            throws GeneralDOAException {
-        return delegator.getRunningInstance();
-    }
-
-    @Override
-    public boolean isAutostart() {
-        return (Boolean) delegator.isAutostart();
-    }
-
-    @Override
-    public boolean isStartedUp() {
-        return delegator.isStartedUp();
-    }
-
-    @Override
-    public void shutdown() throws GeneralDOAException {
-        delegator.shutdown();
-    }
-
-    @Override
-    public void startup() throws GeneralDOAException {
-        delegator.startup();
-    }
 }

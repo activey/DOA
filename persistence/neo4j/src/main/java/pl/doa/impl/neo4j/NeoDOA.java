@@ -3,20 +3,13 @@
  */
 package pl.doa.impl.neo4j;
 
-import java.io.Serializable;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import pl.doa.GeneralDOAException;
 import pl.doa.IDOA;
 import pl.doa.INeoObject;
-import pl.doa.NeoEntityDelegator;
 import pl.doa.NeoStartableEntityDelegator;
 import pl.doa.artifact.IArtifact;
 import pl.doa.container.IEntitiesContainer;
@@ -25,6 +18,12 @@ import pl.doa.entity.IEntityAttribute;
 import pl.doa.entity.event.IEntityEventListener;
 import pl.doa.impl.AbstractDOA;
 import pl.doa.service.IRunningService;
+
+import java.io.Serializable;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author activey
@@ -46,7 +45,7 @@ public class NeoDOA extends AbstractDOA implements INeoObject, Serializable {
         this.delegator =
                 new NeoStartableEntityDelegator(doa, neo, this.getClass()
                         .getName());
-        delegator.setProperty("_is_doa", true);
+        delegator.getNode().setProperty("_is_doa", true);
         setName(name);
         setLogicClass(logicClass);
     }
@@ -97,18 +96,13 @@ public class NeoDOA extends AbstractDOA implements INeoObject, Serializable {
     }
 
     @Override
-    protected List<String> getAttributeNamesImpl() {
+    protected Collection<String> getAttributeNamesImpl() {
         return delegator.getAttributeNames();
     }
 
     @Override
     protected String getAttributeImpl(String attrName) {
         return delegator.getAttribute(attrName);
-    }
-
-    @Override
-    protected String getAttributeImpl(String attrName, String defaultValue) {
-        return delegator.getAttribute(attrName, defaultValue);
     }
 
     @Override
@@ -127,7 +121,7 @@ public class NeoDOA extends AbstractDOA implements INeoObject, Serializable {
     }
 
     @Override
-    protected void setContainerImpl(IEntitiesContainer container) {
+    protected void setContainerImpl(IEntitiesContainer container) throws GeneralDOAException {
         delegator.setContainer(container);
     }
 
@@ -167,14 +161,6 @@ public class NeoDOA extends AbstractDOA implements INeoObject, Serializable {
     }
 
     @Override
-    protected IEntity redeployImpl(IEntity newEntity) throws Throwable {
-        if (newEntity instanceof INeoObject) {
-            return delegator.redeploy(newEntity);
-        }
-        throw new GeneralDOAException("Not INeoObject");
-    }
-
-    @Override
     protected IEntity getAncestorImpl() {
         return delegator.getAncestor();
     }
@@ -211,8 +197,8 @@ public class NeoDOA extends AbstractDOA implements INeoObject, Serializable {
     }
 
     @Override
-    public NeoEntityDelegator getNode() {
-        return this.delegator;
+    public Node getNode() {
+        return this.delegator.getNode();
     }
 
     @Override

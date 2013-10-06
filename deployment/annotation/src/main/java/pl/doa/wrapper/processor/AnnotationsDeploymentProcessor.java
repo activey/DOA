@@ -23,7 +23,7 @@ public class AnnotationsDeploymentProcessor extends AbstractDeploymentProcessor 
     private final static Logger log = LoggerFactory.getLogger(AnnotationsDeploymentProcessor.class);
 
     @Override
-    public void process(File deployedFile, IEntitiesContainer root) throws Exception {
+    public void deployArtifact(File deployedFile, IEntitiesContainer root) throws Exception {
         // scanning jar file
         AnnotationDB db = new AnnotationDB();
         db.scanArchives(deployedFile.toURI().toURL());

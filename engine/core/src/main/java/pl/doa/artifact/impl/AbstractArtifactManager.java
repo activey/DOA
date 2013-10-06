@@ -101,7 +101,6 @@ public abstract class AbstractArtifactManager extends DirectoryListener
     private static final String ARTIFACT_PROCESSOR_DEFAULT = "pl.doa.artifact.deploy.XMLDeploymentProcessor";
     private static final String ARTIFACT_ROOT = "deploy.root";
     private static final String ARTIFACT_ROOT_DEFAULT = "/";
-
     private final static Logger log = LoggerFactory
             .getLogger(AbstractArtifactManager.class);
     private Ivy ivy;
@@ -409,6 +408,8 @@ public abstract class AbstractArtifactManager extends DirectoryListener
         IArtifact existingArtifact = lookupArtifact(groupId, artifactId, null);
         if (existingArtifact != null && version != null) {
             // TODO implement undeployment
+            log.debug("Artifact [" + getArtifactName(moduleArtifact) + "] is already deployed! skipping ...");
+            return existingArtifact;
         }
         IArtifact newArtifact =
                 getDoa().createArtifact(
@@ -432,7 +433,8 @@ public abstract class AbstractArtifactManager extends DirectoryListener
 
         try {
             JarFile jarFile = new JarFile(artifactFile);
-            JarEntry artifactDescriptor = jarFile.getJarEntry(getArtifactName(moduleArtifact));
+            JarEntry artifactDescriptor = jarFile.getJarEntry(new StringBuilder()
+                    .append(getArtifactName(moduleArtifact)).append(".properties").toString());
             if (artifactDescriptor != null) {
                 InputStream descriptorStream = jarFile.getInputStream(artifactDescriptor);
                 Properties artifactProperties = new Properties();
@@ -442,14 +444,17 @@ public abstract class AbstractArtifactManager extends DirectoryListener
                 IDeploymentProcessor processor = (IDeploymentProcessor) getDoa().instantiateObject(artifactProperties
                         .getProperty(ARTIFACT_PROCESSOR, ARTIFACT_PROCESSOR_DEFAULT));
                 if (processor != null) {
-                    log.debug("Running deployment processor:" + processor.getClass());
+                    log.debug(String.format("Running deployment processor: %s", processor.getClass()));
                     processor.setDoa(getDoa());
                     processor.setArtifact(newArtifact);
                     try {
+                        String rootLocation = artifactProperties.getProperty(ARTIFACT_ROOT, ARTIFACT_ROOT_DEFAULT);
                         IEntitiesContainer deploymentRoot = (IEntitiesContainer) getDoa()
-                                .lookupEntityByLocation(artifactProperties
-                                        .getProperty(ARTIFACT_ROOT, ARTIFACT_ROOT_DEFAULT));
-
+                                .lookupEntityByLocation(rootLocation);
+                        if (deploymentRoot == null) {
+                            log.error(String.format("Unable to find deployment root: [%s]", rootLocation));
+                            return null;
+                        }
                         processor.process(artifactFile, deploymentRoot);
                     } catch (Exception e) {
                         throw new GeneralDOAException(e);

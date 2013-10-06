@@ -44,10 +44,6 @@
  */
 package pl.doa.temp.http;
 
-import java.text.MessageFormat;
-
-import javax.servlet.ServletContext;
-
 import org.apache.catalina.Context;
 import org.apache.catalina.Wrapper;
 import org.apache.catalina.core.StandardContext;
@@ -60,13 +56,13 @@ import org.apache.catalina.startup.Tomcat;
 import org.apache.catalina.startup.Tomcat.FixContextListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import pl.doa.GeneralDOAException;
 import pl.doa.artifact.IArtifact;
 import pl.doa.channel.impl.AbstractIncomingChannelLogic;
 import pl.doa.container.IEntitiesContainer;
 import pl.doa.document.IDocument;
 import pl.doa.document.IDocumentDefinition;
+import pl.doa.document.alignment.IDocumentAligner;
 import pl.doa.document.field.IDocumentFieldValue;
 import pl.doa.document.field.IListDocumentFieldValue;
 import pl.doa.entity.IEntity;
@@ -78,6 +74,9 @@ import pl.doa.service.IRunningService;
 import pl.doa.service.IServiceDefinition;
 import pl.doa.temp.http.resource.StaticResourceContext;
 
+import javax.servlet.ServletContext;
+import java.text.MessageFormat;
+
 /**
  * @author activey
  */
@@ -88,10 +87,9 @@ public class HTTPChannelLogic extends AbstractIncomingChannelLogic implements
     private static final String SERVICE_HANDLE_SESSION = "/channels/http/handle_session";
     private final static Logger log = LoggerFactory
             .getLogger(HTTPChannelLogic.class);
-
     private Tomcat webServer;
-
     private boolean startedUp;
+    private boolean anyAppDeployed = false;
 
     /*
      * (non-Javadoc)
@@ -170,15 +168,7 @@ public class HTTPChannelLogic extends AbstractIncomingChannelLogic implements
                 continue;
             }
         }
-        try {
-            log.debug("Starting up HTTP server ...");
-            webServer.start();
-            log.debug("HTTP server started ...");
-
-            this.startedUp = true;
-        } catch (Exception e) {
-            log.error("", e);
-        }
+        log.debug("HTTP channel started ...");
     }
 
     private void deployApplication(String applicationName,
@@ -253,8 +243,27 @@ public class HTTPChannelLogic extends AbstractIncomingChannelLogic implements
         // "filters"
         initApplicationExtensions(context, applicationContainer);
 
-        log.debug(MessageFormat.format("Web application [{0}] initialized ..",
+        log.debug(MessageFormat.format("Web application [{0}] deployed ..",
                 appName));
+        if (this.anyAppDeployed) {
+            if (isStartedUp()) {
+                log.debug("Shutting down HTTP server ...");
+                webServer.stop();
+                log.debug("HTTP shutted down ...");
+                this.webServer = null;
+                this.startedUp = false;
+            }
+        }
+        try {
+            log.debug("Starting up HTTP server ...");
+            webServer.start();
+            log.debug("HTTP server started ...");
+
+            this.startedUp = true;
+            this.anyAppDeployed = true;
+        } catch (Exception e) {
+            log.error("", e);
+        }
     }
 
     private void initApplicationExtensions(Context context,
@@ -355,9 +364,14 @@ public class HTTPChannelLogic extends AbstractIncomingChannelLogic implements
             return;
         }
         IDocument document = (IDocument) refEntity;
+        IDocumentDefinition contextDefinition = (IDocumentDefinition) doa
+                .lookupEntityByLocation("/channels/http/application_context_definition");
         if (!(document
-                .isDefinedBy("/channels/http/application_context_definition"))) {
-            return;
+                .isDefinedBy(contextDefinition))) {
+            IDocumentAligner aligner = document.getAligner(contextDefinition);
+            if (aligner == null) {
+                return;
+            }
         }
         deployApplication(ref.getName(), document);
     }

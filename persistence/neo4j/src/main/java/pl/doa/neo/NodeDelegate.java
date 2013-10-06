@@ -44,19 +44,10 @@
  */
 package pl.doa.neo;
 
-import java.util.Date;
-
-import org.neo4j.graphdb.Direction;
-import org.neo4j.graphdb.GraphDatabaseService;
-import org.neo4j.graphdb.Node;
-import org.neo4j.graphdb.Relationship;
-import org.neo4j.graphdb.RelationshipType;
-import org.neo4j.graphdb.ReturnableEvaluator;
-import org.neo4j.graphdb.StopEvaluator;
-import org.neo4j.graphdb.Traverser;
+import org.neo4j.graphdb.*;
 import org.neo4j.graphdb.Traverser.Order;
 
-import pl.doa.relation.DOARelationship;
+import java.util.Date;
 
 /**
  * @author activey
@@ -244,7 +235,7 @@ public class NodeDelegate implements Node {
         return result;
     }
 
-    public boolean hasNode(DOARelationship relationType,
+    public boolean hasNode(RelationshipType relationType,
                            ReturnableEvaluator evaluator) {
         Traverser traverser =
                 traverse(Traverser.Order.BREADTH_FIRST,

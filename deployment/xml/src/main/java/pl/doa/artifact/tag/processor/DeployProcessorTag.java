@@ -7,13 +7,11 @@ import nu.xom.Nodes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pl.doa.artifact.deploy.IDeploymentProcessor;
-import pl.doa.artifact.tag.DeployTag;
-import pl.doa.artifact.tag.EntitiesContainerTag;
-import pl.doa.container.IEntitiesContainer;
 import pl.doa.templates.tags.Tag;
 
 /**
  * @author activey
+ * TODO reimplement it!
  */
 public class DeployProcessorTag extends Tag {
 
@@ -28,7 +26,7 @@ public class DeployProcessorTag extends Tag {
      */
     @Override
     public void processTagStart() throws Exception {
-        Tag parent = getParent();
+        /*Tag parent = getParent();
         IEntitiesContainer container = null;
         if (parent instanceof EntitiesContainerTag) {
             EntitiesContainerTag containerTag = (EntitiesContainerTag) parent;
@@ -38,7 +36,7 @@ public class DeployProcessorTag extends Tag {
             container =
                     deployTag.getDefaultContainer();
         }
-        log.debug("Running deployment processor: " + processor.getClass().getName());
+        log.debug("Running deployment processor: " + processor.getClass().getName());*/
 
         // TODO implement it somehow
     }

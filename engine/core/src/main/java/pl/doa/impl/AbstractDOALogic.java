@@ -44,15 +44,8 @@
  */
 package pl.doa.impl;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import pl.doa.GeneralDOAException;
 import pl.doa.IDOA;
 import pl.doa.IDOALogic;
@@ -76,6 +69,12 @@ import pl.doa.resource.impl.DetachedStaticResource;
 import pl.doa.service.IRunningService;
 import pl.doa.service.IServiceDefinition;
 import pl.doa.service.impl.DetachedRunningService;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author activey
@@ -398,7 +397,7 @@ public abstract class AbstractDOALogic implements IDOALogic {
             // uruchamianie obiektow typu startable
             log.debug("Running startable entities ...");
             Iterable<IEntity> startableEntities =
-                    lookupEntitiesFromLocation("/autostart",
+                    lookupEntitiesFromLocation(IDOA.AUTOSTART_CONTAINER,
                             new IEntityEvaluator() {
                                 @Override
                                 public boolean isReturnableEntity(IEntity entity) {
@@ -434,9 +433,10 @@ public abstract class AbstractDOALogic implements IDOALogic {
                         log.debug(MessageFormat
                                 .format("Startable entity [{0}] is not marked as autostart, skipping ...",
                                         startable.getLocation()));
+                        continue;
                     }
                     log.debug(MessageFormat.format("Starting up entity: [{0}]",
-                            startableEntity.getLocation()));
+                            startable.getLocation()));
 
                     doa.doInTransaction(new ITransactionCallback() {
                         @Override

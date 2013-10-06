@@ -40,95 +40,102 @@
  *    Inhibi Ltd - initial API and implementation
  *******************************************************************************/
 /**
- * 
+ *
  */
 package pl.doa.entity.impl.neo;
 
 import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Relationship;
-
 import pl.doa.entity.IEntityAttribute;
 import pl.doa.neo.NodeDelegate;
 
 /**
  * @author activey
- * 
  */
 public class NeoEntityAttribute extends NodeDelegate implements
-		IEntityAttribute {
+        IEntityAttribute {
 
-	public static final String PROP_NAME = "name";
-	public static final String PROP_VALUE = "value";
+    public static final String PROP_NAME = "name";
+    public static final String PROP_VALUE = "value";
 
-	public NeoEntityAttribute(Node underlyingNode) {
-		super(underlyingNode);
-	}
+    public NeoEntityAttribute(Node underlyingNode) {
+        super(underlyingNode);
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * @see pl.doa.temp.entity.IDOAAttribute#getName()
-	 */
-	/*
+    /*
+     * (non-Javadoc)
+     * @see pl.doa.temp.entity.IDOAAttribute#getName()
+     */
+    /*
 	 * (non-Javadoc)
 	 * @see pl.doa.entity.IEntityAttribute#getName()
 	 */
-	@Override
-	public String getName() {
-		return (String) getProperty(PROP_NAME);
-	}
+    @Override
+    public String getName() {
+        return (String) getProperty(PROP_NAME);
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * @see pl.doa.temp.entity.IDOAAttribute#setName(java.lang.String)
-	 */
+    /*
+     * (non-Javadoc)
+     * @see pl.doa.temp.entity.IDOAAttribute#setName(java.lang.String)
+     */
 	/*
 	 * (non-Javadoc)
 	 * @see pl.doa.entity.IEntityAttribute#setName(java.lang.String)
 	 */
-	@Override
-	public void setName(String name) {
-		setProperty(PROP_NAME, name);
-	}
+    @Override
+    public void setName(String name) {
+        setProperty(PROP_NAME, name);
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * @see pl.doa.temp.entity.IDOAAttribute#getValue()
-	 */
+    /*
+     * (non-Javadoc)
+     * @see pl.doa.temp.entity.IDOAAttribute#getValue()
+     */
 	/*
 	 * (non-Javadoc)
 	 * @see pl.doa.entity.IEntityAttribute#getValue()
 	 */
-	@Override
-	public Object getValue() {
-		return getProperty(PROP_VALUE);
-	}
+    @Override
+    public Object getValue() {
+        return getProperty(PROP_VALUE);
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * @see pl.doa.temp.entity.IDOAAttribute#setValue(java.lang.Object)
-	 */
+    /*
+     * (non-Javadoc)
+     * @see pl.doa.temp.entity.IDOAAttribute#setValue(java.lang.Object)
+     */
 	/*
 	 * (non-Javadoc)
 	 * @see pl.doa.entity.IEntityAttribute#setValue(java.lang.Object)
 	 */
-	@Override
-	public void setValue(Object value) {
-		setProperty(PROP_VALUE, value);
-	}
+    @Override
+    public void setValue(Object value) {
+        setProperty(PROP_VALUE, value);
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * @see pl.doa.entity.IEntityAttribute#remove()
-	 */
-	@Override
-	public boolean remove() {
-		for (Relationship relationship : this
-				.getRelationships(Direction.INCOMING)) {
-			relationship.delete();
-		}
-		this.delete();
-		return true;
-	}
+    /*
+     * (non-Javadoc)
+     * @see pl.doa.entity.IEntityAttribute#remove()
+     */
+    @Override
+    public boolean remove() {
+        for (Relationship relationship : this
+                .getRelationships(Direction.INCOMING)) {
+            relationship.delete();
+        }
+        this.delete();
+        return true;
+    }
+
+    @Override
+    public String getValueAsString() {
+        Object value = getValue();
+        if (value == null) {
+            return "";
+        }
+        return value.toString();
+    }
 
 }

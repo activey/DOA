@@ -53,120 +53,117 @@ import pl.doa.templates.xml.traverse.TagTraverser;
 
 public abstract class Tag {
 
-	protected TemplateContext context;
+    protected TemplateContext context;
+    protected TagElement element;
+    private Exception exception;
+    private boolean skip = false;
 
-	protected TagElement element;
+    public final void tagStart() throws Exception {
+        processTagStart();
+    }
 
-	private Exception exception;
+    public abstract void processTagStart() throws Exception;
 
-	private boolean skip = false;
+    public final Nodes tagEnd() throws Exception {
+        if (skip) {
+            return new Nodes();
+        }
+        return processTagEnd();
+    }
 
-	public final void tagStart() throws Exception {
-		processTagStart();
-	}
+    public abstract Nodes processTagEnd() throws Exception;
 
-	public abstract void processTagStart() throws Exception;
+    public final void setTemplateContext(TemplateContext context) {
+        this.context = context;
+    }
 
-	public final Nodes tagEnd() throws Exception {
-		if (skip) {
-			return new Nodes();
-		}
-		return processTagEnd();
-	}
+    public final Document getDocument() {
+        Element rootElement = (Element) context.getVariable("ROOT_ELEMENT");
+        return rootElement.getDocument();
+    }
 
-	public abstract Nodes processTagEnd() throws Exception;
-
-	public final void setTemplateContext(TemplateContext context) {
-		this.context = context;
-	}
-
-	public void setElement(TagElement element) {
-		this.element = element;
-	}
-
-	public final Document getDocument() {
-		Element rootElement = (Element) context.getVariable("ROOT_ELEMENT");
-		return rootElement.getDocument();
-	}
+    public BaseElement createElement(String elementName) {
+        BaseElement element = new BaseElement(elementName);
+        return element;
+    }
 
 	/*
-	 * public void replaceElement(Element newElement) { ParentNode parent =
+     * public void replaceElement(Element newElement) { ParentNode parent =
 	 * element.getParent(); parent.replaceChild(element, newElement); }
 	 */
 
-	public BaseElement createElement(String elementName) {
-		BaseElement element = new BaseElement(elementName);
-		return element;
-	}
-	
-	public BaseElement createElement(String elementName, String namespace) {
-		String prefix = element.getNamespacePrefix();
-		String fullName = elementName;
-		if (prefix != null && prefix.trim().length() > 0) {
-			fullName = prefix + ":" + fullName;
-		}
-		BaseElement element = new BaseElement(fullName, namespace);
-		return element;
-	}
+    public BaseElement createElement(String elementName, String namespace) {
+        String prefix = element.getNamespacePrefix();
+        String fullName = elementName;
+        if (prefix != null && prefix.trim().length() > 0) {
+            fullName = prefix + ":" + fullName;
+        }
+        BaseElement element = new BaseElement(fullName, namespace);
+        return element;
+    }
 
-	public Comment createComment(String comment) {
-		return new Comment(comment);
-	}
+    public Comment createComment(String comment) {
+        return new Comment(comment);
+    }
 
-	public TagElement getElement() {
-		return this.element;
-	}
+    public TagElement getElement() {
+        return this.element;
+    }
 
-	public void setException(Exception exception) {
-		this.exception = exception;
-	}
+    public void setElement(TagElement element) {
+        this.element = element;
+    }
 
-	public boolean hasException() {
-		return exception != null;
-	}
+    public boolean hasException() {
+        return exception != null;
+    }
 
-	public Exception getException() {
-		return this.exception;
-	}
+    public Exception getException() {
+        return this.exception;
+    }
 
-	public boolean isSkip() {
-		return skip;
-	}
+    public void setException(Exception exception) {
+        this.exception = exception;
+    }
 
-	public void setSkip(boolean skip) {
-		this.skip = skip;
-	}
+    public boolean isSkip() {
+        return skip;
+    }
 
-	public Tag traverseParent(final TagTraverser traverser) {
-		TagElement parentElement =
-			(TagElement) element.traverseParent(new ElementTraverser() {
+    public void setSkip(boolean skip) {
+        this.skip = skip;
+    }
 
-				public boolean elementMatch(Element element) {
-					if (element instanceof TagElement) {
-						TagElement tagElement = (TagElement) element;
-						return traverser.elementMatch(tagElement);
-					}
-					return false;
-				}
-			});
-		if (parentElement == null) {
-			return null;
-		}
-		return parentElement.getTag();
-	}
-	
-	public Tag getParent() {
-		return traverseParent(new TagTraverser() {
-			
-			@Override
-			public boolean tagMatch(Tag tag) {
-				return true;
-			}
-		});
-	}
-	
-	public String getBodyText() {
-		return element.getValue();
-	}
+    public Tag traverseParent(final TagTraverser traverser) {
+        TagElement parentElement =
+                (TagElement) element.traverseParent(new ElementTraverser() {
+
+                    public boolean elementMatch(Element element) {
+                        if (element instanceof TagElement) {
+                            TagElement tagElement = (TagElement) element;
+                            return traverser.elementMatch(tagElement);
+                        }
+                        return false;
+                    }
+                });
+        if (parentElement == null) {
+            return null;
+        }
+        return parentElement.getTag();
+    }
+
+    public Tag getParent() {
+        return traverseParent(new TagTraverser() {
+
+            @Override
+            public boolean tagMatch(Tag tag) {
+                return true;
+            }
+        });
+    }
+
+    public String getBodyText() {
+        return element.getValue();
+    }
 
 }
