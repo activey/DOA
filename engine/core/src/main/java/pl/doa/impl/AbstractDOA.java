@@ -81,9 +81,6 @@ import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.net.URL;
 import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 /**
  * @author activey
@@ -105,77 +102,12 @@ public abstract class AbstractDOA extends AbstractStartableEntity implements
     @Override
     public final void publishEvent(final IEntityEventDescription event) {
         final IEntity eventEntity = event.getSourceEntity();
-        // wyciaganie listy sluchaczy dla konkretnego zdarzenia
-        final List<IEntityEventListener> listeners = eventEntity
-                .getEventListeners(event);
-        if (listeners == null || listeners.size() == 0) {
-            log.debug(MessageFormat.format(
-                    "There are no event listeners for: [{0}][{1}][{2}]",
-                    eventEntity.getClass().getName(), eventEntity.getId() + "",
-                    eventEntity.getLocation()));
+        if (!eventEntity.hasEventListeners()) {
             return;
         }
-        final IEntityEvent storedEvent = saveEvent(event);
-
-        // TODO reimplement it!!!
-        Runnable publishedEvent = new Runnable() {
-
-            @Override
-            public void run() {
-                log.debug(MessageFormat
-                        .format("publishing entity event type: [{0}], for entity under location: [{1}]",
-                                event.getClass().getName(),
-                                eventEntity.getLocation()));
-                log.debug("Event listeners count: " + listeners.size());
-                for (IEntity doaEntity : listeners) {
-                    final IEntityEventListener listener = (IEntityEventListener) doaEntity;
-                    IEntityEventReceiver receiver = listener.getEventReceiver();
-                    try {
-                        receiver.handleEvent(event);
-                        // TODO usuwanie sluchacza
-
-                        EntityEventType eventType = listener.getEventType();
-                        if (eventType.isRemoveAfterProcessing()) {
-                            if (log.isTraceEnabled()) {
-                                log.debug("Removing event listener ...");
-                            }
-                            doInTransaction(new ITransactionCallback<Object>() {
-
-                                @Override
-                                public Object performOperation()
-                                        throws Exception {
-                                    listener.remove();
-                                    return null;
-                                }
-                            });
-
-                        }
-                        //
-                    } catch (Exception e) {
-                        log.error("", e);
-                    }
-                }
-
-                event.getSourceEntity().getDoa()
-                        .doInTransaction(new ITransactionCallback() {
-
-                            @Override
-                            public Object performOperation() throws Exception {
-                                log.debug("Removing published event: "
-                                        + event.getEventType());
-                                try {
-                                    return storedEvent.remove();
-                                } catch (Exception ex) {
-                                    log.error(ex.getMessage());
-                                    return null;
-                                }
-                            }
-                        });
-            }
-        };
-        publishedEvent.run();
-
-        //executeThread(publishedEvent);
+        // just storing event, it will be processed after transaction is done
+        saveEvent(event);
+        return;
     }
 
     @Override
@@ -695,14 +627,8 @@ public abstract class AbstractDOA extends AbstractStartableEntity implements
 
     @Override
     public final <T> T doInTransaction(ITransactionCallback<T> callback) {
-        String txId = new Date().getTime() + "_" + Math.random();
-        // log.debug("Starting transaction with id: " + txId);
         T obj = getLogicInstance().doInTransaction(callback);
-        // log.debug("Finished transaction with id: " + txId);
-        final List<IEntityEvent> eventsList = getTransactionEvents(txId);
-        for (IEntityEvent event : eventsList) {
-            publishEvent(event);
-        }
+        executeThread(new EventsConsumer(this, "" + Thread.currentThread().getId()));
         return obj;
     }
 
@@ -710,63 +636,17 @@ public abstract class AbstractDOA extends AbstractStartableEntity implements
     public <T extends Object> T doInTransaction(
             ITransactionCallback<T> callback,
             ITransactionErrorHandler errorHandler) {
-        String txId = new Date().getTime() + "_" + Math.random();
-        log.debug("Starting transaction with id: " + txId);
         T obj = getLogicInstance().doInTransaction(callback, errorHandler);
-        log.debug("Finished transaction with id: " + txId);
-        for (IEntityEvent event : getTransactionEvents(txId)) {
-            publishEvent(event);
-        }
+        executeThread(new EventsConsumer(this, "" + Thread.currentThread().getId()));
         return obj;
     }
 
-    public List<IEntityEventDescription> getAllEvents() {
-        List<IEntityEventDescription> events = new ArrayList<IEntityEventDescription>();
-        IEntityEvaluator evaluator = new IEntityEvaluator() {
-
-            @Override
-            public boolean isReturnableEntity(IEntity currentEntity) {
-                if (currentEntity instanceof IEntityEvent) {
-                    return true;
-                }
-                return false;
-            }
-        };
-        for (IEntity event : lookupEntitiesByLocation(EVENTS_CONTAINER,
-                evaluator)) {
-            events.add((IEntityEventDescription) event);
-        }
-        return events;
-    }
-
-    private List<IEntityEvent> getTransactionEvents(final String txId) {
-        List<IEntityEvent> events = new ArrayList<IEntityEvent>();
-        IEntityEvaluator evaluator = new IEntityEvaluator() {
-
-            @Override
-            public boolean isReturnableEntity(IEntity currentEntity) {
-                if (!(currentEntity instanceof IEntityEvent)) {
-                    return false;
-                }
-                IEntityEvent event = (IEntityEvent) currentEntity;
-                String eventTxId = (String) event
-                        .getAttribute(IEntityEventDescription.EVENT_TX_ID);
-                if (eventTxId == null) {
-                    return false;
-                }
-                return txId.equals(eventTxId);
-            }
-        };
-        for (IEntity event : lookupEntitiesByLocation(EVENTS_CONTAINER,
-                evaluator)) {
-            events.add((IEntityEvent) event);
-        }
-        return events;
-    }
 
     private IEntityEvent saveEvent(IEntityEventDescription event) {
         try {
             IEntityEvent entityEvent = ((DetachedEvent) event).buildEvent(this);
+            entityEvent.setAttribute(IEntityEventDescription.EVENT_TX_ID,
+                    Thread.currentThread().getId() + "");
             IEntity foundEntity = lookupEntityByLocation(EVENTS_CONTAINER);
             if (foundEntity instanceof IEntitiesContainer) {
                 IEntitiesContainer destContainer = (IEntitiesContainer) foundEntity;

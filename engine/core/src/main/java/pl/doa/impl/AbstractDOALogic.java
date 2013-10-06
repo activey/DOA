@@ -60,7 +60,6 @@ import pl.doa.entity.IEntityEvaluator;
 import pl.doa.entity.IEntityReference;
 import pl.doa.entity.ITransactionCallback;
 import pl.doa.entity.evaluator.EntityTypeEvaluator;
-import pl.doa.entity.event.IEntityEventDescription;
 import pl.doa.entity.sort.IEntitiesSortComparator;
 import pl.doa.entity.startable.IStartableEntity;
 import pl.doa.jvm.DOAClassLoader;
@@ -448,10 +447,9 @@ public abstract class AbstractDOALogic implements IDOALogic {
                     });
                 }
             }
+
             // publikacja zdarzen
-            for (IEntityEventDescription event : doa.getAllEvents()) {
-                doa.publishEvent(event);
-            }
+            // TODO implement publishing all remaining events
         }
         long end = System.currentTimeMillis();
         long totalMs = end - start;

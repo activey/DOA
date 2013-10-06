@@ -63,7 +63,6 @@ import pl.doa.service.IServiceDefinitionLogic;
 
 import java.io.InputStream;
 import java.net.URL;
-import java.util.List;
 
 public interface IDOA extends IEntitiesContainer, IStartableEntity {
 
@@ -287,7 +286,5 @@ public interface IDOA extends IEntitiesContainer, IStartableEntity {
     public boolean removeFileStream(IStaticResource resource) throws Exception;
 
     public InputStream retrieve(IStaticResource resource) throws Exception;
-
-    public List<IEntityEventDescription> getAllEvents();
 
 }
