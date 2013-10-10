@@ -46,8 +46,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pl.doa.IDOA;
 import pl.doa.artifact.DirectoryListener;
+import pl.doa.artifact.DirectoryMonitor;
 import pl.doa.artifact.IArtifact;
 import pl.doa.entity.ITransactionCallback;
+import pl.doa.jvm.DOAURLHandlerFactory;
 import pl.doa.utils.FileUtils;
 
 import java.io.File;
@@ -73,7 +75,30 @@ public class StandaloneArtifactManager extends AbstractArtifactManager {
         super(doa);
         this.configuration = configuration;
         try {
-            initializeRepository();
+            LOG.debug("Initializing Artifact Manager ...");
+            DOAURLHandlerFactory.attachFactory(doa);
+
+            // uruchomianie sluchacza katalogu deploymentu
+            LOG.debug("Starting up artifacts deployment directory listener: ["
+                    + getDeployDirectory() + "]");
+            DirectoryMonitor directoryMonitor =
+                    new DirectoryMonitor(getMonitorInterval());
+            File deployDirectory = new File(getDeployDirectory());
+            if (!deployDirectory.exists()) {
+                LOG.debug("Deploy directory does not exist, attempting to create it ...");
+                boolean created = deployDirectory.mkdirs();
+                if (!created) {
+                    LOG.debug(MessageFormat
+                            .format("Unable to create directory: [{0}], hot deployment disabled",
+                                    getDeployDirectory()));
+                    return;
+                }
+            }
+            directoryMonitor.setDirectory(deployDirectory);
+            directoryMonitor.addListener(this);
+            directoryMonitor.start();
+
+            initializeRepository(null);
         } catch (Exception e) {
             LOG.error("", e);
         }
@@ -97,7 +122,7 @@ public class StandaloneArtifactManager extends AbstractArtifactManager {
         for (final File file : changedFiles) {
             switch (type) {
                 case DirectoryListener.TYPE_ADD: {
-                    log.debug("deploying artifact from file "
+                    LOG.debug("deploying artifact from file "
                             + file.getAbsolutePath());
                     String fileExt = FileUtils.getExtension(file);
                     if ("core".equals(fileExt) || "xml".equals(fileExt)) {
@@ -108,12 +133,12 @@ public class StandaloneArtifactManager extends AbstractArtifactManager {
                                 public Object performOperation() throws Exception {
                                     deployArtifact(file.getName(),
                                             new FileInputStream(file), IArtifact.Type.XML);
-                                    log.debug("deployment complete!");
+                                    LOG.debug("deployment complete!");
                                     return null;
                                 }
                             });
                         } catch (Exception ex) {
-                            log.error("", ex);
+                            LOG.error("", ex);
                             return;
                         }
                     } else if ("jar".equals(fileExt)) {
@@ -124,14 +149,14 @@ public class StandaloneArtifactManager extends AbstractArtifactManager {
                                 public Object performOperation()
                                         throws Exception {
                                     IArtifact deployedArtifact = deployJarArtifact(file);
-                                    log.debug(MessageFormat.format("Deployment of artifact [{0}.{1}] complete!",
+                                    LOG.debug(MessageFormat.format("Deployment of artifact [{0}.{1}] complete!",
                                             deployedArtifact.getGroupId(), deployedArtifact.getArtifactId()));
                                     return null;
                                 }
                             });
 
                         } catch (Exception ex) {
-                            log.error("", ex);
+                            LOG.error("", ex);
                             return;
                         }
                     }
