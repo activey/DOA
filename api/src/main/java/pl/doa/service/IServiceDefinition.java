@@ -41,53 +41,52 @@
  *******************************************************************************/
 package pl.doa.service;
 
-import java.util.List;
-
 import pl.doa.GeneralDOAException;
 import pl.doa.agent.IAgent;
 import pl.doa.document.IDocument;
 import pl.doa.document.IDocumentDefinition;
 import pl.doa.entity.IEntity;
 
+import java.util.List;
+
 public interface IServiceDefinition extends IEntity {
 
-	/**
-	 * Metoda powinna zachowywac sie roznie, w zaleznosci od ustalonego modelu
-	 * uruchamiania uslug. Nalezy zadecydowac czy wykonanie metody powoduje
-	 * stworzenie zupelnie nowej instancji uruchomionej uslugi, czy tez ma
-	 * korzystac z juz uruchomionej instancji.
-	 * 
-	 * @param input
-	 * @return
-	 */
-	public abstract IRunningService executeService(IDocument serviceInput,
-			IAgent runAs, final boolean asynchronous)
-			throws GeneralDOAException;
+    /**
+     * Metoda powinna zachowywac sie roznie, w zaleznosci od ustalonego modelu uruchamiania uslug. Nalezy zadecydowac czy
+     * wykonanie metody powoduje stworzenie zupelnie nowej instancji uruchomionej uslugi, czy tez ma korzystac z juz
+     * uruchomionej instancji.
+     *
+     * @param input
+     * @return
+     */
+    public abstract IRunningService executeService(IDocument serviceInput,
+                                                   IAgent runAs, final boolean asynchronous)
+            throws GeneralDOAException;
 
-	public abstract IRunningService executeService(IDocument serviceInput,
-			final boolean asynchronous) throws GeneralDOAException;
+    public abstract IRunningService executeService(IDocument serviceInput,
+                                                   final boolean asynchronous) throws GeneralDOAException;
 
-	public abstract IDocumentDefinition getInputDefinition();
+    public abstract IDocumentDefinition getInputDefinition();
 
-	public abstract List<IDocumentDefinition> getPossibleOutputs();
+    public abstract void setInputDefinition(IDocumentDefinition inputDefinition);
 
-	public abstract IDocumentDefinition getPossibleOutputDefinition(
-			final String possibleOutputName);
+    public abstract List<IDocumentDefinition> getPossibleOutputs();
 
-	public abstract void addPossibleOutputDefinition(
-			IDocumentDefinition possibleOutputDefinition);
+    public abstract IDocumentDefinition getPossibleOutputDefinition(
+            final String possibleOutputName);
 
-	public abstract void removePossibleOutputDefinition(
-			IDocumentDefinition possibleOutputDefinition);
-	
-	public abstract void setInputDefinition(IDocumentDefinition inputDefinition);
+    public abstract void addPossibleOutputDefinition(
+            IDocumentDefinition possibleOutputDefinition);
 
-	public abstract String getLogicClass();
+    public abstract void removePossibleOutputDefinition(
+            IDocumentDefinition possibleOutputDefinition);
 
-	public abstract void setLogicClass(String logicClass);
+    public abstract String getLogicClass();
 
-	public abstract List<IRunningService> getRunningServices();
+    public abstract void setLogicClass(String logicClass);
 
-	public abstract void addRunning(IRunningService runningService);
+    public abstract List<IRunningService> getRunningServices();
+
+    public abstract void addRunning(IRunningService runningService);
 
 }
