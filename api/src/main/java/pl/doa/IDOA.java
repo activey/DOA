@@ -246,7 +246,7 @@ public interface IDOA extends IEntitiesContainer, IStartableEntity {
 
     public IServiceDefinitionLogic getRunning(IRunningService runningService);
 
-    public IServiceDefinitionLogic getRunning(String runningServiceUUID);
+    public IServiceDefinitionLogic getRunning(long runningServiceUUID);
 
     public IStartableEntityLogic startup(IStartableEntity startableEntity)
             throws GeneralDOAException;

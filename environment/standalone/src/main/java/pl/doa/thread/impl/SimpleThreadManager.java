@@ -1,5 +1,6 @@
 package pl.doa.thread.impl;
 
+import org.apache.commons.configuration.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pl.doa.thread.IThreadManager;
@@ -13,6 +14,7 @@ public class SimpleThreadManager implements IThreadManager {
     private static final String DEFAULT_NAME = "threadPoolManager";
 
     private static final int DEFAULT_POOL_SIZE = 40;
+    public static final String CONFIGURATION_THREADS_POOL_SIZE = "doa.threads.pool.size";
 
     private final Logger log = LoggerFactory
             .getLogger(SimpleThreadManager.class);
@@ -23,6 +25,10 @@ public class SimpleThreadManager implements IThreadManager {
 
     public SimpleThreadManager() {
         this(DEFAULT_NAME, DEFAULT_POOL_SIZE);
+    }
+
+    public SimpleThreadManager(Configuration configuration) {
+        this(DEFAULT_NAME, configuration.getInt(CONFIGURATION_THREADS_POOL_SIZE, DEFAULT_POOL_SIZE));
     }
 
     public SimpleThreadManager(String threadManagerName) {

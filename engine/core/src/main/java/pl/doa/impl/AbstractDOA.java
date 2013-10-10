@@ -971,7 +971,7 @@ public abstract class AbstractDOA extends AbstractStartableEntity implements
     }
 
     @Override
-    public IServiceDefinitionLogic getRunning(String runningServiceUUID) {
+    public IServiceDefinitionLogic getRunning(long runningServiceUUID) {
         if (doa != null) {
             return doa.getRunning(runningServiceUUID);
         }

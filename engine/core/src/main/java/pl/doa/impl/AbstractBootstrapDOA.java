@@ -75,6 +75,12 @@ public abstract class AbstractBootstrapDOA extends AbstractDOA {
     private final static Logger log = LoggerFactory
             .getLogger(AbstractBootstrapDOA.class);
 
+    private IServicesManager servicesManager;
+    private IArtifactManager artifactManager;
+    private IStaticResourceStorage resourceStorage;
+    private IStartableEntityManager startableManager;
+    private IThreadManager threadManager;
+    
     public AbstractBootstrapDOA() {
         super(null);
     }
@@ -156,12 +162,11 @@ public abstract class AbstractBootstrapDOA extends AbstractDOA {
     @Override
     public final IArtifact deployArtifact(String artifactFileName,
                                           byte[] artifactData, Type artifactType) throws GeneralDOAException {
-        IArtifactManager manager = getArtifactManager();
-        if (manager == null) {
+        if (artifactManager == null) {
             log.debug("Manager is not ready yet ...");
             return null;
         }
-        return manager.deployArtifact(artifactFileName, artifactData,
+        return artifactManager.deployArtifact(artifactFileName, artifactData,
                 artifactType);
     }
 
@@ -169,125 +174,114 @@ public abstract class AbstractBootstrapDOA extends AbstractDOA {
     public final IArtifact deployArtifact(String artifactFileName,
                                           InputStream artifactData, Type artifactType)
             throws GeneralDOAException {
-        IArtifactManager manager = getArtifactManager();
-        if (manager == null) {
+        if (artifactManager == null) {
             log.debug("Manager is not ready yet ...");
             return null;
         }
-        return manager.deployArtifact(artifactFileName, artifactData,
+        return artifactManager.deployArtifact(artifactFileName, artifactData,
                 artifactType);
     }
 
     @Override
     public final void undeployArtifact(IArtifact artifact)
             throws GeneralDOAException {
-        IArtifactManager manager = getArtifactManager();
-        if (manager == null) {
+        if (artifactManager == null) {
             log.debug("Manager is not ready yet ...");
             return;
         }
-        manager.undeployArtifact(artifact);
+        artifactManager.undeployArtifact(artifact);
     }
 
     @Override
     public final void executeService(IRunningService runningService,
                                      boolean asynchronous) throws GeneralDOAException {
-        IServicesManager manager = getServicesManager();
-        if (manager == null) {
+        if (servicesManager == null) {
             log.debug("Manager is not ready yet ...");
             return;
         }
-        manager.executeService(runningService, asynchronous);
+        servicesManager.executeService(runningService, asynchronous);
     }
 
     @Override
     public final IServiceDefinitionLogic getRunning(
             IRunningService runningService) {
-        IServicesManager manager = getServicesManager();
-        if (manager == null) {
+        if (servicesManager == null) {
             log.debug("Manager is not ready yet ...");
             return null;
         }
-        return manager.getRunning(runningService);
+        return servicesManager.getRunning(runningService);
     }
 
     @Override
-    public final IServiceDefinitionLogic getRunning(String runningServiceUUID) {
-        IServicesManager manager = getServicesManager();
-        if (manager == null) {
+    public final IServiceDefinitionLogic getRunning(long runningServiceUUID) {
+        if (servicesManager == null) {
             log.debug("Manager is not ready yet ...");
             return null;
         }
-        return manager.getRunning(runningServiceUUID);
+        return servicesManager.getRunning(runningServiceUUID);
     }
 
     @Override
     public final IStartableEntityLogic getRunning(
             IStartableEntity startableEntity) {
-        IStartableEntityManager manager = getStartableManager();
-        if (manager == null) {
+        if (startableManager == null) {
             log.debug("Manager is not ready yet ...");
             return null;
         }
-        return manager.getRunning(startableEntity);
+        return startableManager.getRunning(startableEntity);
     }
 
     @Override
     public final boolean isRunning(IStartableEntity startableEntity) {
-        IStartableEntityManager manager = getStartableManager();
-        if (manager == null) {
+        if (startableManager == null) {
             log.debug("Manager is not ready yet ...");
             return false;
         }
-        return manager.isRunning(startableEntity);
+        return startableManager.isRunning(startableEntity);
     }
 
     @Override
     public final IStartableEntityLogic startup(IStartableEntity startableEntity)
             throws GeneralDOAException {
-        return getStartableManager().startup(startableEntity);
+        return startableManager.startup(startableEntity);
     }
 
     @Override
     public final void shutdown(IStartableEntity startableEntity)
             throws GeneralDOAException {
-        IStartableEntityManager manager = getStartableManager();
-        if (manager == null) {
+        if (startableManager == null) {
             log.debug("Manager is not ready yet ...");
             return;
         }
-        manager.shutdown(startableEntity);
+        startableManager.shutdown(startableEntity);
     }
 
     public final long storeOrUpdate(IStaticResource resource,
                                     InputStream dataStream) throws Exception {
-        IStaticResourceStorage storage = getResourceStorage();
-        if (storage == null) {
+        if (resourceStorage == null) {
             log.debug("Storage is not ready yet ...");
             return -1;
         }
-        return storage.storeOrUpdate(resource, dataStream);
+        return resourceStorage.storeOrUpdate(resource, dataStream);
     }
 
     public final InputStream retrieve(IStaticResource resource)
             throws Exception {
-        IStaticResourceStorage storage = getResourceStorage();
-        if (storage == null) {
+        if (resourceStorage == null) {
             log.debug("Storage is not ready yet ...");
             return null;
         }
-        return storage.retrieve(resource);
+        return resourceStorage.retrieve(resource);
     }
 
     @Override
     public final boolean removeFileStream(IStaticResource resource)
             throws Exception {
-        IStaticResourceStorage storage = getResourceStorage();
-        if (storage == null) {
+        if (resourceStorage == null) {
             log.debug("Storage is not ready yet ...");
             return false;
         }
-        return storage.remove(resource);
+        return resourceStorage.remove(resource);
     }
 
     @Override
@@ -297,22 +291,30 @@ public abstract class AbstractBootstrapDOA extends AbstractDOA {
 
     @Override
     public final void executeThread(Runnable runnable) {
-        IThreadManager manager = getThreadManager();
-        if (manager == null) {
+        if (threadManager == null) {
             log.debug("Manager is not ready yet ...");
             return;
         }
-        manager.execute(runnable);
+        threadManager.execute(runnable);
     }
 
-    public abstract IServicesManager getServicesManager();
+    public void setThreadManager(IThreadManager threadManager) {
+        this.threadManager = threadManager;
+    }
 
-    public abstract IArtifactManager getArtifactManager();
+    public void setStartableManager(IStartableEntityManager startableManager) {
+        this.startableManager = startableManager;
+    }
 
-    public abstract IStaticResourceStorage getResourceStorage();
+    public void setResourceStorage(IStaticResourceStorage resourceStorage) {
+        this.resourceStorage = resourceStorage;
+    }
 
-    public abstract IStartableEntityManager getStartableManager();
+    public void setArtifactManager(IArtifactManager artifactManager) {
+        this.artifactManager = artifactManager;
+    }
 
-    public abstract IThreadManager getThreadManager();
-
+    public void setServicesManager(IServicesManager servicesManager) {
+        this.servicesManager = servicesManager;
+    }
 }

@@ -41,65 +41,111 @@
  *******************************************************************************/
 package pl.doa.artifact.impl;
 
+import org.apache.commons.configuration.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
 import pl.doa.IDOA;
+import pl.doa.artifact.DirectoryListener;
+import pl.doa.artifact.IArtifact;
+import pl.doa.entity.ITransactionCallback;
+import pl.doa.utils.FileUtils;
 
-public class StandaloneArtifactManager extends AbstractArtifactManager implements
-        InitializingBean {
+import java.io.File;
+import java.io.FileInputStream;
+import java.text.MessageFormat;
 
-    private final static Logger log = LoggerFactory
+public class StandaloneArtifactManager extends AbstractArtifactManager {
+
+    private final static Logger LOG = LoggerFactory
             .getLogger(StandaloneArtifactManager.class);
-    @Autowired
-    private IDOA doa;
-    private String deployDirectory;
-    private long monitorInterval;
-    private String cacheDirectory;
 
-    public StandaloneArtifactManager() {
-    }
+    private final static String DEFAULT_DEPLOY_DIRECTORY = "./var/deploy";
+    private final static long DEFAULT_MONITOR_INTERVAL = 1000;
+    private final static String DEFAULT_CACHE_DIRECTORY = "./var/ivy";
 
-    public StandaloneArtifactManager(IDOA doa) {
-        this.doa = doa;
-    }
+    public static final String CONFIGURATION_DEPLOY_DIRECTORY = "doa.deploy.directory";
+    public static final String CONFIGURATION_DEPLOY_MONITOR_INTERVAL = "doa.deploy.monitor.interval";
+    public static final String CONFIGURATION_DEPLOY_CACHE_DIRECTORY = "doa.deploy.cache.directory";
 
-    public IDOA getDoa() {
-        return doa;
-    }
+    private final Configuration configuration;
 
-    public void setDoa(IDOA doa) {
-        this.doa = doa;
-    }
-
-    @Override
-    public void afterPropertiesSet() throws Exception {
-        initializeRepository();
+    public StandaloneArtifactManager(IDOA doa, Configuration configuration) {
+        super(doa);
+        this.configuration = configuration;
+        try {
+            initializeRepository();
+        } catch (Exception e) {
+            LOG.error("", e);
+        }
     }
 
     public String getDeployDirectory() {
-        return deployDirectory;
-    }
-
-    public void setDeployDirectory(String deployDirectory) {
-        this.deployDirectory = deployDirectory;
+        return configuration.getString(CONFIGURATION_DEPLOY_DIRECTORY, DEFAULT_DEPLOY_DIRECTORY);
     }
 
     public long getMonitorInterval() {
-        return monitorInterval;
-    }
-
-    public void setMonitorInterval(long monitorInterval) {
-        this.monitorInterval = monitorInterval;
+        return configuration.getLong(CONFIGURATION_DEPLOY_MONITOR_INTERVAL, DEFAULT_MONITOR_INTERVAL);
     }
 
     @Override
     public String getCacheDirectory() {
-        return this.cacheDirectory;
+        return configuration.getString(CONFIGURATION_DEPLOY_CACHE_DIRECTORY, DEFAULT_CACHE_DIRECTORY);
     }
 
-    public void setCacheDirectory(String cacheDirectory) {
-        this.cacheDirectory = cacheDirectory;
+    @Override
+    public void directoryContentsChanged(File directory, File[] changedFiles, int type) {
+        for (final File file : changedFiles) {
+            switch (type) {
+                case DirectoryListener.TYPE_ADD: {
+                    log.debug("deploying artifact from file "
+                            + file.getAbsolutePath());
+                    String fileExt = FileUtils.getExtension(file);
+                    if ("core".equals(fileExt) || "xml".equals(fileExt)) {
+                        try {
+                            doa.doInTransaction(new ITransactionCallback() {
+
+                                @Override
+                                public Object performOperation() throws Exception {
+                                    deployArtifact(file.getName(),
+                                            new FileInputStream(file), IArtifact.Type.XML);
+                                    log.debug("deployment complete!");
+                                    return null;
+                                }
+                            });
+                        } catch (Exception ex) {
+                            log.error("", ex);
+                            return;
+                        }
+                    } else if ("jar".equals(fileExt)) {
+                        try {
+                            doa.doInTransaction(new ITransactionCallback<Object>() {
+
+                                @Override
+                                public Object performOperation()
+                                        throws Exception {
+                                    IArtifact deployedArtifact = deployJarArtifact(file);
+                                    log.debug(MessageFormat.format("Deployment of artifact [{0}.{1}] complete!",
+                                            deployedArtifact.getGroupId(), deployedArtifact.getArtifactId()));
+                                    return null;
+                                }
+                            });
+
+                        } catch (Exception ex) {
+                            log.error("", ex);
+                            return;
+                        }
+                    }
+                    break;
+                }
+                case DirectoryListener.TYPE_REMOVE: {
+                    // TODO implement undeployment
+                    break;
+                }
+                default:
+                    break;
+            }
+
+        }
     }
+
 }

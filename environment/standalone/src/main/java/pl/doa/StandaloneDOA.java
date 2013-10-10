@@ -44,40 +44,46 @@
  */
 package pl.doa;
 
-import org.springframework.beans.factory.DisposableBean;
-import org.springframework.beans.factory.annotation.Autowired;
-import pl.doa.artifact.deployment.IArtifactManager;
+import org.apache.commons.configuration.Configuration;
+import pl.doa.artifact.impl.StandaloneArtifactManager;
 import pl.doa.entity.IEntityAttribute;
-import pl.doa.entity.startable.IStartableEntityManager;
+import pl.doa.entity.startable.impl.StandaloneStartableEntityManager;
 import pl.doa.impl.AbstractBootstrapDOA;
-import pl.doa.resource.IStaticResourceStorage;
-import pl.doa.service.IServicesManager;
-import pl.doa.thread.IThreadManager;
+import pl.doa.resource.impl.SimpleStaticResourceStorage;
+import pl.doa.service.impl.StandaloneServicesManager;
+import pl.doa.thread.impl.SimpleThreadManager;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author activey
  */
-public class StandaloneDOA extends AbstractBootstrapDOA implements
-        DisposableBean {
+public class StandaloneDOA extends AbstractBootstrapDOA {
 
+    public static final String DOA_LOGIC = "doa.logic";
     private String logicClass;
     private Map<String, String> attributes = new HashMap<String, String>();
     private String name;
-    @Autowired
-    private IServicesManager servicesManager;
-    @Autowired
-    private IArtifactManager artifactManager;
-    @Autowired
-    private IStaticResourceStorage resourceStorage;
-    @Autowired
-    private IStartableEntityManager startableManager;
-    @Autowired
-    private IThreadManager threadManager;
+
+
+    public StandaloneDOA(Configuration configuration) {
+        setServicesManager(new StandaloneServicesManager(this));
+        setArtifactManager(new StandaloneArtifactManager(this, configuration));
+        setResourceStorage(new SimpleStaticResourceStorage(configuration));
+        setStartableManager(new StandaloneStartableEntityManager(this));
+        setThreadManager(new SimpleThreadManager(configuration));
+
+        setLogicClass(configuration.getString(DOA_LOGIC));
+        Iterator<String> keys = configuration.getKeys(DOA_LOGIC);
+        while (keys.hasNext()) {
+            String key = keys.next();
+            if (key.length() == DOA_LOGIC.length()) {
+                continue;
+            }
+            String logicAttrName = key.substring(DOA_LOGIC.length() + 1);
+            setAttribute(logicAttrName, configuration.getString(key));
+        }
+    }
 
     @Override
     protected final String getNameImpl() {
@@ -181,50 +187,4 @@ public class StandaloneDOA extends AbstractBootstrapDOA implements
     protected void setLogicClassImpl(String logicClass) {
         this.logicClass = logicClass;
     }
-
-    @Override
-    public void destroy() throws Exception {
-        shutdown();
-    }
-
-    public IServicesManager getServicesManager() {
-        return servicesManager;
-    }
-
-    public void setServicesManager(IServicesManager servicesManager) {
-        this.servicesManager = servicesManager;
-    }
-
-    public IArtifactManager getArtifactManager() {
-        return artifactManager;
-    }
-
-    public void setArtifactManager(IArtifactManager artifactManager) {
-        this.artifactManager = artifactManager;
-    }
-
-    public IStaticResourceStorage getResourceStorage() {
-        return resourceStorage;
-    }
-
-    public void setResourceStorage(IStaticResourceStorage resourceStorage) {
-        this.resourceStorage = resourceStorage;
-    }
-
-    public IStartableEntityManager getStartableManager() {
-        return startableManager;
-    }
-
-    public void setStartableManager(IStartableEntityManager startableManager) {
-        this.startableManager = startableManager;
-    }
-
-    public IThreadManager getThreadManager() {
-        return threadManager;
-    }
-
-    public void setThreadManager(IThreadManager threadManager) {
-        this.threadManager = threadManager;
-    }
-
 }

@@ -44,10 +44,10 @@
  */
 package pl.doa;
 
+import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.configuration.PropertiesConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.BeanFactoryUtils;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -61,40 +61,40 @@ public class DOAStarter {
 
     private static final int SLEEP_DELAY = 3000;
     private final static Logger log = LoggerFactory.getLogger(DOAStarter.class);
-    private final static Logger heartBeatLog = LoggerFactory
-            .getLogger("heart-beat");
+    public static final String DOA_PID_FILE = "doa.pid";
+    private IDOA doa;
 
-    /**
-     * @param args
-     */
     public static void main(final String[] args) {
+        DOAStarter starter = new DOAStarter();
+        try {
+            starter.start();
+        } catch (GeneralDOAException e) {
+            log.error("Unable to startup Standalone DOA instance", e);
+        }
+    }
 
-        final ClassPathXmlApplicationContext context =
-                new ClassPathXmlApplicationContext(new String[]{"doa.xml"});
-
+    private void start() throws GeneralDOAException {
         // sprawdzanie, czy doa jest juz uruchomione, szukanie pliku doa.pid w
         // aktualnym katalogu
-        File pidFile = new File("doa.pid");
+        File pidFile = new File(DOA_PID_FILE);
         if (pidFile.exists()) {
             log.error("doa is already started!");
             return;
         }
-        Runnable spring = new Runnable() {
-            public void run() {
+        try {
+            this.doa = new StandaloneDOA(new PropertiesConfiguration("doa.properties"));
+        } catch (ConfigurationException e) {
+            throw new GeneralDOAException(e);
+        }
 
-				/*
-                 * final ApplicationContext applicationContext = new
-				 * FileSystemXmlApplicationContext( "var/spring-context.xml");
-				 */
+        Thread systemThread = new Thread(new Runnable() {
+            public void run() {
                 Runtime.getRuntime().addShutdownHook(new Thread() {
                     public void run() {
                         try {
-                            IDOA doa =
-                                    (IDOA) BeanFactoryUtils.beanOfType(context,
-                                            IDOA.class);
                             log.debug("shutting down DOA ...");
-                            // usuwanie plik doa.pid
-                            File pidFile = new File("doa.pid");
+                            // removing doa.pid file
+                            File pidFile = new File(DOA_PID_FILE);
                             if (pidFile.exists()) {
                                 pidFile.delete();
                             }
@@ -107,28 +107,16 @@ public class DOAStarter {
                 boolean isDOARunning = true;
                 // tworzenie pliku doa.pid
                 createPidFile();
-                IDOA doa;
                 try {
-                    doa =
-                            (IDOA) BeanFactoryUtils.beanOfType(context,
-                                    IDOA.class);
                     doa.startup();
-                } catch (GeneralDOAException e1) {
-                    log.error("", e1);
+                } catch (GeneralDOAException e) {
+                    log.error("", e);
                     return;
                 }
-				/*
-				 * try { doa.startup(); } catch (GeneralDOAException e1) {
-				 * log.error("", e1); return; }
-				 */
 
                 while (isDOARunning) {
                     try {
                         Thread.currentThread().sleep(SLEEP_DELAY);
-                        //heartBeatLog.debug("sleeping ...");
-                        doa =
-                                (IDOA) BeanFactoryUtils.beanOfType(context,
-                                        IDOA.class);
                         isDOARunning = doa.isStartedUp();
                     } catch (Exception e) {
                         log.error("", e);
@@ -141,7 +129,7 @@ public class DOAStarter {
                 if (pid == null) {
                     return;
                 }
-                File newPidFile = new File("doa.pid");
+                File newPidFile = new File(DOA_PID_FILE);
                 try {
                     boolean pidCreated = newPidFile.createNewFile();
                     if (!pidCreated) {
@@ -157,9 +145,7 @@ public class DOAStarter {
                 }
 
             }
-        };
-        Thread springThread = new Thread(spring);
-        springThread.start();
-
+        });
+        systemThread.start();
     }
 }

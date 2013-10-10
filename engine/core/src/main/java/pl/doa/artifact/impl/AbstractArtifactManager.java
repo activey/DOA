@@ -44,8 +44,6 @@ package pl.doa.artifact.impl;
 import org.apache.commons.io.IOUtils;
 import org.apache.ivy.Ivy;
 import org.apache.ivy.core.event.EventManager;
-import org.apache.ivy.core.event.IvyEvent;
-import org.apache.ivy.core.event.IvyListener;
 import org.apache.ivy.core.module.descriptor.Artifact;
 import org.apache.ivy.core.module.descriptor.DependencyDescriptor;
 import org.apache.ivy.core.module.descriptor.ExcludeRule;
@@ -82,34 +80,36 @@ import pl.doa.artifact.deployment.IArtifactManager;
 import pl.doa.container.IEntitiesContainer;
 import pl.doa.entity.IEntity;
 import pl.doa.entity.IEntityEvaluator;
-import pl.doa.entity.ITransactionCallback;
 import pl.doa.jvm.DOAURLHandlerFactory;
-import pl.doa.utils.FileUtils;
 
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.MessageFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.Properties;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 public abstract class AbstractArtifactManager extends DirectoryListener
-        implements IArtifactManager, IvyListener {
+        implements IArtifactManager {
 
     private static final String ARTIFACT_PROCESSOR = "deploy.processor";
     private static final String ARTIFACT_PROCESSOR_DEFAULT = "pl.doa.artifact.deploy.XMLDeploymentProcessor";
     private static final String ARTIFACT_ROOT = "deploy.root";
-    private static final String ARTIFACT_ROOT_DEFAULT = "/";
+    private static final String ARTIFACT_ROOT_DEFAULT = "/tmp";
     private final static Logger log = LoggerFactory
             .getLogger(AbstractArtifactManager.class);
+    private final IDOA doa;
     private Ivy ivy;
-    private long progressCounter = 0L;
     private List<ExcludeRule> excludeRules = new ArrayList<ExcludeRule>();
     private ChainResolver chainResolver;
     private List<URL> repositories = new ArrayList<URL>();
 
-    public AbstractArtifactManager() {
+    public AbstractArtifactManager(IDOA doa) {
+        this.doa = doa;
     }
 
     @Override
@@ -412,7 +412,7 @@ public abstract class AbstractArtifactManager extends DirectoryListener
             return existingArtifact;
         }
         IArtifact newArtifact =
-                getDoa().createArtifact(
+                doa.createArtifact(
                         getArtifactName(moduleArtifact), Type.JAR);
         newArtifact.setDescription(artifactDescription);
         newArtifact.setArtifactFileName(artifactFile.getName());
@@ -441,15 +441,15 @@ public abstract class AbstractArtifactManager extends DirectoryListener
                 artifactProperties.load(descriptorStream);
 
                 // initializing deployment processor
-                IDeploymentProcessor processor = (IDeploymentProcessor) getDoa().instantiateObject(artifactProperties
+                IDeploymentProcessor processor = (IDeploymentProcessor) doa.instantiateObject(artifactProperties
                         .getProperty(ARTIFACT_PROCESSOR, ARTIFACT_PROCESSOR_DEFAULT));
                 if (processor != null) {
                     log.debug(String.format("Running deployment processor: %s", processor.getClass()));
-                    processor.setDoa(getDoa());
+                    processor.setDoa(doa);
                     processor.setArtifact(newArtifact);
                     try {
                         String rootLocation = artifactProperties.getProperty(ARTIFACT_ROOT, ARTIFACT_ROOT_DEFAULT);
-                        IEntitiesContainer deploymentRoot = (IEntitiesContainer) getDoa()
+                        IEntitiesContainer deploymentRoot = (IEntitiesContainer) doa
                                 .lookupEntityByLocation(rootLocation);
                         if (deploymentRoot == null) {
                             log.error(String.format("Unable to find deployment root: [%s]", rootLocation));
@@ -508,7 +508,7 @@ public abstract class AbstractArtifactManager extends DirectoryListener
      */
     public IArtifact lookupArtifact(final String groupId,
                                     final String artifactId, final String artifactVersion) {
-        return (IArtifact) getDoa().lookup(IDOA.ARTIFACTS_CONTAINER,
+        return (IArtifact) doa.lookup(IDOA.ARTIFACTS_CONTAINER,
                 new IEntityEvaluator() {
 
                     @Override
@@ -547,7 +547,7 @@ public abstract class AbstractArtifactManager extends DirectoryListener
                 "Registering Class Loader artifact: [{0}.{1}.{2}]",
                 artifact.getArtifactId(), artifact.getGroupId(),
                 artifact.getVersion()));
-        getDoa().addURL(new URL(artifactUrl));
+        doa.addURL(new URL(artifactUrl));
 
     }
 
@@ -562,7 +562,7 @@ public abstract class AbstractArtifactManager extends DirectoryListener
             settings.setDefaultResolver("chain");
             this.ivy = Ivy.newInstance(settings);
             EventManager eventManager = ivy.getEventManager();
-            eventManager.addIvyListener(this);
+            eventManager.addIvyListener(new ArtifactDeploymentListener());
 
             // dodawanie domyslnych resolverow
             FileSystemResolver fsResolver = new FileSystemResolver();
@@ -650,7 +650,6 @@ public abstract class AbstractArtifactManager extends DirectoryListener
     }
 
     protected void initializeRepository() throws Exception {
-        IDOA doa = getDoa();
         log.debug("Initializing Artifact Manager ...");
         DOAURLHandlerFactory.attachFactory(doa);
 
@@ -677,99 +676,10 @@ public abstract class AbstractArtifactManager extends DirectoryListener
         directoryMonitor.start();
     }
 
-    @Override
-    public void directoryContentsChanged(File directory, File[] changedFiles, int type) {
-        for (final File file : changedFiles) {
-            switch (type) {
-                case DirectoryListener.TYPE_ADD: {
-                    log.debug("deploying artifact from file "
-                            + file.getAbsolutePath());
-                    String fileExt = FileUtils.getExtension(file);
-                    if ("core".equals(fileExt) || "xml".equals(fileExt)) {
-                        try {
-                            getDoa().doInTransaction(new ITransactionCallback() {
-
-                                @Override
-                                public Object performOperation() throws Exception {
-                                    deployArtifact(file.getName(),
-                                            new FileInputStream(file), Type.XML);
-                                    log.debug("deployment complete!");
-                                    return null;
-                                }
-                            });
-                        } catch (Exception ex) {
-                            log.error("", ex);
-                            return;
-                        }
-                    } else if ("jar".equals(fileExt)) {
-                        try {
-                            getDoa().doInTransaction(new ITransactionCallback<Object>() {
-
-                                @Override
-                                public Object performOperation()
-                                        throws Exception {
-                                    IArtifact deployedArtifact = deployJarArtifact(file);
-                                    log.debug(MessageFormat.format("Deployment of artifact [{0}.{1}] complete!",
-                                            deployedArtifact.getGroupId(), deployedArtifact.getArtifactId()));
-                                    return null;
-                                }
-                            });
-
-                        } catch (Exception ex) {
-                            log.error("", ex);
-                            return;
-                        }
-                    }
-                    break;
-                }
-                case DirectoryListener.TYPE_REMOVE: {
-                    // TODO implement undeployment
-                    break;
-                }
-                default:
-                    break;
-            }
-
-        }
-    }
-
-    @Override
-    public void progress(IvyEvent event) {
-        String eventName = event.getName();
-        Map<String, String> attrs = event.getAttributes();
-
-        if ("post-download-artifact".equals(eventName)) {
-            String status = attrs.get("status");
-            log.debug(MessageFormat.format(
-                    "artifact downloaded with status \"{0}\"", status));
-
-            if ("successful".equals(status)) {
-                String size = attrs.get("size");
-                String duration = attrs.get("duration");
-                String file = attrs.get("file");
-                log.debug(MessageFormat
-                        .format("download statistics: file size = {0} bytes, download time = {1} ms, download location = {2}",
-                                size, duration, file));
-            } else if ("no".equals(status)) {
-                log.error("artifact file is already downloaded, getting from cache ...");
-            } else {
-                log.error("ivy was unable to download ...");
-            }
-        } else if ("transfer-initiated".equals(eventName)) {
-            if (progressCounter % 3 == 0) {
-                System.out.print(".");
-            }
-            if (progressCounter % 50 == 0) {
-                System.out.println();
-            }
-            progressCounter++;
-        }
-    }
-
     private IArtifact deployXmlArtifact(String artifactFileName,
                                         InputStream fileStream) throws GeneralDOAException {
         /*IArtifact artifact =
-                (IArtifact) getDoa().lookupEntityByLocation(
+                (IArtifact) doa.lookupEntityByLocation(
                         IDOA.ARTIFACTS_CONTAINER + "/" + artifactFileName);
         if (artifact != null) {
             // TODO implement undeployment
@@ -781,7 +691,7 @@ public abstract class AbstractArtifactManager extends DirectoryListener
             throw new GeneralDOAException(e1);
         }
         byte[] fileContent = fileContentStream.toByteArray();
-        artifact = getDoa().createArtifact(artifactFileName, Type.XML);
+        artifact = doa.createArtifact(artifactFileName, Type.XML);
         artifact.setArtifactFileName(artifactFileName);
         artifact.setArtifactResourceBytes(fileContent);
         artifact.setVersion("" + new Date().getTime());
@@ -818,10 +728,6 @@ public abstract class AbstractArtifactManager extends DirectoryListener
         return artifact; */
         return null;
     }
-
-    public abstract IDOA getDoa();
-
-    public abstract void setDoa(IDOA doa);
 
     public abstract String getDeployDirectory();
 
