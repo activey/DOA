@@ -44,6 +44,14 @@
  */
 package pl.doa.jvm;
 
+import org.lightwolf.tools.LightWolfEnhancer;
+import org.lightwolf.tools.PublicByteArrayOutputStream;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import pl.doa.IDOA;
+import pl.doa.artifact.IArtifact;
+import pl.doa.entity.IEntityEvaluator;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -51,15 +59,6 @@ import java.net.URLClassLoader;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.lightwolf.tools.LightWolfEnhancer;
-import org.lightwolf.tools.PublicByteArrayOutputStream;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import pl.doa.IDOA;
-import pl.doa.artifact.IArtifact;
-import pl.doa.entity.IEntityEvaluator;
 
 /**
  * @author activey
@@ -166,12 +165,6 @@ public class DOAClassLoader extends URLClassLoader {
         }
     }
 
-	/*@Override
-    public URL findResource(String resourceName) {
-		URL resourceUrl = super.findResource(resourceName);
-		return resourceUrl;
-	}*/
-
     public Class<?> loadClass(String name) throws ClassNotFoundException {
         return loadClass(name, true);
     }
@@ -249,10 +242,6 @@ public class DOAClassLoader extends URLClassLoader {
         super.addURL(url);
     }
 
-    public void removeURL(URL url) {
-        urls.remove(url);
-    }
-
     private void registerClassloaderArtifact(IArtifact artifact)
             throws Exception {
         String artifactUrl =
@@ -260,13 +249,4 @@ public class DOAClassLoader extends URLClassLoader {
                         artifact.getName());
         addURL(new URL(artifactUrl));
     }
-
-    private void unRegisterClassloaderArtifact(IArtifact artifact)
-            throws Exception {
-        String artifactUrl =
-                MessageFormat.format("doa:{0}/{1}", IDOA.ARTIFACTS_CONTAINER,
-                        artifact.getName());
-        removeURL(new URL(artifactUrl));
-    }
-
 }

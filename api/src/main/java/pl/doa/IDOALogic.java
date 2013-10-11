@@ -265,8 +265,6 @@ public interface IDOALogic extends IStartableEntityLogic {
 
     public void addURL(URL url);
 
-    public void removeURL(URL url);
-
     public IEntity lookupByUUID(long entityId);
 
     public int countEntities();

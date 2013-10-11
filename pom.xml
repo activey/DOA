@@ -51,6 +51,7 @@
         <rhino.js.version>1.7R1</rhino.js.version>
         <org.apache.ivy.ivy.version>2.2.0</org.apache.ivy.ivy.version>
         <junit.junit.version>4.8.1</junit.junit.version>
+        <org.mockito.version>1.9.0</org.mockito.version>
         <net.sf.scannotation.version>1.0.2</net.sf.scannotation.version>
         <org.slf4j.version>1.7.5</org.slf4j.version>
         <org.lightwolf.lightwolf-continuations.version>0.0.1</org.lightwolf.lightwolf-continuations.version>
@@ -66,7 +67,7 @@
         <javax.servlet.javax.servlet-api.version>3.0.1</javax.servlet.javax.servlet-api.version>
         <org.apache.wicket.version>6.10.0</org.apache.wicket.version>
         <org.apache.maven.maven-model.version>3.0.3</org.apache.maven.maven-model.version>
-        <com.ettrema.milton.version>1.5.4-SNAPSHOT</com.ettrema.milton.version>
+        <io.milton.version>2.5.2.0</io.milton.version>
         <commons-lang.commons-lang.version>2.2</commons-lang.commons-lang.version>
         <org.apache.tomcat.version>7.0.27</org.apache.tomcat.version>
     </properties>
@@ -264,6 +265,13 @@
                 <scope>test</scope>
             </dependency>
 
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-all</artifactId>
+                <version>${org.mockito.version}</version>
+                <scope>test</scope>
+            </dependency>
+
             <!-- LOGGING -->
 
             <dependency>
@@ -398,35 +406,15 @@
             </dependency>
 
             <dependency>
-                <groupId>com.ettrema</groupId>
+                <groupId>io.milton</groupId>
                 <artifactId>milton-api</artifactId>
-                <version>${com.ettrema.milton.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <artifactId>slf4j-api</artifactId>
-                        <groupId>org.slf4j</groupId>
-                    </exclusion>
-                </exclusions>
+                <version>${io.milton.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>com.ettrema</groupId>
-                <artifactId>milton-servlet</artifactId>
-                <version>${com.ettrema.milton.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <artifactId>spring-webmvc</artifactId>
-                        <groupId>org.springframework</groupId>
-                    </exclusion>
-                    <exclusion>
-                        <artifactId>slf4j-api</artifactId>
-                        <groupId>org.slf4j</groupId>
-                    </exclusion>
-                    <exclusion>
-                        <artifactId>spring</artifactId>
-                        <groupId>org.springframework</groupId>
-                    </exclusion>
-                </exclusions>
+                <groupId>io.milton</groupId>
+                <artifactId>milton-server-ce</artifactId>
+                <version>${io.milton.version}</version>
             </dependency>
 
         </dependencies>
@@ -441,5 +429,12 @@
         <module>environment</module>
         <module>integration-ui</module>
     </modules>
+
+    <repositories>
+        <repository>
+            <id>milton-repo</id>
+            <url>http://milton.io/maven</url>
+        </repository>
+    </repositories>
 
 </project>

@@ -41,11 +41,9 @@
  *******************************************************************************/
 package pl.doa.http.ext.webdav.resource;
 
-import java.text.MessageFormat;
-
+import io.milton.resource.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import pl.doa.IDOA;
 import pl.doa.container.IEntitiesContainer;
 import pl.doa.entity.IEntity;
@@ -56,51 +54,48 @@ import pl.doa.http.ext.webdav.resource.builder.impl.DOAStaticResourceBuilder;
 import pl.doa.http.ext.webdav.resource.builder.impl.DocumentBuilder;
 import pl.doa.http.ext.webdav.resource.impl.DOAEntityResource;
 
-import com.bradmcevoy.http.Resource;
+import java.text.MessageFormat;
 
 public class ResourceLocator {
 
-	private final static Logger log = LoggerFactory
-			.getLogger(ResourceLocator.class);
+    private final static Logger log = LoggerFactory
+            .getLogger(ResourceLocator.class);
+    private final IDOA doa;
+    private ResourceBuilderFactory factory = null;
+    private long containerId;
 
-	private ResourceBuilderFactory factory = null;
+    public ResourceLocator(IDOA doa, IEntitiesContainer container) {
+        this.doa = doa;
+        this.containerId = container.getId();
+        factory = new ResourceBuilderFactory(doa);
+        factory.registerBuilder(new DOAEntitiesContainerBuilder());
+        factory.registerBuilder(new DocumentBuilder());
+        factory.registerBuilder(new DOAStaticResourceBuilder());
+    }
 
-	private final IDOA doa;
-
-	private long containerId;
-
-	public ResourceLocator(IDOA doa, IEntitiesContainer container) {
-		this.doa = doa;
-		this.containerId = container.getId();
-		factory = new ResourceBuilderFactory(doa);
-		factory.registerBuilder(new DOAEntitiesContainerBuilder());
-		factory.registerBuilder(new DocumentBuilder());
-		factory.registerBuilder(new DOAStaticResourceBuilder());
-	}
-
-	public Resource locateResource(String path) {
-		IEntitiesContainer container = (IEntitiesContainer) doa
-				.lookupByUUID(containerId);
-		IEntity entity = null;
-		if (path.trim().length() == 0) {
-			entity = container.lookupEntityByLocation("/");
-		} else {
-			entity = container.lookupEntityByLocation(path);
-		}
-		if (entity == null) {
-			log.error(MessageFormat.format(
-					"Unable to find entity at location {0}", path));
-			return null;
-		}
-		DOAEntityResourceBuilder builder = factory.getBuilder(entity);
-		if (builder == null) {
-			log.error(MessageFormat
-					.format("Unable to find entity builder for entity class {0} at location {1}",
-							entity.getClass().getName(), path));
-			DOAEntityResource resource = new DOAEntityResource(factory, entity);
-			return resource;
-		}
-		return builder.buildResource(entity);
-	}
+    public Resource locateResource(String path) {
+        IEntitiesContainer container = (IEntitiesContainer) doa
+                .lookupByUUID(containerId);
+        IEntity entity = null;
+        if (path.trim().length() == 0) {
+            entity = container.lookupEntityByLocation("/");
+        } else {
+            entity = container.lookupEntityByLocation(path);
+        }
+        if (entity == null) {
+            log.error(MessageFormat.format(
+                    "Unable to find entity at location {0}", path));
+            return null;
+        }
+        DOAEntityResourceBuilder builder = factory.getBuilder(entity);
+        if (builder == null) {
+            log.error(MessageFormat
+                    .format("Unable to find entity builder for entity class {0} at location {1}",
+                            entity.getClass().getName(), path));
+            DOAEntityResource resource = new DOAEntityResource(factory, entity);
+            return resource;
+        }
+        return builder.buildResource(entity);
+    }
 
 }

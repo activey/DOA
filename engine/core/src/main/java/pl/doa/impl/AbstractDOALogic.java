@@ -508,11 +508,6 @@ public abstract class AbstractDOALogic implements IDOALogic {
     }
 
     @Override
-    public void removeURL(URL url) {
-        classLoader.removeURL(url);
-    }
-
-    @Override
     public final void setDoa(IDOA doa) {
         this.doa = doa;
     }

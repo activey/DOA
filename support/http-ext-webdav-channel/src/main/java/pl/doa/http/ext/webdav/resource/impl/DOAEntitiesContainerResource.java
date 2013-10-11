@@ -41,16 +41,13 @@
  *******************************************************************************/
 package pl.doa.http.ext.webdav.resource.impl;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
+import io.milton.http.exceptions.ConflictException;
+import io.milton.http.exceptions.NotAuthorizedException;
+import io.milton.resource.CollectionResource;
+import io.milton.resource.FolderResource;
+import io.milton.resource.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import pl.doa.GeneralDOAException;
 import pl.doa.IDOA;
 import pl.doa.container.IEntitiesContainer;
@@ -59,11 +56,11 @@ import pl.doa.http.ext.webdav.resource.builder.ResourceBuilderFactory;
 import pl.doa.http.ext.webdav.resource.builder.impl.DOAEntityResourceBuilder;
 import pl.doa.resource.IStaticResource;
 
-import com.bradmcevoy.http.CollectionResource;
-import com.bradmcevoy.http.FolderResource;
-import com.bradmcevoy.http.Resource;
-import com.bradmcevoy.http.exceptions.ConflictException;
-import com.bradmcevoy.http.exceptions.NotAuthorizedException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DOAEntitiesContainerResource extends
         DOAEntityResource<IEntitiesContainer> implements FolderResource {
@@ -167,5 +164,4 @@ public class DOAEntitiesContainerResource extends
             throw new IOException(e);
         }
     }
-
 }

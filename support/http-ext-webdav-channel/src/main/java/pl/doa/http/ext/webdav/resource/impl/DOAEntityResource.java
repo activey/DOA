@@ -44,40 +44,29 @@
  */
 package pl.doa.http.ext.webdav.resource.impl;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.Date;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
-
+import io.milton.http.Auth;
+import io.milton.http.Range;
+import io.milton.http.Request;
+import io.milton.http.exceptions.BadRequestException;
+import io.milton.http.exceptions.ConflictException;
+import io.milton.http.exceptions.NotAuthorizedException;
+import io.milton.resource.*;
 import pl.doa.GeneralDOAException;
 import pl.doa.container.IEntitiesContainer;
 import pl.doa.entity.IEntity;
 import pl.doa.http.ext.webdav.resource.builder.ResourceBuilderFactory;
 
-import com.bradmcevoy.http.Auth;
-import com.bradmcevoy.http.CollectionResource;
-import com.bradmcevoy.http.CopyableResource;
-import com.bradmcevoy.http.CustomProperty;
-import com.bradmcevoy.http.CustomPropertyResource;
-import com.bradmcevoy.http.DeletableResource;
-import com.bradmcevoy.http.GetableResource;
-import com.bradmcevoy.http.MoveableResource;
-import com.bradmcevoy.http.Range;
-import com.bradmcevoy.http.Request;
-import com.bradmcevoy.http.Request.Method;
-import com.bradmcevoy.http.exceptions.BadRequestException;
-import com.bradmcevoy.http.exceptions.ConflictException;
-import com.bradmcevoy.http.exceptions.NotAuthorizedException;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.Date;
+import java.util.Map;
 
 /**
  * @author activey
  */
 public class DOAEntityResource<T extends IEntity> implements GetableResource,
-        CustomPropertyResource, MoveableResource, CopyableResource, DeletableResource {
+        MoveableResource, CopyableResource, DeletableResource {
 
-    private static final String NAMESPACE = "http://doaplatform.net/";
     protected final T entity;
     protected final ResourceBuilderFactory factory;
 
@@ -120,7 +109,7 @@ public class DOAEntityResource<T extends IEntity> implements GetableResource,
      * com.bradmcevoy.http.Request.Method, com.bradmcevoy.http.Auth)
      */
     @Override
-    public boolean authorise(Request request, Method method, Auth auth) {
+    public boolean authorise(Request request, Request.Method method, Auth auth) {
         return true;
     }
 
@@ -194,49 +183,6 @@ public class DOAEntityResource<T extends IEntity> implements GetableResource,
         return null;
     }
 
-    @Override
-    public final Date getCreateDate() {
-        return entity.getCreated();
-    }
-
-    @Override
-    public Set<String> getAllPropertyNames() {
-        return new TreeSet<String>(entity.getAttributeNames());
-    }
-
-    @Override
-    public CustomProperty getProperty(String name) {
-        final String propertyValue = entity.getAttribute(name);
-        CustomProperty property = new CustomProperty() {
-
-            @Override
-            public void setFormattedValue(String s) {
-
-            }
-
-            @Override
-            public Class getValueClass() {
-                return String.class;
-            }
-
-            @Override
-            public Object getTypedValue() {
-                return propertyValue;
-            }
-
-            @Override
-            public String getFormattedValue() {
-                return propertyValue;
-            }
-        };
-        return property;
-    }
-
-    @Override
-    public String getNameSpaceURI() {
-        return NAMESPACE;
-    }
-
     public IEntity getEntity() {
         return entity;
     }
@@ -274,5 +220,7 @@ public class DOAEntityResource<T extends IEntity> implements GetableResource,
         entity.remove();
     }
 
-
+    public Date getCreateDate() {
+        return entity.getCreated();
+    }
 }

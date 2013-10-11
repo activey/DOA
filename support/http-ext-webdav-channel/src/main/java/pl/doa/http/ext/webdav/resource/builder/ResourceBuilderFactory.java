@@ -41,40 +41,40 @@
  *******************************************************************************/
 package pl.doa.http.ext.webdav.resource.builder;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import pl.doa.IDOA;
 import pl.doa.entity.IEntity;
 import pl.doa.http.ext.webdav.resource.builder.impl.DOAEntityResourceBuilder;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ResourceBuilderFactory {
 
-	private List<DOAEntityResourceBuilder> builders =
-			new ArrayList<DOAEntityResourceBuilder>();
-	private final IDOA doa;
+    private final IDOA doa;
+    private List<DOAEntityResourceBuilder> builders =
+            new ArrayList<DOAEntityResourceBuilder>();
 
-	public IDOA getDoa() {
-		return doa;
-	}
+    public ResourceBuilderFactory(IDOA doa) {
+        this.doa = doa;
+    }
 
-	public ResourceBuilderFactory(IDOA doa) {
-		this.doa = doa;
-	}
+    public IDOA getDoa() {
+        return doa;
+    }
 
-	public void registerBuilder(DOAEntityResourceBuilder builder) {
-		builders.add(builder);
-	}
+    public void registerBuilder(DOAEntityResourceBuilder builder) {
+        builders.add(builder);
+    }
 
-	public DOAEntityResourceBuilder getBuilder(IEntity entity) {
-		for (DOAEntityResourceBuilder builder : builders) {
-			Class<?> clazz = builder.getEntityClass();
-			if (clazz.isAssignableFrom(entity.getClass())) {
-				builder.setFactory(this);
-				return builder;
-			}
-		}
-		return null;
-	}
+    public DOAEntityResourceBuilder getBuilder(IEntity entity) {
+        for (DOAEntityResourceBuilder builder : builders) {
+            Class<?> clazz = builder.getEntityClass();
+            if (clazz.isAssignableFrom(entity.getClass())) {
+                builder.setFactory(this);
+                return builder;
+            }
+        }
+        return null;
+    }
 
 }
