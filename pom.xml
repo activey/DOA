@@ -435,6 +435,10 @@
             <id>milton-repo</id>
             <url>http://milton.io/maven</url>
         </repository>
+        <repository>
+            <id>bintray</id>
+            <url>http://dl.bintray.com/activey/maven</url>
+        </repository>
     </repositories>
 
 </project>
