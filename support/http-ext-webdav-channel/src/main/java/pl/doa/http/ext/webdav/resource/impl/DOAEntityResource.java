@@ -67,7 +67,6 @@ import java.util.Map;
 public class DOAEntityResource<T extends IEntity> implements GetableResource,
         MoveableResource, CopyableResource, DeletableResource {
 
-    private static final String NAMESPACE = "http://doaplatform.net/";
     protected final T entity;
     protected final ResourceBuilderFactory factory;
 
@@ -184,11 +183,6 @@ public class DOAEntityResource<T extends IEntity> implements GetableResource,
         return null;
     }
 
-    public final Date getCreateDate() {
-        return entity.getCreated();
-    }
-
-
     public IEntity getEntity() {
         return entity;
     }
@@ -226,5 +220,7 @@ public class DOAEntityResource<T extends IEntity> implements GetableResource,
         entity.remove();
     }
 
-
+    public Date getCreateDate() {
+        return entity.getCreated();
+    }
 }

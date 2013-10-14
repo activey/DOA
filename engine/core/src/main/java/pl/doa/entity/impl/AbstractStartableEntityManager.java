@@ -44,13 +44,8 @@
  */
 package pl.doa.entity.impl;
 
-import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import pl.doa.GeneralDOAException;
 import pl.doa.IDOA;
 import pl.doa.artifact.IArtifact;
@@ -60,6 +55,10 @@ import pl.doa.entity.startable.IStartableEntity;
 import pl.doa.entity.startable.IStartableEntityLogic;
 import pl.doa.entity.startable.IStartableEntityManager;
 
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author activey
  */
@@ -68,6 +67,11 @@ public abstract class AbstractStartableEntityManager implements
 
     private final static Logger log = LoggerFactory
             .getLogger(AbstractStartableEntityManager.class);
+    private final IDOA doa;
+
+    public AbstractStartableEntityManager(IDOA doa) {
+        this.doa = doa;
+    }
 
     /*
      * (non-Javadoc)
@@ -96,7 +100,7 @@ public abstract class AbstractStartableEntityManager implements
                 analyzeDependencies(startableEntity, classpath);
 
                 Object loadedInstance =
-                        getDoa().instantiateObject(logicClass, true,
+                        doa.instantiateObject(logicClass, true,
                                 new IEntityEvaluator() {
 
                                     @Override
@@ -148,7 +152,7 @@ public abstract class AbstractStartableEntityManager implements
                             "Wrong startable entity logic class type!");
                 }
                 entityLogic = (IStartableEntityLogic) loadedInstance;
-                entityLogic.setDoa(getDoa());
+                entityLogic.setDoa(doa);
             } catch (Exception e) {
                 throw new GeneralDOAException(e);
             }
@@ -158,7 +162,7 @@ public abstract class AbstractStartableEntityManager implements
             throw new GeneralDOAException("Entity is already started up!");
         }
         entityLogic.setStartableEntity(startableEntity);
-        entityLogic.setDoa(getDoa());
+        entityLogic.setDoa(doa);
         entityLogic.startup();
         return entityLogic;
     }
@@ -224,9 +228,4 @@ public abstract class AbstractStartableEntityManager implements
         }
         return running.isStartedUp();
     }
-
-    public abstract IDOA getDoa();
-
-    public abstract void setDoa(IDOA doa);
-
 }

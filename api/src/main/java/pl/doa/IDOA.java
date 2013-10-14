@@ -212,8 +212,6 @@ public interface IDOA extends IEntitiesContainer, IStartableEntity {
 
     public void addURL(URL url);
 
-    public void removeURL(URL url);
-
     public <T extends IEntity> T store(T entity) throws GeneralDOAException;
 
     public <T extends IEntity> T store(String location, T entity)
@@ -246,7 +244,7 @@ public interface IDOA extends IEntitiesContainer, IStartableEntity {
 
     public IServiceDefinitionLogic getRunning(IRunningService runningService);
 
-    public IServiceDefinitionLogic getRunning(String runningServiceUUID);
+    public IServiceDefinitionLogic getRunning(long runningServiceUUID);
 
     public IStartableEntityLogic startup(IStartableEntity startableEntity)
             throws GeneralDOAException;

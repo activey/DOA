@@ -44,21 +44,15 @@
  */
 package pl.doa.service.impl;
 
-import java.text.MessageFormat;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import pl.doa.GeneralDOAException;
 import pl.doa.IDOA;
 import pl.doa.agent.IAgent;
 import pl.doa.document.IDocument;
-import pl.doa.entity.ITransactionCallback;
-import pl.doa.service.AbstractServiceDefinitionLogic;
-import pl.doa.service.IRunningService;
-import pl.doa.service.IServiceDefinition;
-import pl.doa.service.IServicesManager;
-import pl.doa.service.ServiceRunnable;
+import pl.doa.service.*;
+
+import java.text.MessageFormat;
 
 /**
  * @author activey
@@ -67,6 +61,11 @@ public abstract class AbstractServicesManager implements IServicesManager {
 
     private static final Logger log = LoggerFactory
             .getLogger(AbstractServicesManager.class);
+    private final IDOA doa;
+
+    public AbstractServicesManager(IDOA doa) {
+        this.doa = doa;
+    }
 
     /*
      * (non-Javadoc)
@@ -89,9 +88,7 @@ public abstract class AbstractServicesManager implements IServicesManager {
                     public void run() {
                         try {
                             final AbstractServiceDefinitionLogic logicInstance =
-                                    (AbstractServiceDefinitionLogic) getDoa()
-                                            .instantiateObject(
-                                                    definition.getLogicClass(),
+                                    (AbstractServiceDefinitionLogic) doa.instantiateObject(definition.getLogicClass(),
                                                     true, asynchronous);
                             if (logicInstance == null) {
                                 throw new GeneralDOAException(
@@ -101,7 +98,7 @@ public abstract class AbstractServicesManager implements IServicesManager {
                                                                 .getLogicClass()));
                             }
                             logicInstance.setRunningService(runningService);
-                            logicInstance.setDoa(getDoa());
+                            logicInstance.setDoa(doa);
                             try {
                                 logicInstance.align();
                             } catch (Throwable t) {
@@ -118,18 +115,10 @@ public abstract class AbstractServicesManager implements IServicesManager {
          * uruchamianie uslugi w odpowiednim trybie
 		 */
         if (asynchronous) {
-
             // TODO zaimplementowac grupe watkow startowych
             new Thread(runnable).start();
-
             return;
         }
-
         runnable.run();
     }
-
-    public abstract IDOA getDoa();
-
-    public abstract void setDoa(IDOA doa);
-
 }

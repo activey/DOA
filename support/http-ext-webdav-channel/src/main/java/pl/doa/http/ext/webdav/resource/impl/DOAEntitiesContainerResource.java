@@ -164,5 +164,4 @@ public class DOAEntitiesContainerResource extends
             throw new IOException(e);
         }
     }
-
 }

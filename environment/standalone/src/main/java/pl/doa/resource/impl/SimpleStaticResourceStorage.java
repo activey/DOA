@@ -40,43 +40,49 @@
  *    Inhibi Ltd - initial API and implementation
  *******************************************************************************/
 /**
- * 
+ *
  */
 package pl.doa.resource.impl;
+
+import org.apache.commons.configuration.Configuration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.text.MessageFormat;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * @author activey
- * 
  */
 public class SimpleStaticResourceStorage extends AbstractStaticResourceStorage {
 
-	private final static Logger log = LoggerFactory
-			.getLogger(AbstractStaticResourceStorage.class);
+    public static final String CONFIGURATION_STORAGE_DIRECTORY = "doa.storage.directory";
+    private final static Logger log = LoggerFactory
+            .getLogger(AbstractStaticResourceStorage.class);
+    private final static String FILE_STORAGE_DIR = "./var/files";
+    private File fileDB;
 
-	private static final String ATTR_STORED_FILE_LOCATION =
-			"stored_file_location";
+    public SimpleStaticResourceStorage(Configuration configuration) {
+        this.fileDB = new File(configuration.getString(CONFIGURATION_STORAGE_DIRECTORY, FILE_STORAGE_DIR));
+        if (!fileDB.exists()) {
+            log.debug("Storage directory [" + fileDB.getAbsolutePath() + "] does not exist yet, creating ...");
+            fileDB.mkdirs();
+        }
+    }
 
-	private File fileDB;
+    @Override
+    protected File getFileDB() {
+        return this.fileDB;
+    }
 
-	public void setFileDB(String fileDB) {
-		File dbFolder = new File(fileDB);
-		if (!dbFolder.exists()) {
-			log.debug(MessageFormat.format(
-					"Unable to find folder {0}, recreating structure ...",
-					fileDB));
-			dbFolder.mkdirs();
-		}
-		this.fileDB = dbFolder;
-	}
-
-	@Override
-	protected File getFileDB() {
-		return this.fileDB;
-	}
+    public void setFileDB(String fileDB) {
+        File dbFolder = new File(fileDB);
+        if (!dbFolder.exists()) {
+            log.debug(MessageFormat.format(
+                    "Unable to find folder {0}, recreating structure ...",
+                    fileDB));
+            dbFolder.mkdirs();
+        }
+        this.fileDB = dbFolder;
+    }
 }

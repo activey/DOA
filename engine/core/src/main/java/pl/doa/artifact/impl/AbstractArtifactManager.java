@@ -44,8 +44,6 @@ package pl.doa.artifact.impl;
 import org.apache.commons.io.IOUtils;
 import org.apache.ivy.Ivy;
 import org.apache.ivy.core.event.EventManager;
-import org.apache.ivy.core.event.IvyEvent;
-import org.apache.ivy.core.event.IvyListener;
 import org.apache.ivy.core.module.descriptor.Artifact;
 import org.apache.ivy.core.module.descriptor.DependencyDescriptor;
 import org.apache.ivy.core.module.descriptor.ExcludeRule;
@@ -73,7 +71,6 @@ import org.slf4j.LoggerFactory;
 import pl.doa.GeneralDOAException;
 import pl.doa.IDOA;
 import pl.doa.artifact.DirectoryListener;
-import pl.doa.artifact.DirectoryMonitor;
 import pl.doa.artifact.EntryMatcher;
 import pl.doa.artifact.IArtifact;
 import pl.doa.artifact.IArtifact.Type;
@@ -82,34 +79,35 @@ import pl.doa.artifact.deployment.IArtifactManager;
 import pl.doa.container.IEntitiesContainer;
 import pl.doa.entity.IEntity;
 import pl.doa.entity.IEntityEvaluator;
-import pl.doa.entity.ITransactionCallback;
-import pl.doa.jvm.DOAURLHandlerFactory;
-import pl.doa.utils.FileUtils;
 
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.MessageFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.Properties;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 public abstract class AbstractArtifactManager extends DirectoryListener
-        implements IArtifactManager, IvyListener {
+        implements IArtifactManager {
 
+    private final static Logger log = LoggerFactory
+            .getLogger(AbstractArtifactManager.class);
     private static final String ARTIFACT_PROCESSOR = "deploy.processor";
     private static final String ARTIFACT_PROCESSOR_DEFAULT = "pl.doa.artifact.deploy.XMLDeploymentProcessor";
     private static final String ARTIFACT_ROOT = "deploy.root";
-    private static final String ARTIFACT_ROOT_DEFAULT = "/";
-    private final static Logger log = LoggerFactory
-            .getLogger(AbstractArtifactManager.class);
+    private static final String ARTIFACT_ROOT_DEFAULT = "/tmp";
+    protected final IDOA doa;
     private Ivy ivy;
-    private long progressCounter = 0L;
     private List<ExcludeRule> excludeRules = new ArrayList<ExcludeRule>();
     private ChainResolver chainResolver;
     private List<URL> repositories = new ArrayList<URL>();
 
-    public AbstractArtifactManager() {
+    public AbstractArtifactManager(IDOA doa) {
+        this.doa = doa;
     }
 
     @Override
@@ -132,10 +130,8 @@ public abstract class AbstractArtifactManager extends DirectoryListener
     }
 
     @Override
-    public final IArtifact deployArtifact(String artifactFileName,
-                                          InputStream artifactData, Type artifactType)
+    public final IArtifact deployArtifact(String artifactFileName, InputStream artifactData, Type artifactType)
             throws GeneralDOAException {
-
         switch (artifactType) {
             case XML:
                 return deployXmlArtifact(artifactFileName, artifactData);
@@ -147,13 +143,11 @@ public abstract class AbstractArtifactManager extends DirectoryListener
                 } catch (IOException e) {
                     throw new GeneralDOAException(e);
                 }
-
                 return deployJarArtifact(artifactFile);
             }
             default:
                 break;
         }
-
         return null;
     }
 
@@ -195,68 +189,49 @@ public abstract class AbstractArtifactManager extends DirectoryListener
         }
     }
 
-    private IArtifact deployJarArtifact(File artifactFile)
-            throws GeneralDOAException {
-        JarEntry mavenDescriptorEntry =
-                findJarEntry(artifactFile, new EntryMatcher() {
-
+    protected IArtifact deployJarArtifact(File artifactFile) throws GeneralDOAException {
+        JarEntry mavenDescriptorEntry = findJarEntry(artifactFile, new EntryMatcher() {
                     @Override
                     public boolean entryMatch(JarEntry entry) {
-                        if (entry.getName().endsWith("pom.xml")
-                                || entry.getName().endsWith(".pom")) {
+                        if (entry.getName().endsWith("pom.xml") || entry.getName().endsWith(".pom")) {
                             return true;
                         }
                         return false;
                     }
-
                 });
         if (mavenDescriptorEntry != null) {
-            log.debug(MessageFormat
-                    .format("Found maven artifact descriptor file: {0}, processing ...",
+            log.debug(MessageFormat.format("Found maven artifact descriptor file: {0}, processing ...",
                             mavenDescriptorEntry.getName()));
         } else {
-            log.debug(MessageFormat
-                    .format("No maven artifact found for descriptor file: {0}, skipping ...",
+            log.debug(MessageFormat.format("No maven artifact found for descriptor file: {0}, skipping ...",
                             mavenDescriptorEntry.getName()));
             return null;
         }
 
-        URL jarEntryURL =
-                getJarEntryURL(artifactFile, mavenDescriptorEntry);
-        log.debug(MessageFormat.format("Getting jar entry from url: {0}",
-                jarEntryURL));
+        URL jarEntryURL = getJarEntryURL(artifactFile, mavenDescriptorEntry);
+        log.debug(MessageFormat.format("Getting jar entry from url: {0}", jarEntryURL));
 
         // parsing maven descriptor
-        PomModuleDescriptorParser pomParser =
-                PomModuleDescriptorParser.getInstance();
+        PomModuleDescriptorParser pomParser = PomModuleDescriptorParser.getInstance();
         try {
             initializeRepository(jarEntryURL);
 
-            ModuleDescriptor moduleDescriptor =
-                    pomParser.parseDescriptor(ivy.getSettings(),
-                            jarEntryURL, false);
-            return deployIvyArtifact(moduleDescriptor, artifactFile,
-                    new ArrayList<String>());
-
+            ModuleDescriptor moduleDescriptor = pomParser.parseDescriptor(ivy.getSettings(), jarEntryURL, false);
+            return deployIvyArtifact(moduleDescriptor, artifactFile, new ArrayList<String>());
         } catch (Exception e) {
             throw new GeneralDOAException(e);
         }
     }
 
-    private IArtifact deployIvyArtifact(ModuleDescriptor descriptor,
-                                        File artifactFile)
-            throws GeneralDOAException {
-        return deployIvyArtifact(descriptor, artifactFile,
-                new ArrayList<String>());
+    private IArtifact deployIvyArtifact(ModuleDescriptor descriptor, File artifactFile) throws GeneralDOAException {
+        return deployIvyArtifact(descriptor, artifactFile, new ArrayList<String>());
     }
 
-    private IArtifact deployIvyArtifact(ModuleDescriptor moduleDescriptor,
-                                        File artifactFile, List<String> dependenciesToKeep)
+    private IArtifact deployIvyArtifact(ModuleDescriptor moduleDescriptor, File artifactFile, List<String> dependenciesToKeep)
             throws GeneralDOAException {
 
         List<IArtifact> dependencies = new ArrayList<IArtifact>();
-        DependencyDescriptor[] moduleDependencies =
-                moduleDescriptor.getDependencies();
+        DependencyDescriptor[] moduleDependencies = moduleDescriptor.getDependencies();
 
         Artifact artifactTest = moduleDescriptor.getAllArtifacts()[0];
         log.debug("Analyzing dependencies for: " + artifactTest.getName());
@@ -267,22 +242,17 @@ public abstract class AbstractArtifactManager extends DirectoryListener
 
             String groupId = dependency.getDependencyId().getOrganisation();
             String artifactId = dependency.getDependencyId().getName();
-            String artifactVersion =
-                    dependency.getDependencyRevisionId().getRevision();
+            String artifactVersion = dependency.getDependencyRevisionId().getRevision();
 
             if (isExcluded(dependency)) {
-                log.debug(MessageFormat.format(
-                        "Skipping artifact: [{0}.{1}.{2}]", groupId,
-                        artifactId, artifactVersion));
+                log.debug(MessageFormat.format("Skipping artifact: [{0}.{1}.{2}]", groupId, artifactId, artifactVersion));
                 continue;
             }
 
-            log.debug(MessageFormat.format("dependency: {0}.{1}.{2}", groupId,
-                    artifactId, artifactVersion));
+            log.debug(MessageFormat.format("dependency: {0}.{1}.{2}", groupId, artifactId, artifactVersion));
 
             String[] configurations = dependency.getModuleConfigurations();
-            dependenciesToKeep.add(MessageFormat.format("{0}.{1}.{2}", groupId,
-                    artifactId, artifactVersion));
+            dependenciesToKeep.add(MessageFormat.format("{0}.{1}.{2}", groupId, artifactId, artifactVersion));
             if (configurations == null || configurations.length == 0) {
                 continue;
             }
@@ -303,11 +273,9 @@ public abstract class AbstractArtifactManager extends DirectoryListener
             }
 
             // szukanie artefaktu w repo
-            IArtifact artifact =
-                    lookupArtifact(groupId, artifactId, artifactVersion);
+            IArtifact artifact = lookupArtifact(groupId, artifactId, artifactVersion);
             boolean artifactAlreadyDeployed = (artifact != null);
-            log.debug(MessageFormat.format("Artifact {0}.{1} {2} exists? {3}",
-                    groupId, artifactId,
+            log.debug(MessageFormat.format("Artifact {0}.{1} {2} exists? {3}", groupId, artifactId,
                     ((artifactVersion == null) ? "[newest]" : artifactVersion),
                     (artifactAlreadyDeployed) ? "YES" : "NO"));
             if (artifactAlreadyDeployed) {
@@ -316,9 +284,7 @@ public abstract class AbstractArtifactManager extends DirectoryListener
             }
             // pobieranie zaleznosci z zewnetrznego repozytorium
             ModuleId moduleId = new ModuleId(groupId, artifactId);
-            ModuleRevisionId revisionId =
-                    new ModuleRevisionId(moduleId, artifactVersion,
-                            artifactVersion);
+            ModuleRevisionId revisionId = new ModuleRevisionId(moduleId, artifactVersion, artifactVersion);
             ResolvedModuleRevision revision = ivy.findModule(revisionId);
             if (revision == null) {
                 notDeployed.add(MessageFormat.format("{0}.{1}.{2}", groupId,
@@ -333,45 +299,33 @@ public abstract class AbstractArtifactManager extends DirectoryListener
                 URLResource pom = (URLResource) pomResource;
                 String pomUrlStr = pom.getURL().toString();
                 try {
-                    URL pomUrl =
-                            (pomUrlStr.endsWith("original")) ? pom.getURL()
-                                    : new URL(pom.getURL().toString()
+                    URL pomUrl = (pomUrlStr.endsWith("original")) ? pom.getURL() : new URL(pom.getURL().toString()
                                     + ".original");
                     initializeRepository(pomUrl);
                 } catch (Exception e) {
-                    log.warn(MessageFormat
-                            .format("Unable to parse pom from location: {0}",
-                                    pomUrlStr));
+                    log.warn(MessageFormat.format("Unable to parse pom from location: {0}", pomUrlStr));
                 }
             }
 
             Artifact[] artifacts = descriptor.getAllArtifacts();
             for (Artifact ivyArtifact : artifacts) {
-                if ("source".equals(ivyArtifact.getType())
-                        || "javadoc".equals(ivyArtifact.getType())
+                if ("source".equals(ivyArtifact.getType()) || "javadoc".equals(ivyArtifact.getType())
                         || "wrapper".equals(ivyArtifact.getType())) {
                     continue;
                 }
-                DownloadReport report =
-                        revision.getArtifactResolver().download(
-                                new Artifact[]{ivyArtifact},
+                DownloadReport report = revision.getArtifactResolver().download(new Artifact[]{ivyArtifact},
                                 new DownloadOptions());
 
                 ArtifactDownloadReport downloadRep =
                         report.getArtifactReport(ivyArtifact);
                 DownloadStatus status = downloadRep.getDownloadStatus();
                 if (status == DownloadStatus.FAILED) {
-                    throw new GeneralDOAException(
-                            "Unable to download artifact: [{0}]",
-                            ivyArtifact.getId());
+                    throw new GeneralDOAException("Unable to download artifact: [{0}]", ivyArtifact.getId());
                 }
                 File dependencyFile = downloadRep.getLocalFile();
-                log.debug(MessageFormat.format(
-                        "deploying downloaded artifact: {0}",
-                        downloadRep.getName()));
+                log.debug(MessageFormat.format("Deploying downloaded artifact: {0}", downloadRep.getName()));
 
-                IArtifact deployedDependency =
-                        deployIvyArtifact(descriptor, dependencyFile);
+                IArtifact deployedDependency = deployIvyArtifact(descriptor, dependencyFile);
                 if (deployedDependency != null) {
                     dependencies.add(deployedDependency);
                 }
@@ -412,7 +366,7 @@ public abstract class AbstractArtifactManager extends DirectoryListener
             return existingArtifact;
         }
         IArtifact newArtifact =
-                getDoa().createArtifact(
+                doa.createArtifact(
                         getArtifactName(moduleArtifact), Type.JAR);
         newArtifact.setDescription(artifactDescription);
         newArtifact.setArtifactFileName(artifactFile.getName());
@@ -441,15 +395,15 @@ public abstract class AbstractArtifactManager extends DirectoryListener
                 artifactProperties.load(descriptorStream);
 
                 // initializing deployment processor
-                IDeploymentProcessor processor = (IDeploymentProcessor) getDoa().instantiateObject(artifactProperties
+                IDeploymentProcessor processor = (IDeploymentProcessor) doa.instantiateObject(artifactProperties
                         .getProperty(ARTIFACT_PROCESSOR, ARTIFACT_PROCESSOR_DEFAULT));
                 if (processor != null) {
                     log.debug(String.format("Running deployment processor: %s", processor.getClass()));
-                    processor.setDoa(getDoa());
+                    processor.setDoa(doa);
                     processor.setArtifact(newArtifact);
                     try {
                         String rootLocation = artifactProperties.getProperty(ARTIFACT_ROOT, ARTIFACT_ROOT_DEFAULT);
-                        IEntitiesContainer deploymentRoot = (IEntitiesContainer) getDoa()
+                        IEntitiesContainer deploymentRoot = (IEntitiesContainer) doa
                                 .lookupEntityByLocation(rootLocation);
                         if (deploymentRoot == null) {
                             log.error(String.format("Unable to find deployment root: [%s]", rootLocation));
@@ -508,7 +462,7 @@ public abstract class AbstractArtifactManager extends DirectoryListener
      */
     public IArtifact lookupArtifact(final String groupId,
                                     final String artifactId, final String artifactVersion) {
-        return (IArtifact) getDoa().lookup(IDOA.ARTIFACTS_CONTAINER,
+        return (IArtifact) doa.lookup(IDOA.ARTIFACTS_CONTAINER,
                 new IEntityEvaluator() {
 
                     @Override
@@ -547,11 +501,11 @@ public abstract class AbstractArtifactManager extends DirectoryListener
                 "Registering Class Loader artifact: [{0}.{1}.{2}]",
                 artifact.getArtifactId(), artifact.getGroupId(),
                 artifact.getVersion()));
-        getDoa().addURL(new URL(artifactUrl));
+        doa.addURL(new URL(artifactUrl));
 
     }
 
-    private void initializeRepository(URL mavenPomUrl) throws Exception {
+    protected void initializeRepository(URL mavenPomUrl) throws Exception {
         if (chainResolver == null) {
             // inicjalizacja Ivy
             IvySettings settings = new IvySettings();
@@ -562,7 +516,7 @@ public abstract class AbstractArtifactManager extends DirectoryListener
             settings.setDefaultResolver("chain");
             this.ivy = Ivy.newInstance(settings);
             EventManager eventManager = ivy.getEventManager();
-            eventManager.addIvyListener(this);
+            eventManager.addIvyListener(new ArtifactDeploymentListener());
 
             // dodawanie domyslnych resolverow
             FileSystemResolver fsResolver = new FileSystemResolver();
@@ -649,127 +603,10 @@ public abstract class AbstractArtifactManager extends DirectoryListener
 
     }
 
-    protected void initializeRepository() throws Exception {
-        IDOA doa = getDoa();
-        log.debug("Initializing Artifact Manager ...");
-        DOAURLHandlerFactory.attachFactory(doa);
-
-        initializeRepository(null);
-
-        // uruchomianie sluchacza katalogu deploymentu
-        log.debug("Starting up artifacts deployment directory listener: ["
-                + getDeployDirectory() + "]");
-        DirectoryMonitor directoryMonitor =
-                new DirectoryMonitor(getMonitorInterval());
-        File deployDirectory = new File(getDeployDirectory());
-        if (!deployDirectory.exists()) {
-            log.debug("Deploy directory does not exist, attempting to create it ...");
-            boolean created = deployDirectory.mkdirs();
-            if (!created) {
-                log.debug(MessageFormat
-                        .format("Unable to create directory: [{0}], hot deployment disabled",
-                                getDeployDirectory()));
-                return;
-            }
-        }
-        directoryMonitor.setDirectory(deployDirectory);
-        directoryMonitor.addListener(this);
-        directoryMonitor.start();
-    }
-
-    @Override
-    public void directoryContentsChanged(File directory, File[] changedFiles, int type) {
-        for (final File file : changedFiles) {
-            switch (type) {
-                case DirectoryListener.TYPE_ADD: {
-                    log.debug("deploying artifact from file "
-                            + file.getAbsolutePath());
-                    String fileExt = FileUtils.getExtension(file);
-                    if ("core".equals(fileExt) || "xml".equals(fileExt)) {
-                        try {
-                            getDoa().doInTransaction(new ITransactionCallback() {
-
-                                @Override
-                                public Object performOperation() throws Exception {
-                                    deployArtifact(file.getName(),
-                                            new FileInputStream(file), Type.XML);
-                                    log.debug("deployment complete!");
-                                    return null;
-                                }
-                            });
-                        } catch (Exception ex) {
-                            log.error("", ex);
-                            return;
-                        }
-                    } else if ("jar".equals(fileExt)) {
-                        try {
-                            getDoa().doInTransaction(new ITransactionCallback<Object>() {
-
-                                @Override
-                                public Object performOperation()
-                                        throws Exception {
-                                    IArtifact deployedArtifact = deployJarArtifact(file);
-                                    log.debug(MessageFormat.format("Deployment of artifact [{0}.{1}] complete!",
-                                            deployedArtifact.getGroupId(), deployedArtifact.getArtifactId()));
-                                    return null;
-                                }
-                            });
-
-                        } catch (Exception ex) {
-                            log.error("", ex);
-                            return;
-                        }
-                    }
-                    break;
-                }
-                case DirectoryListener.TYPE_REMOVE: {
-                    // TODO implement undeployment
-                    break;
-                }
-                default:
-                    break;
-            }
-
-        }
-    }
-
-    @Override
-    public void progress(IvyEvent event) {
-        String eventName = event.getName();
-        Map<String, String> attrs = event.getAttributes();
-
-        if ("post-download-artifact".equals(eventName)) {
-            String status = attrs.get("status");
-            log.debug(MessageFormat.format(
-                    "artifact downloaded with status \"{0}\"", status));
-
-            if ("successful".equals(status)) {
-                String size = attrs.get("size");
-                String duration = attrs.get("duration");
-                String file = attrs.get("file");
-                log.debug(MessageFormat
-                        .format("download statistics: file size = {0} bytes, download time = {1} ms, download location = {2}",
-                                size, duration, file));
-            } else if ("no".equals(status)) {
-                log.error("artifact file is already downloaded, getting from cache ...");
-            } else {
-                log.error("ivy was unable to download ...");
-            }
-        } else if ("transfer-initiated".equals(eventName)) {
-            if (progressCounter % 3 == 0) {
-                System.out.print(".");
-            }
-            if (progressCounter % 50 == 0) {
-                System.out.println();
-            }
-            progressCounter++;
-        }
-    }
-
-    private IArtifact deployXmlArtifact(String artifactFileName,
+     private IArtifact deployXmlArtifact(String artifactFileName,
                                         InputStream fileStream) throws GeneralDOAException {
         /*IArtifact artifact =
-                (IArtifact) getDoa().lookupEntityByLocation(
+                (IArtifact) doa.lookupEntityByLocation(
                         IDOA.ARTIFACTS_CONTAINER + "/" + artifactFileName);
         if (artifact != null) {
             // TODO implement undeployment
@@ -781,7 +618,7 @@ public abstract class AbstractArtifactManager extends DirectoryListener
             throw new GeneralDOAException(e1);
         }
         byte[] fileContent = fileContentStream.toByteArray();
-        artifact = getDoa().createArtifact(artifactFileName, Type.XML);
+        artifact = doa.createArtifact(artifactFileName, Type.XML);
         artifact.setArtifactFileName(artifactFileName);
         artifact.setArtifactResourceBytes(fileContent);
         artifact.setVersion("" + new Date().getTime());
@@ -818,10 +655,6 @@ public abstract class AbstractArtifactManager extends DirectoryListener
         return artifact; */
         return null;
     }
-
-    public abstract IDOA getDoa();
-
-    public abstract void setDoa(IDOA doa);
 
     public abstract String getDeployDirectory();
 

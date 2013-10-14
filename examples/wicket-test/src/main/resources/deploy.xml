@@ -4,33 +4,30 @@
 
     <container name="wicket-test-application">
         <!-- wicket extension container -->
-        <container name="wicket-test-data">
-            <container name="documents">
-                <definition name="first_definition" var="first_definition">
-                    <stringField name="firstName"/>
-                    <stringField name="lastName"/>
-                    <dateField name="birthDate"/>
-                </definition>
+        <container name="documents">
+            <definition name="first_definition" var="first_definition">
+                <stringField name="firstName"/>
+                <stringField name="lastName"/>
+                <dateField name="birthDate"/>
+            </definition>
 
-                <document name="first" definition="#first_definition">
-                    <fieldValue name="firstName">Ble ble ble</fieldValue>
-                </document>
-            </container>
-
-
-            <container name="filters">
-                <document name="wicket" var="wicket"
-                          definition="/channels/http/extensions/wicket/wicketApplication">
-                    <fieldValue name="applicationClassName">org.doa.examples.wicket.TestApplication</fieldValue>
-                </document>
-            </container>
-
-            <document name="wicket-app" var="wicket-app"
-                      definition="/channels/http/application_context_definition">
-                <fieldValue name="applicationName" value="Wicket Test"/>
+            <document name="first" definition="#first_definition">
+                <fieldValue name="firstName">Ble ble ble</fieldValue>
             </document>
-
         </container>
+
+
+        <container name="filters">
+            <document name="wicket" var="wicket"
+                      definition="/channels/http/extensions/wicket/wicketApplication">
+                <fieldValue name="applicationClassName">org.doa.examples.wicket.TestApplication</fieldValue>
+            </document>
+        </container>
+
+        <document name="wicket-app" var="wicket-app"
+                  definition="/channels/http/application_context_definition">
+            <fieldValue name="applicationName" value="Wicket Test"/>
+        </document>
     </container>
 
 

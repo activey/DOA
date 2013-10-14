@@ -49,79 +49,79 @@ import pl.doa.utils.PathIterator;
 
 public interface IEntitiesContainer extends IEntity {
 
-	public static final String DEFINITION_ATTR = "definition";
+    public static final String DEFINITION_ATTR = "definition";
 
-	public void iterateEntities(IEntitiesIterator iterator,
-			IEntityEvaluator evaluator) throws GeneralDOAException;
+    public void iterateEntities(IEntitiesIterator iterator,
+                                IEntityEvaluator evaluator) throws GeneralDOAException;
 
-	public void iterateEntities(IEntitiesIterator iterator)
-			throws GeneralDOAException;
+    public void iterateEntities(IEntitiesIterator iterator)
+            throws GeneralDOAException;
 
-	public Iterable<? extends IEntity> getEntities();
+    public Iterable<? extends IEntity> getEntities();
 
-	public Iterable<? extends IEntity> getEntities(IEntityEvaluator evaluator);
+    public Iterable<? extends IEntity> getEntities(IEntityEvaluator evaluator);
 
-	public Iterable<? extends IEntity> getEntities(int start, int howMany,
-			IEntitiesSortComparator<? extends IEntity> comparator,
-			IEntityEvaluator evaluator);
+    public Iterable<? extends IEntity> getEntities(int start, int howMany,
+                                                   IEntitiesSortComparator<? extends IEntity> comparator,
+                                                   IEntityEvaluator evaluator);
 
-	public Iterable<? extends IEntity> getEntities(int start, int howMany,
-			IEntitiesSortComparator<? extends IEntity> comparator,
-			IEntityEvaluator evaluator, boolean deep);
+    public Iterable<? extends IEntity> getEntities(int start, int howMany,
+                                                   IEntitiesSortComparator<? extends IEntity> comparator,
+                                                   IEntityEvaluator evaluator, boolean deep);
 
-	public int countEntities();
+    public int countEntities();
 
-	public int countEntities(IEntityEvaluator evaluator);
+    public int countEntities(IEntityEvaluator evaluator);
 
-	public int countEntities(IEntityEvaluator evaluator, boolean deep);
+    public int countEntities(IEntityEvaluator evaluator, boolean deep);
 
-	public <T extends IEntity> T addEntity(T doaEntity)
-			throws GeneralDOAException;
+    public <T extends IEntity> T addEntity(T doaEntity)
+            throws GeneralDOAException;
 
-	public IEntity addEntity(IEntity doaEntity, boolean publishEvent)
-			throws GeneralDOAException;
+    public IEntity addEntity(IEntity doaEntity, boolean publishEvent)
+            throws GeneralDOAException;
 
-	public boolean hasEntity(String entityName);
+    public boolean hasEntity(String entityName);
 
-	public <T extends IEntity> T getEntityByName(final String name,
-			Class<T> entityType);
+    public <T extends IEntity> T getEntityByName(final String name,
+                                                 Class<T> entityType);
 
-	public IEntity getEntityByName(final String name);
+    public IEntity getEntityByName(final String name);
 
-	public IEntity lookupForEntity(IEntityEvaluator evaluator,
-			boolean lookupDeep);
+    public IEntity lookupForEntity(IEntityEvaluator evaluator,
+                                   boolean lookupDeep);
 
-	public Iterable<IEntity> lookupForEntities(IEntityEvaluator evaluator,
-			boolean lookupDeep);
+    public Iterable<IEntity> lookupForEntities(IEntityEvaluator evaluator,
+                                               boolean lookupDeep);
 
-	public IEntity lookup(String startLocation,
-			IEntityEvaluator returnableEvaluator);
+    public IEntity lookup(String startLocation,
+                          IEntityEvaluator returnableEvaluator);
 
-	public Iterable<? extends IEntity> lookupEntitiesByLocation(
-			String entityLocation, int start, int howMany);
+    public Iterable<? extends IEntity> lookupEntitiesByLocation(
+            String entityLocation, int start, int howMany);
 
-	public Iterable<? extends IEntity> lookupEntitiesByLocation(
-			String entityLocation);
+    public Iterable<? extends IEntity> lookupEntitiesByLocation(
+            String entityLocation);
 
-	public Iterable<? extends IEntity> lookupEntitiesByLocation(
-			String entityLocation, IEntityEvaluator evaluator);
+    public Iterable<? extends IEntity> lookupEntitiesByLocation(
+            String entityLocation, IEntityEvaluator evaluator);
 
-	public Iterable<? extends IEntity> lookupEntitiesByLocation(
-			String entityLocation, int start, int howMany,
-			IEntitiesSortComparator<? extends IEntity> comparator,
-			IEntityEvaluator customEvaluator);
+    public Iterable<? extends IEntity> lookupEntitiesByLocation(
+            String entityLocation, int start, int howMany,
+            IEntitiesSortComparator<? extends IEntity> comparator,
+            IEntityEvaluator customEvaluator);
 
-	public IEntity lookupEntityByLocation(String entityLocation);
+    public IEntity lookupEntityByLocation(String entityLocation);
 
-	public IEntity lookupEntityFromLocation(String fromLocation,
-			IEntityEvaluator evaluator, boolean lookupDeep);
+    public IEntity lookupEntityFromLocation(String fromLocation,
+                                            IEntityEvaluator evaluator, boolean lookupDeep);
 
-	public Iterable<IEntity> lookupEntitiesFromLocation(String fromLocation,
-			IEntityEvaluator evaluator, boolean lookupDeep);
+    public Iterable<IEntity> lookupEntitiesFromLocation(String fromLocation,
+                                                        IEntityEvaluator evaluator, boolean lookupDeep);
 
-	public IEntity lookupEntityByLocation(PathIterator<String> locationEntries);
+    public IEntity lookupEntityByLocation(PathIterator<String> locationEntries);
 
-	public boolean hasEntities();
+    public boolean hasEntities();
 
-	public void purge(IEntityEvaluator evaluator);
+    public void purge(IEntityEvaluator evaluator);
 }

@@ -3,18 +3,16 @@
  */
 package com.olender.backend.utils.kml;
 
-import java.io.InputStream;
+import de.micromata.opengis.kml.v_2_2_0.Kml;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.sax.SAXSource;
-
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-
-import de.micromata.opengis.kml.v_2_2_0.Kml;
+import java.io.InputStream;
 
 /**
  * @author activey

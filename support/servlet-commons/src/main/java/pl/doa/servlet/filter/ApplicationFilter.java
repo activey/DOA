@@ -44,23 +44,8 @@
  */
 package pl.doa.servlet.filter;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import pl.doa.GeneralDOAException;
 import pl.doa.IDOA;
 import pl.doa.channel.IIncomingChannel;
@@ -68,12 +53,18 @@ import pl.doa.container.IEntitiesContainer;
 import pl.doa.document.IDocument;
 import pl.doa.entity.IEntity;
 import pl.doa.servlet.filter.processor.IRequestProcessor;
-import pl.doa.servlet.filter.processor.rest.RestCallResponse;
 import pl.doa.servlet.filter.processor.rest.processor.BasicRestProcessor;
 import pl.doa.servlet.profile.HandleRequestAction;
 import pl.doa.servlet.profile.ParseHttpRequestAction;
 import pl.doa.servlet.profile.RenderResponseAction;
 import pl.doa.utils.profile.PerformanceProfiler;
+
+import javax.servlet.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
 
 /**
  * @author activey

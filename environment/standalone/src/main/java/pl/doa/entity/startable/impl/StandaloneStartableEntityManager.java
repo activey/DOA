@@ -40,77 +40,51 @@
  *    Inhibi Ltd - initial API and implementation
  *******************************************************************************/
 /**
- * 
+ *
  */
 package pl.doa.entity.startable.impl;
 
-import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.support.DefaultListableBeanFactory;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
-
 import pl.doa.GeneralDOAException;
 import pl.doa.IDOA;
+import pl.doa.cache.ILiveObjectCache;
+import pl.doa.cache.impl.SimpleObjectCache;
 import pl.doa.entity.impl.AbstractStartableEntityManager;
 import pl.doa.entity.startable.IStartableEntity;
 import pl.doa.entity.startable.IStartableEntityLogic;
-import pl.doa.utils.SpringUtils;
 
 /**
  * @author activey
- * 
  */
 public class StandaloneStartableEntityManager extends
-        AbstractStartableEntityManager implements ApplicationContextAware {
+        AbstractStartableEntityManager {
 
-	private ApplicationContext springContext;
+    private final ILiveObjectCache<IStartableEntityLogic> cache;
 
-	@Autowired
-	private IDOA doa;
+    public StandaloneStartableEntityManager(IDOA doa) {
+        super(doa);
+        this.cache = new SimpleObjectCache<IStartableEntityLogic>();
+    }
 
-	@Override
-	public void setApplicationContext(ApplicationContext springContext)
-			throws BeansException {
-		this.springContext = springContext;
-	}
+    public IStartableEntityLogic getRunning(IStartableEntity startableEntity) {
+        long entityId = startableEntity.getId();
+        if (entityId == -1) {
+            return null;
+        }
+        if (!cache.hasObject(entityId)) {
+            return null;
+        }
+        return cache.getObject(entityId);
+    }
 
-	public IDOA getDoa() {
-		return doa;
-	}
+    @Override
+    protected void registerRunning(long entityId, IStartableEntityLogic instance)
+            throws GeneralDOAException {
+        cache.setObject(instance, entityId);
+    }
 
-	public void setDoa(IDOA doa) {
-		this.doa = doa;
-	}
-
-	public IStartableEntityLogic getRunning(IStartableEntity startableEntity) {
-		long entityId = startableEntity.getId();
-		if (entityId == -1) {
-			return null;
-		}
-		/*
-		 * wyszukiwanie bean-a w rejestrze springa
-		 */
-		DefaultListableBeanFactory factory =
-				(DefaultListableBeanFactory) springContext
-						.getAutowireCapableBeanFactory();
-		if (!factory.containsSingleton(entityId + "")) {
-			return null;
-		}
-		IStartableEntityLogic entityLogic =
-				(IStartableEntityLogic) factory.getSingleton(entityId + "");
-		return entityLogic;
-	}
-
-	@Override
-	protected void registerRunning(long entityId, IStartableEntityLogic instance)
-			throws GeneralDOAException {
-		SpringUtils.registerBean(springContext, entityId + "", instance);
-	}
-
-	@Override
-	protected void unregisterRunning(long entityId) throws GeneralDOAException {
-		SpringUtils.removeBean(springContext, entityId + "");
-	}
+    @Override
+    protected void unregisterRunning(long entityId) throws GeneralDOAException {
+        cache.removeObject(entityId);
+    }
 
 }

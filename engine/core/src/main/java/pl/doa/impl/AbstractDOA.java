@@ -622,11 +622,6 @@ public abstract class AbstractDOA extends AbstractStartableEntity implements
     }
 
     @Override
-    public void removeURL(URL url) {
-        getLogicInstance().removeURL(url);
-    }
-
-    @Override
     public final <T> T doInTransaction(ITransactionCallback<T> callback) {
         this.txId.set(UUID.randomUUID().toString());
         T obj = getLogicInstance().doInTransaction(callback);
@@ -971,7 +966,7 @@ public abstract class AbstractDOA extends AbstractStartableEntity implements
     }
 
     @Override
-    public IServiceDefinitionLogic getRunning(String runningServiceUUID) {
+    public IServiceDefinitionLogic getRunning(long runningServiceUUID) {
         if (doa != null) {
             return doa.getRunning(runningServiceUUID);
         }

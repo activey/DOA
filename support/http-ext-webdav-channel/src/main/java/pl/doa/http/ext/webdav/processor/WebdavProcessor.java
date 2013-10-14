@@ -17,7 +17,6 @@ import pl.doa.servlet.filter.processor.IRequestProcessor;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 
-
 /**
  * @author activey
  */
@@ -33,7 +32,6 @@ public class WebdavProcessor implements IRequestProcessor {
                     @Override
                     public ByteArrayOutputStream performOperation()
                             throws Exception {
-
                         HttpManagerBuilder builder = new HttpManagerBuilder();
                         builder.setResourceFactory(new WebDavResourceFactory(doa, requestDocument));
 

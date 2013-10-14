@@ -51,6 +51,6 @@ public interface IServicesManager {
     public abstract IServiceDefinitionLogic getRunning(
             IRunningService runningService);
 
-    public abstract IServiceDefinitionLogic getRunning(String runningServiceUUID);
+    public abstract IServiceDefinitionLogic getRunning(long runningServiceUUID);
 
 }

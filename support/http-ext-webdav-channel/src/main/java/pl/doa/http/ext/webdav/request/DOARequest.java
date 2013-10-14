@@ -58,7 +58,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
 /**
  * @author activey
  */
@@ -119,7 +118,6 @@ public class DOARequest extends AbstractRequest {
 
     @Override
     public void setAuthorization(Auth auth) {
-        //To change body of implemented methods use File | Settings | File Templates.
     }
 
     /*
@@ -188,7 +186,7 @@ public class DOARequest extends AbstractRequest {
 
     @Override
     public String getRemoteAddr() {
-        return getFromAddress();
+        return httpRequest.getFieldValueAsString("remoteAddress");
     }
 
     /*
@@ -199,7 +197,7 @@ public class DOARequest extends AbstractRequest {
      * .Request.Header)
      */
     @Override
-    public String getRequestHeader(Request.Header header) {
+    public String getRequestHeader(Header header) {
         IListDocumentFieldValue listField = (IListDocumentFieldValue) httpRequest
                 .getField("headers");
         IDocumentFieldValue fieldValue = listField.getListField(header.code
