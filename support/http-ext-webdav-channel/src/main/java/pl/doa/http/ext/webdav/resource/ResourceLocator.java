@@ -41,11 +41,9 @@
  *******************************************************************************/
 package pl.doa.http.ext.webdav.resource;
 
-import java.text.MessageFormat;
-
+import io.milton.resource.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import pl.doa.IDOA;
 import pl.doa.container.IEntitiesContainer;
 import pl.doa.entity.IEntity;
@@ -56,7 +54,7 @@ import pl.doa.http.ext.webdav.resource.builder.impl.DOAStaticResourceBuilder;
 import pl.doa.http.ext.webdav.resource.builder.impl.DocumentBuilder;
 import pl.doa.http.ext.webdav.resource.impl.DOAEntityResource;
 
-import com.bradmcevoy.http.Resource;
+import java.text.MessageFormat;
 
 public class ResourceLocator {
 

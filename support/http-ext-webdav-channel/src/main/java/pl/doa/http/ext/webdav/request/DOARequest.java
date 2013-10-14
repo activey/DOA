@@ -44,6 +44,13 @@
  */
 package pl.doa.http.ext.webdav.request;
 
+import io.milton.http.*;
+import pl.doa.GeneralDOAException;
+import pl.doa.document.IDocument;
+import pl.doa.document.field.IDocumentFieldValue;
+import pl.doa.document.field.IListDocumentFieldValue;
+import pl.doa.resource.IStaticResource;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -51,17 +58,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import pl.doa.GeneralDOAException;
-import pl.doa.document.IDocument;
-import pl.doa.document.field.IDocumentFieldValue;
-import pl.doa.document.field.IListDocumentFieldValue;
-import pl.doa.resource.IStaticResource;
-
-import com.bradmcevoy.http.AbstractRequest;
-import com.bradmcevoy.http.Auth;
-import com.bradmcevoy.http.Cookie;
-import com.bradmcevoy.http.FileItem;
-import com.bradmcevoy.http.RequestParseException;
 
 /**
  * @author activey
@@ -119,6 +115,11 @@ public class DOARequest extends AbstractRequest {
     @Override
     public Auth getAuthorization() {
         return null;
+    }
+
+    @Override
+    public void setAuthorization(Auth auth) {
+        //To change body of implemented methods use File | Settings | File Templates.
     }
 
     /*
@@ -185,6 +186,11 @@ public class DOARequest extends AbstractRequest {
         return cookies;
     }
 
+    @Override
+    public String getRemoteAddr() {
+        return getFromAddress();
+    }
+
     /*
      * (non-Javadoc)
      *
@@ -193,7 +199,7 @@ public class DOARequest extends AbstractRequest {
      * .Request.Header)
      */
     @Override
-    public String getRequestHeader(Header header) {
+    public String getRequestHeader(Request.Header header) {
         IListDocumentFieldValue listField = (IListDocumentFieldValue) httpRequest
                 .getField("headers");
         IDocumentFieldValue fieldValue = listField.getListField(header.code

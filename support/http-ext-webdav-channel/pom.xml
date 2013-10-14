@@ -52,33 +52,13 @@
         </dependency>
 
         <dependency>
-            <groupId>com.ettrema</groupId>
+            <groupId>io.milton</groupId>
             <artifactId>milton-api</artifactId>
-            <exclusions>
-                <exclusion>
-                    <artifactId>slf4j-api</artifactId>
-                    <groupId>org.slf4j</groupId>
-                </exclusion>
-            </exclusions>
         </dependency>
 
         <dependency>
-            <groupId>com.ettrema</groupId>
-            <artifactId>milton-servlet</artifactId>
-            <exclusions>
-                <exclusion>
-                    <artifactId>spring-webmvc</artifactId>
-                    <groupId>org.springframework</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>slf4j-api</artifactId>
-                    <groupId>org.slf4j</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>spring</artifactId>
-                    <groupId>org.springframework</groupId>
-                </exclusion>
-            </exclusions>
+            <groupId>io.milton</groupId>
+            <artifactId>milton-server-ce</artifactId>
         </dependency>
 
         <dependency>
@@ -93,20 +73,4 @@
 
     </dependencies>
 
-    <repositories>
-        <repository>
-            <id>doa-repo</id>
-            <url>http://nexus.doaplatform.org/content/repositories/doa-test/</url>
-        </repository>
-        <repository>
-            <id>codehaus-release-repo</id>
-            <name>Codehaus Release Repo</name>
-            <url>http://repository.codehaus.org</url>
-        </repository>
-        <repository>
-            <id>milton</id>
-            <name>Milton Repo</name>
-            <url>http://tools.softwaremill.pl/nexus/content/repositories/snapshots/</url>
-        </repository>
-    </repositories>
 </project>

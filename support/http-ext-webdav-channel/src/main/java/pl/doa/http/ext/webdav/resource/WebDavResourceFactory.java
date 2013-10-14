@@ -1,10 +1,9 @@
 package pl.doa.http.ext.webdav.resource;
 
+import io.milton.http.ResourceFactory;
+import io.milton.resource.Resource;
 import pl.doa.IDOA;
 import pl.doa.document.IDocument;
-
-import com.bradmcevoy.http.Resource;
-import com.bradmcevoy.http.ResourceFactory;
 
 public class WebDavResourceFactory implements ResourceFactory {
 

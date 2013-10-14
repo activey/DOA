@@ -44,13 +44,14 @@
  */
 package pl.doa.http.ext.webdav.resource.impl;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.Map;
-
+import io.milton.http.FileItem;
+import io.milton.http.Range;
+import io.milton.http.exceptions.BadRequestException;
+import io.milton.http.exceptions.ConflictException;
+import io.milton.http.exceptions.NotAuthorizedException;
+import io.milton.resource.FileResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import pl.doa.GeneralDOAException;
 import pl.doa.IDOA;
 import pl.doa.document.IDocument;
@@ -58,12 +59,9 @@ import pl.doa.http.ext.webdav.resource.builder.ResourceBuilderFactory;
 import pl.doa.renderer.IRenderer;
 import pl.doa.resource.IStaticResource;
 
-import com.bradmcevoy.http.FileItem;
-import com.bradmcevoy.http.FileResource;
-import com.bradmcevoy.http.Range;
-import com.bradmcevoy.http.exceptions.BadRequestException;
-import com.bradmcevoy.http.exceptions.ConflictException;
-import com.bradmcevoy.http.exceptions.NotAuthorizedException;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.Map;
 
 /**
  * @author activey

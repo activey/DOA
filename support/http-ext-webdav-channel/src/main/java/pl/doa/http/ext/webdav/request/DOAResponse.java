@@ -44,21 +44,19 @@
  */
 package pl.doa.http.ext.webdav.request;
 
-import java.io.OutputStream;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import io.milton.http.AbstractResponse;
+import io.milton.http.Cookie;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import pl.doa.GeneralDOAException;
 import pl.doa.document.IDocument;
 import pl.doa.document.field.IDocumentFieldValue;
 import pl.doa.document.field.IListDocumentFieldValue;
 
-import com.bradmcevoy.http.AbstractResponse;
-import com.bradmcevoy.http.Cookie;
+import java.io.OutputStream;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author activey
@@ -163,9 +161,17 @@ public class DOAResponse extends AbstractResponse {
 		return this.outputStream;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.bradmcevoy.http.Response#setCookie(com.bradmcevoy.http.Cookie)
-	 */
+    @Override
+    public void close() {
+    }
+
+    @Override
+    public void sendError(Status status, String s) {
+    }
+
+    /* (non-Javadoc)
+     * @see com.bradmcevoy.http.Response#setCookie(com.bradmcevoy.http.Cookie)
+     */
 	@Override
 	public Cookie setCookie(Cookie cookie) {
 		return null;

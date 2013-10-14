@@ -81,6 +81,7 @@ import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.net.URL;
 import java.text.MessageFormat;
+import java.util.UUID;
 
 /**
  * @author activey
@@ -88,8 +89,8 @@ import java.text.MessageFormat;
 public abstract class AbstractDOA extends AbstractStartableEntity implements
         IDOA {
 
-    // zmienna watku, przechowuje informacje o agencie, ktory wykonuje usluge
     private final static ThreadLocal<Long> agentId = new ThreadLocal<Long>();
+    private final static ThreadLocal<String> txId = new ThreadLocal<String>();
     private final static Logger log = LoggerFactory
             .getLogger(AbstractDOA.class);
 
@@ -627,8 +628,10 @@ public abstract class AbstractDOA extends AbstractStartableEntity implements
 
     @Override
     public final <T> T doInTransaction(ITransactionCallback<T> callback) {
+        this.txId.set(UUID.randomUUID().toString());
         T obj = getLogicInstance().doInTransaction(callback);
-        executeThread(new EventsConsumer(this, "" + Thread.currentThread().getId()));
+        executeThread(new EventsConsumer(this, txId.get()));
+        this.txId.remove();
         return obj;
     }
 
@@ -636,8 +639,10 @@ public abstract class AbstractDOA extends AbstractStartableEntity implements
     public <T extends Object> T doInTransaction(
             ITransactionCallback<T> callback,
             ITransactionErrorHandler errorHandler) {
+        txId.set(UUID.randomUUID().toString());
         T obj = getLogicInstance().doInTransaction(callback, errorHandler);
-        executeThread(new EventsConsumer(this, "" + Thread.currentThread().getId()));
+        executeThread(new EventsConsumer(this, txId.get()));
+        txId.remove();
         return obj;
     }
 
@@ -646,7 +651,7 @@ public abstract class AbstractDOA extends AbstractStartableEntity implements
         try {
             IEntityEvent entityEvent = ((DetachedEvent) event).buildEvent(this);
             entityEvent.setAttribute(IEntityEventDescription.EVENT_TX_ID,
-                    Thread.currentThread().getId() + "");
+                    txId.get());
             IEntity foundEntity = lookupEntityByLocation(EVENTS_CONTAINER);
             if (foundEntity instanceof IEntitiesContainer) {
                 IEntitiesContainer destContainer = (IEntitiesContainer) foundEntity;
