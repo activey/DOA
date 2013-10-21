@@ -43,13 +43,12 @@ package pl.doa.artifact;
 
 import java.io.File;
 
-public abstract class DirectoryListener {
+public interface IDirectoryListener {
 
-    public final static int TYPE_ADD = 0;
+    public enum TYPE {
+        ADD, REMOVE
+    }
 
-    public final static int TYPE_REMOVE = 1;
-
-    public abstract void directoryContentsChanged(File directory,
-                                                  File[] changedFiles, int type);
+    public void directoryContentsChanged(File directory, File[] changedFiles, TYPE type);
 
 }

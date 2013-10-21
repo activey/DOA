@@ -48,7 +48,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pl.doa.GeneralDOAException;
 import pl.doa.artifact.IArtifact;
-import pl.doa.artifact.IArtifact.Type;
 import pl.doa.artifact.deployment.IArtifactManager;
 import pl.doa.container.IEntitiesContainer;
 import pl.doa.entity.IEntity;
@@ -80,7 +79,7 @@ public abstract class AbstractBootstrapDOA extends AbstractDOA {
     private IStaticResourceStorage resourceStorage;
     private IStartableEntityManager startableManager;
     private IThreadManager threadManager;
-    
+
     public AbstractBootstrapDOA() {
         super(null);
     }
@@ -161,25 +160,23 @@ public abstract class AbstractBootstrapDOA extends AbstractDOA {
 
     @Override
     public final IArtifact deployArtifact(String artifactFileName,
-                                          byte[] artifactData, Type artifactType) throws GeneralDOAException {
+            byte[] artifactData) throws GeneralDOAException {
         if (artifactManager == null) {
             log.debug("Manager is not ready yet ...");
             return null;
         }
-        return artifactManager.deployArtifact(artifactFileName, artifactData,
-                artifactType);
+        return artifactManager.deployArtifact(artifactFileName, artifactData);
     }
 
     @Override
     public final IArtifact deployArtifact(String artifactFileName,
-                                          InputStream artifactData, Type artifactType)
+            InputStream artifactData)
             throws GeneralDOAException {
         if (artifactManager == null) {
             log.debug("Manager is not ready yet ...");
             return null;
         }
-        return artifactManager.deployArtifact(artifactFileName, artifactData,
-                artifactType);
+        return artifactManager.deployArtifact(artifactFileName, artifactData);
     }
 
     @Override
@@ -194,7 +191,7 @@ public abstract class AbstractBootstrapDOA extends AbstractDOA {
 
     @Override
     public final void executeService(IRunningService runningService,
-                                     boolean asynchronous) throws GeneralDOAException {
+            boolean asynchronous) throws GeneralDOAException {
         if (servicesManager == null) {
             log.debug("Manager is not ready yet ...");
             return;
@@ -257,7 +254,7 @@ public abstract class AbstractBootstrapDOA extends AbstractDOA {
     }
 
     public final long storeOrUpdate(IStaticResource resource,
-                                    InputStream dataStream) throws Exception {
+            InputStream dataStream) throws Exception {
         if (resourceStorage == null) {
             log.debug("Storage is not ready yet ...");
             return -1;

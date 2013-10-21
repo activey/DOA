@@ -51,12 +51,6 @@ import pl.doa.resource.IStaticResource;
 
 public interface IArtifact extends IEntity {
 
-	public static enum Type {
-		XML,
-
-		JAR
-	}
-
 	public void setGroupId(String groupId);
 
 	public String getGroupId();
@@ -72,10 +66,6 @@ public interface IArtifact extends IEntity {
 	public void setArtifactFileName(String fileName);
 
 	public String getArtifactFileName();
-
-	public void setType(IArtifact.Type type);
-
-	public IArtifact.Type getType();
 
 	public String getDescription();
 
@@ -107,7 +97,7 @@ public interface IArtifact extends IEntity {
 	/**
 	 * Disconnect this with dependent Artifact.
 	 */
-	public void removeDependency(IArtifact dependecy);
+	public void removeDependency(IArtifact dependendcy);
 
 	public void setArtifactResource(IStaticResource resource);
 
@@ -129,4 +119,5 @@ public interface IArtifact extends IEntity {
 
 	public List<IEntity> getRegisteredEntities();
 
+    public void addDependency(IArtifact dependendcy);
 }

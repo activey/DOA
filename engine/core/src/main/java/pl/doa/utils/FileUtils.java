@@ -133,7 +133,7 @@ public abstract class FileUtils {
         }
     }
 
-    public static void copy(InputStream inputStream, File target)
+    public static File copy(InputStream inputStream, File target)
             throws FileUtilsErrorException {
         if (null == inputStream)
             throw new IllegalArgumentException("inputStream can't be null.");
@@ -151,6 +151,7 @@ public abstract class FileUtils {
                     "Error while copying an input stream to file '"
                             + target.getAbsolutePath() + "'.", e);
         }
+        return target;
     }
 
     public static void copy(File source, OutputStream outputStream)

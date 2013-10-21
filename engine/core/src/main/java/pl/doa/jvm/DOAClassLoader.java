@@ -95,9 +95,6 @@ public class DOAClassLoader extends URLClassLoader {
         log.debug("Loading artifacts ...");
         Iterable<IArtifact> artifacts = doa.getArtifacts(evaluator);
         for (IArtifact artifact : artifacts) {
-            if (IArtifact.Type.JAR != artifact.getType()) {
-                continue;
-            }
             // rejestrowanie nowej pozycji w classloaderze
             try {
                 registerClassloaderArtifact(artifact);

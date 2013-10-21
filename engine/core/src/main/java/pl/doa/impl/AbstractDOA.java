@@ -51,7 +51,6 @@ import pl.doa.IDOA;
 import pl.doa.IDOALogic;
 import pl.doa.agent.IAgent;
 import pl.doa.artifact.IArtifact;
-import pl.doa.artifact.IArtifact.Type;
 import pl.doa.channel.IChannel;
 import pl.doa.channel.IIncomingChannel;
 import pl.doa.channel.IOutgoingChannel;
@@ -119,7 +118,7 @@ public abstract class AbstractDOA extends AbstractStartableEntity implements
 
     @Override
     public final IAgent profileAgent(IDocument incomingDocument,
-                                     String startLookupLocation) throws GeneralDOAException {
+            String startLookupLocation) throws GeneralDOAException {
         return PerformanceProfiler.runProfiled(new ProfileAgentAction(this,
                 incomingDocument, startLookupLocation));
     }
@@ -138,7 +137,7 @@ public abstract class AbstractDOA extends AbstractStartableEntity implements
 
     @Override
     public void iterateEntities(IEntitiesIterator iterator,
-                                IEntityEvaluator evaluator) throws GeneralDOAException {
+            IEntityEvaluator evaluator) throws GeneralDOAException {
         getLogicInstance().iterateEntities(iterator, evaluator);
     }
 
@@ -149,19 +148,19 @@ public abstract class AbstractDOA extends AbstractStartableEntity implements
     }
 
     public final IEntity lookupForEntity(IEntityEvaluator evaluator,
-                                         boolean lookupDeep) {
+            boolean lookupDeep) {
         return getLogicInstance().lookupEntityFromLocation(getLocation(),
                 evaluator, lookupDeep);
     }
 
     public Iterable<IEntity> lookupForEntities(IEntityEvaluator evaluator,
-                                               boolean lookupDeep) {
+            boolean lookupDeep) {
         return getLogicInstance().lookupEntitiesFromLocation(getLocation(),
                 evaluator, lookupDeep);
     }
 
     public final IEntity lookup(String startLocation,
-                                IEntityEvaluator returnableEvaluator) {
+            IEntityEvaluator returnableEvaluator) {
         return getLogicInstance().lookup(startLocation, returnableEvaluator);
     }
 
@@ -193,14 +192,14 @@ public abstract class AbstractDOA extends AbstractStartableEntity implements
     }
 
     public final IEntity lookupEntityFromLocation(String fromLocation,
-                                                  IEntityEvaluator evaluator, boolean lookupDeep) {
+            IEntityEvaluator evaluator, boolean lookupDeep) {
         IEntity entity = getLogicInstance().lookupEntityFromLocation(
                 fromLocation, evaluator, lookupDeep);
         return entity;
     }
 
     public Iterable<IEntity> lookupEntitiesFromLocation(String fromLocation,
-                                                        IEntityEvaluator evaluator, boolean lookupDeep) {
+            IEntityEvaluator evaluator, boolean lookupDeep) {
         return getLogicInstance().lookupEntitiesFromLocation(fromLocation,
                 evaluator, lookupDeep);
     }
@@ -214,7 +213,7 @@ public abstract class AbstractDOA extends AbstractStartableEntity implements
     }
 
     public final IRenderer lookupRendererByMime(String startLocation,
-                                                String mimeType) {
+            String mimeType) {
         return getLogicInstance().lookupRendererByMime(startLocation, mimeType);
     }
 
@@ -224,7 +223,7 @@ public abstract class AbstractDOA extends AbstractStartableEntity implements
     }
 
     public final IRenderer lookupRenderer(String startLocation,
-                                          String rendererName) {
+            String rendererName) {
         return getLogicInstance().lookupRenderer(startLocation, rendererName);
     }
 
@@ -238,7 +237,7 @@ public abstract class AbstractDOA extends AbstractStartableEntity implements
     }
 
     public final IChannel createChannel(String name, String logicClass,
-                                        IEntitiesContainer container) throws GeneralDOAException {
+            IEntitiesContainer container) throws GeneralDOAException {
         return getLogicInstance().createChannel(name, logicClass, container);
     }
 
@@ -248,31 +247,31 @@ public abstract class AbstractDOA extends AbstractStartableEntity implements
     }
 
     public final IOutgoingChannel createOutgoingChannel(String name,
-                                                        String logicClass, IEntitiesContainer container)
+            String logicClass, IEntitiesContainer container)
             throws GeneralDOAException {
         return getLogicInstance().createOutgoingChannel(name, logicClass,
                 container);
     }
 
     public final IOutgoingChannel createOutgoingChannel(String name,
-                                                        String logicClass) throws GeneralDOAException {
+            String logicClass) throws GeneralDOAException {
         return getLogicInstance().createOutgoingChannel(name, logicClass);
     }
 
     public final IIncomingChannel createIncomingChannel(String name,
-                                                        String logicClass) throws GeneralDOAException {
+            String logicClass) throws GeneralDOAException {
         return getLogicInstance().createIncomingChannel(name, logicClass);
     }
 
     public final IIncomingChannel createIncomingChannel(String name,
-                                                        String logicClass, IEntitiesContainer container)
+            String logicClass, IEntitiesContainer container)
             throws GeneralDOAException {
         return getLogicInstance().createIncomingChannel(name, logicClass,
                 container);
     }
 
     public final IEntitiesContainer createContainer(String name,
-                                                    IEntitiesContainer container) throws GeneralDOAException {
+            IEntitiesContainer container) throws GeneralDOAException {
         return getLogicInstance().createContainer(name, container);
     }
 
@@ -282,19 +281,19 @@ public abstract class AbstractDOA extends AbstractStartableEntity implements
     }
 
     public final IDocumentDefinition createDocumentDefinition(String name,
-                                                              IEntitiesContainer container) throws GeneralDOAException {
+            IEntitiesContainer container) throws GeneralDOAException {
         return getLogicInstance().createDocumentDefinition(name, container);
     }
 
     @Override
     public IDocumentDefinition createDocumentDefinition(String name,
-                                                        IDocumentDefinition ancestor) throws GeneralDOAException {
+            IDocumentDefinition ancestor) throws GeneralDOAException {
         return getLogicInstance().createDocumentDefinition(name, ancestor);
     }
 
     @Override
     public IDocumentDefinition createDocumentDefinition(String name,
-                                                        IEntitiesContainer container, IDocumentDefinition ancestor)
+            IEntitiesContainer container, IDocumentDefinition ancestor)
             throws GeneralDOAException {
         return getLogicInstance().createDocumentDefinition(name, container,
                 ancestor);
@@ -306,28 +305,28 @@ public abstract class AbstractDOA extends AbstractStartableEntity implements
     }
 
     public final IDocument createDocument(String name,
-                                          IDocumentDefinition definition, IEntitiesContainer container)
+            IDocumentDefinition definition, IEntitiesContainer container)
             throws GeneralDOAException {
         return getLogicInstance().createDocument(name, definition, container);
     }
 
     public final IDocumentAligner createDocumentAligner(String name,
-                                                        IDocumentDefinition fromDefinition,
-                                                        IDocumentDefinition toDefinition, IEntitiesContainer container)
+            IDocumentDefinition fromDefinition,
+            IDocumentDefinition toDefinition, IEntitiesContainer container)
             throws GeneralDOAException {
         return getLogicInstance().createDocumentAligner(name, fromDefinition,
                 toDefinition, container);
     }
 
     public final IDocumentAligner createDocumentAligner(String name,
-                                                        IDocumentDefinition fromDefinition, IDocumentDefinition toDefinition)
+            IDocumentDefinition fromDefinition, IDocumentDefinition toDefinition)
             throws GeneralDOAException {
         return getLogicInstance().createDocumentAligner(name, fromDefinition,
                 toDefinition);
     }
 
     public final IDocument createDocument(String name,
-                                          IDocumentDefinition definition) throws GeneralDOAException {
+            IDocumentDefinition definition) throws GeneralDOAException {
         return getLogicInstance().createDocument(name, definition);
     }
 
@@ -337,32 +336,32 @@ public abstract class AbstractDOA extends AbstractStartableEntity implements
     }
 
     public final IRenderer createRenderer(String name, String logicClass,
-                                          String mimeType, IEntitiesContainer container)
+            String mimeType, IEntitiesContainer container)
             throws GeneralDOAException {
         return getLogicInstance().createRenderer(name, logicClass, mimeType,
                 container);
     }
 
     public final IRenderer createRenderer(String name, String logicClass,
-                                          String mimeType) throws GeneralDOAException {
+            String mimeType) throws GeneralDOAException {
         return getLogicInstance().createRenderer(name, logicClass, mimeType);
     }
 
     public final IStaticResource createStaticResource(String name,
-                                                      String mimeType, IEntitiesContainer container)
+            String mimeType, IEntitiesContainer container)
             throws GeneralDOAException {
         return getLogicInstance().createStaticResource(name, mimeType,
                 container);
     }
 
     public final IStaticResource createStaticResource(String name,
-                                                      String mimeType) throws GeneralDOAException {
+            String mimeType) throws GeneralDOAException {
         return getLogicInstance().createStaticResource(name, mimeType);
     }
 
     @Override
     public final IStaticResource createStaticResource(String mimeType,
-                                                      IEntitiesContainer container) throws GeneralDOAException {
+            IEntitiesContainer container) throws GeneralDOAException {
         return getLogicInstance().createStaticResource(mimeType, container);
     }
 
@@ -386,20 +385,19 @@ public abstract class AbstractDOA extends AbstractStartableEntity implements
     }
 
     public final IServiceDefinition createServiceDefinition(String name,
-                                                            String logicClass, IEntitiesContainer container)
+            String logicClass, IEntitiesContainer container)
             throws GeneralDOAException {
         return getLogicInstance().createServiceDefinition(name, logicClass,
                 container);
     }
 
     public final IServiceDefinition createServiceDefinition(String name,
-                                                            String logicClass) throws GeneralDOAException {
+            String logicClass) throws GeneralDOAException {
         return getLogicInstance().createServiceDefinition(name, logicClass);
     }
 
-    public final IArtifact createArtifact(String name, Type type)
-            throws GeneralDOAException {
-        return getLogicInstance().createArtifact(name, type);
+    public final IArtifact createArtifact(String name) throws GeneralDOAException {
+        return getLogicInstance().createArtifact(name);
     }
 
     public final IRunningService createRunningService(
@@ -416,13 +414,13 @@ public abstract class AbstractDOA extends AbstractStartableEntity implements
 
     @Override
     public final IEntityReference createReference(String referenceName,
-                                                  IEntity entity) throws GeneralDOAException {
+            IEntity entity) throws GeneralDOAException {
         return getLogicInstance().createReference(referenceName, entity);
     }
 
     @Override
     public final IEntityEvent createEntityEvent(IEntity sourceEntity,
-                                                EntityEventType eventType) {
+            EntityEventType eventType) {
         if (sourceEntity instanceof IEntityProxy) {
             sourceEntity = ((IEntityProxy) sourceEntity).get();
         }
@@ -482,14 +480,14 @@ public abstract class AbstractDOA extends AbstractStartableEntity implements
 
     @Override
     public final IDocument createExceptionDocument(String message,
-                                                   Throwable throwable) {
+            Throwable throwable) {
         return createExceptionDocument(new GeneralDOAException(message,
                 throwable));
     }
 
     @Override
     public final IDocument createExceptionDocument(String template,
-                                                   Object... params) {
+            Object... params) {
         return createExceptionDocument(MessageFormat.format(template, params));
     }
 
@@ -510,13 +508,13 @@ public abstract class AbstractDOA extends AbstractStartableEntity implements
     }
 
     public final Object instantiateObject(String className,
-                                          boolean separateClassLoader) {
+            boolean separateClassLoader) {
         return instantiateObject(className, separateClassLoader, null);
     }
 
     @Override
     public final Object instantiateObject(String className,
-                                          boolean separateClassLoader, boolean useContinuations) {
+            boolean separateClassLoader, boolean useContinuations) {
         try {
             if (getDoa().isRunning(this)) {
                 Class<?> clazz = getLogicInstance().loadClass(className,
@@ -542,7 +540,7 @@ public abstract class AbstractDOA extends AbstractStartableEntity implements
 
     @Override
     public final Object instantiateObject(String className,
-                                          boolean separateClassLoader, IEntityEvaluator artifactEvaluator) {
+            boolean separateClassLoader, IEntityEvaluator artifactEvaluator) {
         try {
             if (getDoa().isRunning(this)) {
                 Class<?> clazz = getLogicInstance().loadClass(className,
@@ -603,7 +601,7 @@ public abstract class AbstractDOA extends AbstractStartableEntity implements
 
     @Override
     public final IEntity store(String location, IEntity entity,
-                               boolean forceCreateTree, boolean overwrite)
+            boolean forceCreateTree, boolean overwrite)
             throws GeneralDOAException {
         IEntity foundEntity = lookupEntityByLocation(location);
         if (foundEntity instanceof IEntitiesContainer) {
@@ -693,16 +691,16 @@ public abstract class AbstractDOA extends AbstractStartableEntity implements
 
     @Override
     public final Iterable<? extends IEntity> getEntities(int start,
-                                                         int howMany, IEntitiesSortComparator comparator,
-                                                         IEntityEvaluator evaluator) {
+            int howMany, IEntitiesSortComparator comparator,
+            IEntityEvaluator evaluator) {
         return lookupEntitiesByLocation("/", start, howMany, comparator,
                 evaluator);
     }
 
     @Override
     public Iterable<? extends IEntity> getEntities(int start, int howMany,
-                                                   IEntitiesSortComparator comparator, IEntityEvaluator evaluator,
-                                                   boolean deep) {
+            IEntitiesSortComparator comparator, IEntityEvaluator evaluator,
+            boolean deep) {
         return getLogicInstance().lookupEntitiesByLocation("/", start, howMany,
                 comparator, evaluator, deep);
     }
@@ -742,7 +740,7 @@ public abstract class AbstractDOA extends AbstractStartableEntity implements
 
     @Override
     public final <T extends IEntity> T getEntityByName(final String name,
-                                                       final Class<T> entityType) {
+            final Class<T> entityType) {
         IEntity entity = lookupEntityFromLocation("/", new IEntityEvaluator() {
 
             @Override
@@ -769,7 +767,7 @@ public abstract class AbstractDOA extends AbstractStartableEntity implements
     }
 
     public abstract void executeService(IRunningService runningService,
-                                        boolean asynchronous) throws GeneralDOAException;
+            boolean asynchronous) throws GeneralDOAException;
 
     private IRunningService createServiceInstance(
             IServiceDefinition definition, IDocument input, IAgent runAs,
@@ -835,8 +833,8 @@ public abstract class AbstractDOA extends AbstractStartableEntity implements
 
     @Override
     public IRunningService executeService(final IServiceDefinition definition,
-                                          final IDocument input, final boolean asynchronous,
-                                          final IAgent runAs) throws GeneralDOAException {
+            final IDocument input, final boolean asynchronous,
+            final IAgent runAs) throws GeneralDOAException {
         IAgent callingAgent = runAs;
 
         IRunningService runningService = getDoa().doInTransaction(
@@ -893,7 +891,7 @@ public abstract class AbstractDOA extends AbstractStartableEntity implements
 
     @Override
     public final IEntity lookupForEntity(IEntityEvaluator evaluator,
-                                         boolean lookupDeep, IEntitiesContainer... lookupContainers) {
+            boolean lookupDeep, IEntitiesContainer... lookupContainers) {
         for (IEntitiesContainer lookupContainer : lookupContainers) {
             IEntity foundEntity = lookupContainer.lookupForEntity(evaluator,
                     lookupDeep);
@@ -906,8 +904,8 @@ public abstract class AbstractDOA extends AbstractStartableEntity implements
 
     @Override
     public final IEntity lookupEntityFromLocation(String fromLocation,
-                                                  IEntityEvaluator evaluator, boolean lookupDeep,
-                                                  IEntitiesContainer... lookupContainers) {
+            IEntityEvaluator evaluator, boolean lookupDeep,
+            IEntitiesContainer... lookupContainers) {
         for (IEntitiesContainer lookupContainer : lookupContainers) {
             IEntity foundEntity = lookupContainer.lookupEntityFromLocation(
                     fromLocation, evaluator, lookupDeep);
@@ -920,21 +918,19 @@ public abstract class AbstractDOA extends AbstractStartableEntity implements
 
     @Override
     public IArtifact deployArtifact(String artifactFileName,
-                                    byte[] artifactData, Type artifactType) throws GeneralDOAException {
+            byte[] artifactData) throws GeneralDOAException {
         if (doa != null) {
-            return doa.deployArtifact(artifactFileName, artifactData,
-                    artifactType);
+            return doa.deployArtifact(artifactFileName, artifactData);
         }
         return null;
     }
 
     @Override
     public IArtifact deployArtifact(String artifactFileName,
-                                    InputStream artifactData, Type artifactType)
+            InputStream artifactData)
             throws GeneralDOAException {
         if (doa != null) {
-            return doa.deployArtifact(artifactFileName, artifactData,
-                    artifactType);
+            return doa.deployArtifact(artifactFileName, artifactData);
         }
         return null;
     }

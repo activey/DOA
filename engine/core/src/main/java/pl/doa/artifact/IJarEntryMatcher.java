@@ -43,7 +43,7 @@ package pl.doa.artifact;
 
 import java.util.jar.JarEntry;
 
-public interface EntryMatcher {
+public interface IJarEntryMatcher {
 
     public boolean entryMatch(JarEntry entry);
 }

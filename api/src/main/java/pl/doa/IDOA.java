@@ -43,7 +43,6 @@ package pl.doa;
 
 import pl.doa.agent.IAgent;
 import pl.doa.artifact.IArtifact;
-import pl.doa.artifact.IArtifact.Type;
 import pl.doa.channel.IChannel;
 import pl.doa.channel.IIncomingChannel;
 import pl.doa.channel.IOutgoingChannel;
@@ -167,7 +166,7 @@ public interface IDOA extends IEntitiesContainer, IStartableEntity {
             IServiceDefinition ancestor, String name)
             throws GeneralDOAException;
 
-    public IArtifact createArtifact(String name, Type type)
+    public IArtifact createArtifact(String name)
             throws GeneralDOAException;
 
     public IRunningService createRunningService(
@@ -229,11 +228,11 @@ public interface IDOA extends IEntitiesContainer, IStartableEntity {
                                  ITransactionErrorHandler iTransactionErrorHandler);
 
     public IArtifact deployArtifact(String artifactFileName,
-                                    byte[] artifactData, IArtifact.Type artifactType)
+                                    byte[] artifactData)
             throws GeneralDOAException;
 
     public IArtifact deployArtifact(String artifactFileName,
-                                    InputStream artifactData, IArtifact.Type artifactType)
+                                    InputStream artifactData)
             throws GeneralDOAException;
 
     public Iterable<IArtifact> getArtifacts();

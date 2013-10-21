@@ -44,45 +44,42 @@ package pl.doa.artifact.impl;
 import org.apache.commons.configuration.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import pl.doa.GeneralDOAException;
 import pl.doa.IDOA;
 import pl.doa.artifact.IDirectoryListener;
 import pl.doa.artifact.DirectoryMonitor;
 import pl.doa.artifact.IArtifact;
-import pl.doa.artifact.impl.maven.IMavenResolver;
-import pl.doa.artifact.impl.maven.IvyMavenResolver;
-import pl.doa.artifact.impl.maven.AbstractMavenArtifactManager;
+import pl.doa.entity.ITransactionCallback;
 import pl.doa.jvm.DOAURLHandlerFactory;
+import pl.doa.utils.FileUtils;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.text.MessageFormat;
 
-public class StandaloneArtifactManager extends AbstractMavenArtifactManager {
+public class StandaloneArtifactManagerOld  {
 
     private final static Logger LOG = LoggerFactory
-            .getLogger(StandaloneArtifactManager.class);
+            .getLogger(StandaloneArtifactManagerOld.class);
 
     private final static String DEFAULT_DEPLOY_DIRECTORY = "./var/deploy";
     private final static long DEFAULT_MONITOR_INTERVAL = 1000;
-    private final static String DEFAULT_CACHE_DIRECTORY = "./var/cache";
+    private final static String DEFAULT_CACHE_DIRECTORY = "./var/ivy";
 
     public static final String CONFIGURATION_DEPLOY_DIRECTORY = "doa.deploy.directory";
     public static final String CONFIGURATION_DEPLOY_MONITOR_INTERVAL = "doa.deploy.monitor.interval";
     public static final String CONFIGURATION_DEPLOY_CACHE_DIRECTORY = "doa.deploy.cache.directory";
 
     private final Configuration configuration;
-    private IMavenResolver dependencyResolver;
 
-    private IDirectoryListener directoryListener;
-
-    public StandaloneArtifactManager(IDOA doa, Configuration configuration) {
-        super(doa);
+    public StandaloneArtifactManagerOld(IDOA doa, Configuration configuration) {
         this.configuration = configuration;
         try {
             LOG.debug("Initializing Artifact Manager ...");
             DOAURLHandlerFactory.attachFactory(doa);
 
             // uruchomianie sluchacza katalogu deploymentu
-            LOG.debug("Starting up artifacts deployment directory directoryListener: ["
+            LOG.debug("Starting up artifacts deployment directory listener: ["
                     + getDeployDirectory() + "]");
             DirectoryMonitor directoryMonitor =
                     new DirectoryMonitor(getMonitorInterval());
@@ -98,24 +95,13 @@ public class StandaloneArtifactManager extends AbstractMavenArtifactManager {
                 }
             }
             directoryMonitor.setDirectory(deployDirectory);
-            directoryMonitor.addListener(this.directoryListener = new StandaloneDeploymentListener(doa) {
-                @Override
-                protected IArtifact artifactDeployed(String name, File artifactFile) throws Exception {
-                    return StandaloneArtifactManager.this.deployArtifact(artifactFile);
-                }
-            });
+            //directoryMonitor.addListener(this);
             directoryMonitor.start();
+
+            //initializeRepository(null);
         } catch (Exception e) {
             LOG.error("", e);
         }
-
-        // starting up dependency resolver
-        this.dependencyResolver = new IvyMavenResolver(this, getCacheDirectory());
-    }
-
-    @Override
-    protected IMavenResolver getMavenResolver() {
-        return this.dependencyResolver;
     }
 
     public String getDeployDirectory() {
@@ -126,8 +112,13 @@ public class StandaloneArtifactManager extends AbstractMavenArtifactManager {
         return configuration.getLong(CONFIGURATION_DEPLOY_MONITOR_INTERVAL, DEFAULT_MONITOR_INTERVAL);
     }
 
+    //@Override
     public String getCacheDirectory() {
         return configuration.getString(CONFIGURATION_DEPLOY_CACHE_DIRECTORY, DEFAULT_CACHE_DIRECTORY);
     }
 
+
+    public IArtifact deployArtifact(File artifactFile) throws GeneralDOAException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
 }

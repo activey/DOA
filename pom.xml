@@ -49,9 +49,10 @@
         <dom4j.dom4j.version>1.6.1</dom4j.dom4j.version>
         <commons-io.commons-io.version>1.4</commons-io.commons-io.version>
         <rhino.js.version>1.7R1</rhino.js.version>
-        <org.apache.ivy.ivy.version>2.2.0</org.apache.ivy.ivy.version>
+        <org.apache.ivy.ivy.version>2.3.0</org.apache.ivy.ivy.version>
         <junit.junit.version>4.8.1</junit.junit.version>
         <org.mockito.version>1.9.0</org.mockito.version>
+        <fest-assert.version>1.4</fest-assert.version>
         <net.sf.scannotation.version>1.0.2</net.sf.scannotation.version>
         <org.slf4j.version>1.7.5</org.slf4j.version>
         <org.lightwolf.lightwolf-continuations.version>0.0.1</org.lightwolf.lightwolf-continuations.version>
@@ -67,6 +68,7 @@
         <javax.servlet.javax.servlet-api.version>3.0.1</javax.servlet.javax.servlet-api.version>
         <org.apache.wicket.version>6.10.0</org.apache.wicket.version>
         <org.apache.maven.maven-model.version>3.0.3</org.apache.maven.maven-model.version>
+        <org.apache.maven.core.version>3.0.3</org.apache.maven.core.version>
         <io.milton.version>2.5.2.0</io.milton.version>
         <commons-lang.commons-lang.version>2.2</commons-lang.commons-lang.version>
         <org.apache.tomcat.version>7.0.27</org.apache.tomcat.version>
@@ -194,7 +196,7 @@
                 <version>${org.neo4j.neo4j-lucene-index.version}</version>
             </dependency>
 
-             <!-- SERVER -->
+            <!-- SERVER -->
             <dependency>
                 <groupId>javax.servlet</groupId>
                 <artifactId>javax.servlet-api</artifactId>
@@ -267,9 +269,15 @@
 
             <dependency>
                 <groupId>org.mockito</groupId>
-                <artifactId>mockito-all</artifactId>
+                <artifactId>mockito-core</artifactId>
                 <version>${org.mockito.version}</version>
                 <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.easytesting</groupId>
+                <artifactId>fest-assert</artifactId>
+                <version>${fest-assert.version}</version>
             </dependency>
 
             <!-- LOGGING -->
@@ -403,6 +411,18 @@
                 <groupId>org.apache.maven</groupId>
                 <artifactId>maven-model</artifactId>
                 <version>${org.apache.maven.maven-model.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.maven</groupId>
+                <artifactId>maven-model-builder</artifactId>
+                <version>${org.apache.maven.maven-model.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.maven</groupId>
+                <artifactId>maven-core</artifactId>
+                <version>${org.apache.maven.core.version}</version>
             </dependency>
 
             <dependency>

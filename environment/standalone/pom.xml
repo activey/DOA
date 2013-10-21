@@ -133,6 +133,11 @@
         </dependency>
 
         <dependency>
+            <groupId>org.apache.ivy</groupId>
+            <artifactId>ivy</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>org.doa.persistence</groupId>
             <artifactId>neo4j</artifactId>
         </dependency>

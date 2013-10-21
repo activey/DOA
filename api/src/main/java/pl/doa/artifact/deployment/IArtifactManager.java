@@ -44,17 +44,18 @@ package pl.doa.artifact.deployment;
 import pl.doa.GeneralDOAException;
 import pl.doa.artifact.IArtifact;
 
+import java.io.File;
 import java.io.InputStream;
 
 public interface IArtifactManager {
 
-    public IArtifact deployArtifact(String artifactFileName,
-                                    byte[] artifactData, IArtifact.Type artifactType)
-            throws GeneralDOAException;
+    public IArtifact deployArtifact(String artifactFileName, byte[] artifactDataBytes) throws GeneralDOAException;
 
-    public IArtifact deployArtifact(String artifactFileName,
-                                    InputStream artifactData, IArtifact.Type artifactType)
-            throws GeneralDOAException;
+    public IArtifact deployArtifact(String artifactFileName, InputStream artifactDataStream) throws GeneralDOAException;
+
+    public IArtifact deployArtifact(File artifactFile) throws GeneralDOAException;
 
     public void undeployArtifact(IArtifact artifact) throws GeneralDOAException;
+
+
 }

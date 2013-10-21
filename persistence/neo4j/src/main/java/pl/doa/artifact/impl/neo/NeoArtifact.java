@@ -75,8 +75,6 @@ public class NeoArtifact extends AbstractArtifact implements INeoObject,
     public static final String PROP_ARTIFACT_ID = "artifactId";
     public static final String PROP_GROUP_ID = "groupId";
     public static final String PROP_ARTIFACT_FILE = "artifactFile";
-    public static final String PROP_TYPE = "type";
-    public static final String OLD_ARTIFACT = "jar";
     private final static Logger log = LoggerFactory
             .getLogger(NeoArtifact.class);
     private NeoEntityDelegator delegator;
@@ -192,31 +190,6 @@ public class NeoArtifact extends AbstractArtifact implements INeoObject,
 
     /*
      * (non-Javadoc)
-     * @see pl.doa.artifact.impl.neo.IArtifact#getType()
-     */
-    @Override
-    public IArtifact.Type getType() {
-        String type = (String) delegator.getNode().getProperty(PROP_TYPE);
-        return IArtifact.Type.valueOf(type);
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see pl.doa.artifact.impl.neo.IArtifact#setType(java.lang.String)
-     */
-    @Override
-    public void setType(IArtifact.Type type) {
-        if (type == null) {
-            if (delegator.getNode().hasProperty(PROP_TYPE)) {
-                delegator.getNode().removeProperty(PROP_TYPE);
-            }
-            return;
-        }
-        delegator.getNode().setProperty(PROP_TYPE, type.name());
-    }
-
-    /*
-     * (non-Javadoc)
      * @see pl.doa.artifact.impl.neo.IArtifact#getDescription()
      */
     @Override
@@ -294,63 +267,6 @@ public class NeoArtifact extends AbstractArtifact implements INeoObject,
                 DOARelationship.HAS_ARTIFACT_ENTITY);
     }
 
-    // public void createExistedEntities() {
-    // existedEnitities = new ArrayList<String>();
-    // for (Relationship relation : this.getRelationships(
-    // DOARelationship.HAS_ARTIFACT_ENTITY, Direction.OUTGOING)) {
-    // if (((String) relation.getEndNode().getProperty(
-    // NeoEntity.PROP_CLASS_NAME))
-    // .compareTo(NeoEntityAttribute.class.getCanonicalName()) != 0) {
-    // existedEnitities.add(NeoEntity.createEntityInstance(doa,
-    // relation.getEndNode()).getLocation());
-    // }
-    // }
-    // }
-
-	/*
-     * (non-Javadoc)
-	 * @see
-	 * pl.doa.artifact.impl.neo.IArtifact#removeExistedEntity(java.lang.String)
-	 */
-    // @Override
-    // public void removeExistedEntity(String name) {
-    // if (this.existedEnitities.contains(name)) {
-    // this.existedEnitities.remove(this.existedEnitities.indexOf(name));
-    // }
-    // }
-
-    // public boolean validate(NeoArtifact newArtifact) {
-    // if (this.existedEnitities == null || this.existedEnitities.size() == 0) {
-    // // delete relations with not added module
-    // for (Relationship rel : newArtifact.getRelationships(
-    // DOARelationship.HAS_ARTIFACT_ENTITY, Direction.OUTGOING)) {
-    // rel.delete();
-    // }
-    // return true;
-    // }
-    // for (String entityLocation : existedEnitities) {
-    // NeoEntity entity = (NeoEntity)
-    // doa.lookupEntityByLocation(entityLocation);
-    // if (entity == null) {
-    // return false;
-    // }
-    // entity.remove();
-    // this.existedEnitities.set(
-    // this.existedEnitities.indexOf(entityLocation), null);
-    // }
-    // for (String entityLocation : existedEnitities) {
-    // if (entityLocation != null) {
-    // return false;
-    // }
-    // }
-    // // delete relations with not added module
-    // for (Relationship rel : newArtifact.getRelationships(
-    // DOARelationship.HAS_ARTIFACT_ENTITY, Direction.OUTGOING)) {
-    // rel.delete();
-    // }
-    // return true;
-    // }
-
     /*
      * (non-Javadoc)
      * @see
@@ -370,23 +286,11 @@ public class NeoArtifact extends AbstractArtifact implements INeoObject,
     @Override
     public void setArtifactResourceStream(InputStream fileStream,
                                           long contentSize) throws GeneralDOAException {
-        StringBuffer mimeType = new StringBuffer();
-        switch (getType()) {
-            case XML:
-                mimeType.append("text/xml");
-                break;
-            case JAR:
-                mimeType.append("application/x-jar");
-                break;
-            default:
-                break;
-        }
         IStaticResource resource;
         try {
             resource =
-                    doa.createStaticResource(getName() + "."
-                            + getType().name().toLowerCase(),
-                            mimeType.toString(), getContainer());
+                    doa.createStaticResource(getName() + ".jar",
+                            "application/x-jar", getContainer());
         } catch (GeneralDOAException e) {
             log.error("", e);
             return;
@@ -411,7 +315,7 @@ public class NeoArtifact extends AbstractArtifact implements INeoObject,
         return getArtifactResource().getContentStream();
     }
 
-    private void addDependency(IArtifact artifact) {
+    public void addDependency(IArtifact artifact) {
         INeoObject neoEntity = (INeoObject) artifact;
         delegator.getNode().createRelationshipTo(neoEntity.getNode(),
                 DOARelationship.HAS_ARTIFACT_DEPENDENCY);

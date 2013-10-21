@@ -46,7 +46,6 @@ package pl.doa;
 
 import pl.doa.agent.IAgent;
 import pl.doa.artifact.IArtifact;
-import pl.doa.artifact.IArtifact.Type;
 import pl.doa.channel.IChannel;
 import pl.doa.channel.IIncomingChannel;
 import pl.doa.channel.IOutgoingChannel;
@@ -79,56 +78,46 @@ public interface IDOALogic extends IStartableEntityLogic {
 
     public IAgent createAgent(String name) throws GeneralDOAException;
 
-    public IChannel createChannel(String name, String logicClass,
-                                  IEntitiesContainer container) throws GeneralDOAException;
-
-    public IChannel createChannel(String name, String logicClass)
+    public IChannel createChannel(String name, String logicClass, IEntitiesContainer container)
             throws GeneralDOAException;
 
-    public IOutgoingChannel createOutgoingChannel(String name,
-                                                  String logicClass, IEntitiesContainer container)
+    public IChannel createChannel(String name, String logicClass) throws GeneralDOAException;
+
+    public IOutgoingChannel createOutgoingChannel(String name, String logicClass, IEntitiesContainer container)
             throws GeneralDOAException;
 
-    public IOutgoingChannel createOutgoingChannel(String name, String logicClass)
+    public IOutgoingChannel createOutgoingChannel(String name, String logicClass) throws GeneralDOAException;
+
+    public IIncomingChannel createIncomingChannel(String name, String logicClass, IEntitiesContainer container)
             throws GeneralDOAException;
 
-    public IIncomingChannel createIncomingChannel(String name,
-                                                  String logicClass, IEntitiesContainer container)
+    public IIncomingChannel createIncomingChannel(String name, String logicClass) throws GeneralDOAException;
+
+    public IEntitiesContainer createContainer(String name, IEntitiesContainer container) throws GeneralDOAException;
+
+    public IEntitiesContainer createContainer(String name) throws GeneralDOAException;
+
+    public IDocumentDefinition createDocumentDefinition(String name, IEntitiesContainer container)
             throws GeneralDOAException;
-
-    public IIncomingChannel createIncomingChannel(String name, String logicClass)
-            throws GeneralDOAException;
-
-    public IEntitiesContainer createContainer(String name,
-                                              IEntitiesContainer container) throws GeneralDOAException;
-
-    public IEntitiesContainer createContainer(String name)
-            throws GeneralDOAException;
-
-    public IDocumentDefinition createDocumentDefinition(String name,
-                                                        IEntitiesContainer container) throws GeneralDOAException;
 
     public IDocumentDefinition createDocumentDefinition(String name)
             throws GeneralDOAException;
 
-    public IDocumentDefinition createDocumentDefinition(String name,
-                                                        IEntitiesContainer container, IDocumentDefinition ancestor)
+    public IDocumentDefinition createDocumentDefinition(String name, IEntitiesContainer container,
+            IDocumentDefinition ancestor)
             throws GeneralDOAException;
 
-    public IDocumentDefinition createDocumentDefinition(String name,
-                                                        IDocumentDefinition ancestor) throws GeneralDOAException;
-
-    public IDocument createDocument(String name,
-                                    IDocumentDefinition definition, IEntitiesContainer container)
+    public IDocumentDefinition createDocumentDefinition(String name, IDocumentDefinition ancestor)
             throws GeneralDOAException;
 
-    public IDocumentAligner createDocumentAligner(String name,
-                                                  IDocumentDefinition fromDefinition,
-                                                  IDocumentDefinition toDefinition, IEntitiesContainer container)
+    public IDocument createDocument(String name, IDocumentDefinition definition, IEntitiesContainer container)
             throws GeneralDOAException;
 
-    public IDocumentAligner createDocumentAligner(String name,
-                                                  IDocumentDefinition fromDefinition, IDocumentDefinition toDefinition)
+    public IDocumentAligner createDocumentAligner(String name, IDocumentDefinition fromDefinition,
+            IDocumentDefinition toDefinition, IEntitiesContainer container) throws GeneralDOAException;
+
+    public IDocumentAligner createDocumentAligner(String name, IDocumentDefinition fromDefinition,
+            IDocumentDefinition toDefinition)
             throws GeneralDOAException;
 
     public IDocument createDocument(String name, IDocumentDefinition definition)
@@ -138,29 +127,29 @@ public interface IDOALogic extends IStartableEntityLogic {
             throws GeneralDOAException;
 
     public IRenderer createRenderer(String name, String logicClass,
-                                    String mimeType, IEntitiesContainer container)
+            String mimeType, IEntitiesContainer container)
             throws GeneralDOAException;
 
     public IRenderer createRenderer(String name, String logicClass,
-                                    String mimeType) throws GeneralDOAException;
+            String mimeType) throws GeneralDOAException;
 
     public IStaticResource createStaticResource(String name, String mimeType,
-                                                IEntitiesContainer container) throws GeneralDOAException;
+            IEntitiesContainer container) throws GeneralDOAException;
 
     public IStaticResource createStaticResource(String name, String mimeType)
             throws GeneralDOAException;
 
     public IStaticResource createStaticResource(String mimeType,
-                                                IEntitiesContainer container) throws GeneralDOAException;
+            IEntitiesContainer container) throws GeneralDOAException;
 
     public IStaticResource createStaticResource(String mimeType);
 
     public IServiceDefinition createServiceDefinition(String name,
-                                                      String logicClass, IEntitiesContainer container)
+            String logicClass, IEntitiesContainer container)
             throws GeneralDOAException;
 
     public IServiceDefinition createServiceDefinition(String name,
-                                                      String logicClass) throws GeneralDOAException;
+            String logicClass) throws GeneralDOAException;
 
     public IServiceDefinition createServiceDefinition(
             IServiceDefinition ancestor, String name)
@@ -170,14 +159,13 @@ public interface IDOALogic extends IStartableEntityLogic {
             IEntitiesContainer container, IServiceDefinition ancestor,
             String name) throws GeneralDOAException;
 
-    public IArtifact createArtifact(String name, Type type)
-            throws GeneralDOAException;
+    public IArtifact createArtifact(String name) throws GeneralDOAException;
 
     public IEntityEvent createEntityEvent(IEntity sourceEntity,
-                                          EntityEventType eventType);
+            EntityEventType eventType);
 
     public IEntityEventListener createEntityEventListener(IEntity sourceEntity,
-                                                          IEntityEventReceiver receiver, EntityEventType eventType);
+            IEntityEventReceiver receiver, EntityEventType eventType);
 
     public IRunningService createRunningService(
             IServiceDefinition serviceDefinition) throws GeneralDOAException;
@@ -193,7 +181,7 @@ public interface IDOALogic extends IStartableEntityLogic {
             throws GeneralDOAException;
 
     public void iterateEntities(IEntitiesIterator iterator,
-                                IEntityEvaluator evaluator) throws GeneralDOAException;
+            IEntityEvaluator evaluator) throws GeneralDOAException;
 
     public Iterable<? extends IEntity> lookupEntitiesByLocation(
             String entityLocation, int start, int howMany);
@@ -226,40 +214,40 @@ public interface IDOALogic extends IStartableEntityLogic {
     public IEntity lookupEntityByLocation(String entityLocation);
 
     public IEntity lookupEntityFromLocation(String fromLocation,
-                                            IEntityEvaluator evaluator, boolean deep);
+            IEntityEvaluator evaluator, boolean deep);
 
     public Iterable<IEntity> lookupEntitiesFromLocation(String fromLocation,
-                                                        IEntityEvaluator evaluator, boolean deep);
+            IEntityEvaluator evaluator, boolean deep);
 
     public IEntity lookup(String startLocation,
-                          IEntityEvaluator returnableEvaluator);
+            IEntityEvaluator returnableEvaluator);
 
     public IRenderer lookupRenderer(String rendererName);
 
     public IRenderer lookupRendererByMime(String mimeType);
 
     public IRenderer lookupRendererByMime(String startLocation,
-                                          final String mimeType);
+            final String mimeType);
 
     public IRenderer lookupRenderer(String startLocation,
-                                    final String rendererName);
+            final String rendererName);
 
     public IDocumentAligner lookupAligner(IDocumentDefinition from,
-                                          IDocumentDefinition to);
+            IDocumentDefinition to);
 
     public <T> T doInTransaction(ITransactionCallback<T> callback);
 
     public <T> T doInTransaction(ITransactionCallback<T> callback,
-                                 ITransactionErrorHandler errorHandler);
+            ITransactionErrorHandler errorHandler);
 
     public Class<?> loadClass(String className, boolean separateClassLoader,
-                              IEntityEvaluator artifactEvaluator) throws Exception;
+            IEntityEvaluator artifactEvaluator) throws Exception;
 
     public Class<?> loadClass(String className, boolean separateClassLoader)
             throws Exception;
 
     public Class<?> loadClass(String className, boolean separateClassLoader,
-                              boolean useContinuations) throws Exception;
+            boolean useContinuations) throws Exception;
 
     public Class<?> loadClass(String className);
 

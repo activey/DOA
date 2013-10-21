@@ -52,26 +52,26 @@ public class DirectoryMonitor {
     private final static Logger log = LoggerFactory
             .getLogger(DirectoryMonitor.class);
     private final long pollingInterval;
-    private Timer timer_;
-    private File directory_;
+    private Timer timer;
+    private File directory;
     private List<File> directoryFiles = new ArrayList<File>();
-    private Collection listeners_; // of WeakReference(FileListener)
+    private Collection listeners; // of WeakReference(FileListener)
     private long lastModifiedTime;
 
     public DirectoryMonitor(long pollingInterval) {
         this.pollingInterval = pollingInterval;
-        listeners_ = new ArrayList();
+        listeners = new ArrayList();
     }
 
     public void stop() {
-        timer_.cancel();
+        timer.cancel();
     }
 
     public void setDirectory(File directory) {
         if (!directory.isDirectory()) {
             return;
         }
-        directory_ = directory;
+        this.directory = directory;
         /*
          * pobieranie listy plikow z katalogu
 		 */
@@ -81,24 +81,24 @@ public class DirectoryMonitor {
         }
     }
 
-    public void addListener(DirectoryListener fileListener) {
+    public void addListener(IDirectoryListener fileListener) {
         // Don't add if its already there
-        for (Iterator i = listeners_.iterator(); i.hasNext(); ) {
+        for (Iterator i = listeners.iterator(); i.hasNext(); ) {
             WeakReference reference = (WeakReference) i.next();
-            DirectoryListener listener = (DirectoryListener) reference.get();
+            IDirectoryListener listener = (IDirectoryListener) reference.get();
             if (listener == fileListener)
                 return;
         }
 
         // Use WeakReference to avoid memory leak if this becomes the
         // sole reference to the object.
-        listeners_.add(new WeakReference(fileListener));
+        listeners.add(new WeakReference(fileListener));
     }
 
-    public void removeListener(DirectoryListener fileListener) {
-        for (Iterator i = listeners_.iterator(); i.hasNext(); ) {
+    public void removeListener(IDirectoryListener fileListener) {
+        for (Iterator i = listeners.iterator(); i.hasNext(); ) {
             WeakReference reference = (WeakReference) i.next();
-            DirectoryListener listener = (DirectoryListener) reference.get();
+            IDirectoryListener listener = (IDirectoryListener) reference.get();
             if (listener == fileListener) {
                 i.remove();
                 break;
@@ -108,35 +108,34 @@ public class DirectoryMonitor {
 
     public void start() {
         log.debug("starting up directory monitor ...");
-        timer_ = new Timer(true);
-        timer_.schedule(new FileMonitorNotifier(), 0, pollingInterval);
+        timer = new Timer(true);
+        timer.schedule(new FileMonitorNotifier(), 0, pollingInterval);
     }
 
     private class FileMonitorNotifier extends TimerTask {
         public void run() {
-            if (directory_ == null) {
+            if (directory == null) {
                 log.debug("Unable to find deploy directory, set it first and restart DOA");
                 return;
             }
             long newModifiedTime =
-                    directory_.exists() ? directory_.lastModified() : -1;
+                    directory.exists() ? directory.lastModified() : -1;
 
             // Chek if file has changed
             if (newModifiedTime != lastModifiedTime) {
-
                 // Register new modified time
                 lastModifiedTime = new Long(newModifiedTime);
 
                 // Notify listeners
-                for (Iterator j = listeners_.iterator(); j.hasNext(); ) {
+                for (Iterator j = listeners.iterator(); j.hasNext(); ) {
                     WeakReference reference = (WeakReference) j.next();
-                    DirectoryListener listener =
-                            (DirectoryListener) reference.get();
+                    IDirectoryListener listener =
+                            (IDirectoryListener) reference.get();
                     /*
-					 * lista plikow po modyfikacji
+                     * lista plikow po modyfikacji
 					 */
-                    int type = -1;
-                    File[] afterModFiles = directory_.listFiles();
+                    IDirectoryListener.TYPE type;
+                    File[] afterModFiles = directory.listFiles();
                     List<File> modifiedFiles = new ArrayList<File>();
                     if (directoryFiles.size() < afterModFiles.length) {
                         for (File modFile : afterModFiles) {
@@ -144,7 +143,7 @@ public class DirectoryMonitor {
                                 modifiedFiles.add(modFile);
                             }
                         }
-                        type = DirectoryListener.TYPE_ADD;
+                        type = IDirectoryListener.TYPE.ADD;
                     } else {
                         for (File file : directoryFiles) {
                             boolean exists = false;
@@ -159,9 +158,9 @@ public class DirectoryMonitor {
                                 modifiedFiles.add(file);
                             }
                         }
-                        type = DirectoryListener.TYPE_REMOVE;
+                        type = IDirectoryListener.TYPE.REMOVE;
                     }
-					/*
+                    /*
 					 * tworzenie nowej listy plikow w katalogu
 					 */
                     directoryFiles = new ArrayList<File>();
@@ -172,7 +171,7 @@ public class DirectoryMonitor {
                     if (listener == null)
                         j.remove();
                     else
-                        listener.directoryContentsChanged(directory_,
+                        listener.directoryContentsChanged(directory,
                                 modifiedFiles.toArray(new File[0]), type);
                 }
             }

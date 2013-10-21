@@ -60,7 +60,6 @@ import pl.doa.NeoEntityDelegator;
 import pl.doa.agent.IAgent;
 import pl.doa.agent.impl.neo.NeoAgent;
 import pl.doa.artifact.IArtifact;
-import pl.doa.artifact.IArtifact.Type;
 import pl.doa.artifact.impl.neo.NeoArtifact;
 import pl.doa.channel.IChannel;
 import pl.doa.channel.IIncomingChannel;
@@ -346,10 +345,9 @@ public class NeoDOALogic extends AbstractDOALogic {
     }
 
     @Override
-    public IArtifact createArtifact(String name, Type type)
+    public IArtifact createArtifact(String name)
             throws GeneralDOAException {
         NeoArtifact artifact = new NeoArtifact(doa, neo, name);
-        artifact.setType(type);
         return artifact;
     }
 
