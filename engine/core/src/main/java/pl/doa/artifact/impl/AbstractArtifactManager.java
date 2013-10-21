@@ -13,13 +13,14 @@ import pl.doa.entity.IEntity;
 import pl.doa.entity.IEntityEvaluator;
 import pl.doa.impl.EntityLocationIterator;
 import pl.doa.utils.FileUtils;
+import pl.doa.utils.JarUtils;
 import pl.doa.utils.PathIterator;
 
 import java.io.*;
 import java.text.MessageFormat;
+import java.util.List;
 import java.util.Properties;
-
-import static pl.doa.utils.JarUtils.findJarEntry;
+import java.util.jar.JarFile;
 
 public abstract class AbstractArtifactManager implements IArtifactManager {
 
@@ -35,48 +36,80 @@ public abstract class AbstractArtifactManager implements IArtifactManager {
         this.doa = doa;
     }
 
-    protected abstract IArtifact deployArtifact(File artifactFile, Properties artifactProperties)
+    protected abstract IArtifact resolveArtifact(File artifactFile)
             throws GeneralDOAException;
 
     public final IArtifact deployArtifact(File artifactFile) throws GeneralDOAException {
+
+        // creating IArtifact instance from input file
+        IArtifact newArtifact = this.resolveArtifact(artifactFile);
+
+        // processing dependencies
+        resolveDependencies(newArtifact);
+
+        // running deployment processor
+        runDeploymentProcessor(newArtifact);
+
+        return newArtifact;
+    }
+
+    private void resolveDependencies(IArtifact artifact) {
+        List<IArtifact> dependencies = artifact.getDependencies();
+        for (IArtifact dependency : dependencies) {
+            try {
+                // resolving nested dependencies
+                resolveDependencies(dependency);
+
+                runDeploymentProcessor(dependency);
+            } catch (GeneralDOAException e) {
+                LOG.error("Unable to process dependency", e);
+            }
+        }
+    }
+
+    private void runDeploymentProcessor(IArtifact artifact) throws GeneralDOAException {
         // looking for artifact properties file
+        File artifactFile = null;
+        try {
+            artifactFile = File.createTempFile("deploy-", ".tmp");
+            JarFile jarFile = new JarFile(FileUtils.copy(artifact.getArtifactFileStream(), artifactFile));
+        } catch (Exception e) {
+            throw new GeneralDOAException(e);
+        }
         Properties artifactProperties = new Properties();
         InputStream artifactPropertiesStream = null;
         try {
-            artifactPropertiesStream = findJarEntry(artifactFile, new ArtifactPropertiesMatcher());
+            artifactPropertiesStream = JarUtils
+                    .findJarEntry(artifactFile, new ArtifactPropertiesMatcher());
             if (artifactPropertiesStream == null) {
                 LOG.debug(MessageFormat
-                        .format("No artifact properties found for deployment file: {0}",
-                                artifactFile.getAbsolutePath()));
+                        .format("No artifact properties found for artifact file: {0}", artifact.getArtifactFileName()));
             } else {
                 artifactProperties.load(artifactPropertiesStream);
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new GeneralDOAException(e);
         }
-
-        IArtifact newArtifact = this.deployArtifact(artifactFile, artifactProperties);
 
         // running deployment processor
         String rootLocation = artifactProperties.getProperty(ARTIFACT_ROOT, ARTIFACT_ROOT_DEFAULT);
         IEntitiesContainer deploymentRoot = getDeploymentRoot(doa, rootLocation);
         if (deploymentRoot == null) {
             LOG.error(String.format("Unable to find deployment root: [%s]", rootLocation));
-            return null;
+            return;
         }
         IDeploymentProcessor processor = (IDeploymentProcessor) doa.instantiateObject(artifactProperties
                 .getProperty(ARTIFACT_PROCESSOR, ARTIFACT_PROCESSOR_DEFAULT));
         if (processor != null) {
             LOG.debug(String.format("Running deployment processor: %s", processor.getClass()));
             processor.setDoa(doa);
-            processor.setArtifact(newArtifact);
+            processor.setArtifact(artifact);
             try {
                 processor.process(artifactFile, deploymentRoot);
             } catch (Exception e) {
                 throw new GeneralDOAException(e);
             }
         }
-        return newArtifact;
     }
 
     private IEntitiesContainer getDeploymentRoot(IDOA doa, String rootLocation) {

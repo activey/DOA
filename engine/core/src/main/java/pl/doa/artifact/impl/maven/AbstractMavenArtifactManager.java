@@ -8,11 +8,8 @@ import pl.doa.GeneralDOAException;
 import pl.doa.IDOA;
 import pl.doa.artifact.IArtifact;
 import pl.doa.artifact.MavenDescriptorMatcher;
-import pl.doa.artifact.deploy.IDeploymentProcessor;
 import pl.doa.artifact.impl.AbstractArtifactManager;
 import pl.doa.artifact.impl.maven.exclusion.PropertiesExclusionsReader;
-import pl.doa.container.IEntitiesContainer;
-import pl.doa.impl.EntityLocationIterator;
 
 import java.io.File;
 import java.io.IOException;
@@ -37,7 +34,7 @@ public abstract class AbstractMavenArtifactManager extends AbstractArtifactManag
     protected abstract IMavenResolver getMavenResolver();
 
     @Override
-    protected IArtifact deployArtifact(File artifactFile, Properties artifactProperties) throws GeneralDOAException {
+    protected IArtifact resolveArtifact(File artifactFile) throws GeneralDOAException {
         // looking for maven pom.xml
         InputStream mavenDescriptor;
         try {
@@ -59,12 +56,12 @@ public abstract class AbstractMavenArtifactManager extends AbstractArtifactManag
         } catch (Exception e) {
             throw new GeneralDOAException(e);
         }
-        return deployArtifact(mavenArtifactModel, artifactFile);
+        return createArtifact(mavenArtifactModel, artifactFile);
     }
 
-    private IArtifact deployArtifact(Model mavenArtifactModel, File artifactFile) throws GeneralDOAException {
+    private IArtifact createArtifact(Model mavenArtifactModel, File artifactFile) throws GeneralDOAException {
         if (artifactFile == null || !artifactFile.exists()) {
-            LOG.error("Unable to find artifact file, cancelling deployment");
+            LOG.error("Unable to find artifact file, resolving canceled");
             return null;
         }
         IArtifact newArtifact = createArtifact(mavenArtifactModel.getGroupId(), mavenArtifactModel.getArtifactId(),
@@ -126,7 +123,7 @@ public abstract class AbstractMavenArtifactManager extends AbstractArtifactManag
                 Model dependencyModel = dependencyResolver.resolveArtifactModel(artifactDependency);
                 File dependencyFile = dependencyResolver.resolveArtifactFile(artifactDependency);
 
-                dependendArtifact = deployArtifact(dependencyModel, dependencyFile);
+                dependendArtifact = createArtifact(dependencyModel, dependencyFile);
                 if (dependendArtifact != null) {
                     artifact.addDependency(dependendArtifact);
                 } else {
@@ -184,8 +181,4 @@ public abstract class AbstractMavenArtifactManager extends AbstractArtifactManag
             exclusionList.add(artifactExclusion);
         }
     }
-
-
-
-
 }

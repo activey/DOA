@@ -23,4 +23,18 @@ public class JarUtils {
         }
         return null;
     }
+
+    public static InputStream findJarEntry(InputStream dataStream, IJarEntryMatcher entryMatcher)
+            throws IOException, FileUtilsErrorException {
+        File tempFile = File.createTempFile("deploy-",".tmp");
+        JarFile jarFile = new JarFile(FileUtils.copy(dataStream, tempFile));
+        Enumeration<JarEntry> entries = jarFile.entries();
+        while (entries.hasMoreElements()) {
+            JarEntry jarEntry = entries.nextElement();
+            if (entryMatcher.entryMatch(jarEntry)) {
+                return jarFile.getInputStream(jarEntry);
+            }
+        }
+        return null;
+    }
 }

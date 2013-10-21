@@ -602,7 +602,7 @@ public abstract class AbstractArtifactManagerOld
             throw new GeneralDOAException(e1);
         }
         byte[] fileContent = fileContentStream.toByteArray();
-        artifact = doa.createArtifact(artifactFileName, Type.XML);
+        artifact = doa.resolveArtifact(artifactFileName, Type.XML);
         artifact.setArtifactFileName(artifactFileName);
         artifact.setArtifactResourceBytes(fileContent);
         artifact.setVersion("" + new Date().getTime());
