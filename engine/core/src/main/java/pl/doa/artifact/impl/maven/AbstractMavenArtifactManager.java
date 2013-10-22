@@ -81,9 +81,6 @@ public abstract class AbstractMavenArtifactManager extends AbstractArtifactManag
             }
             throw new GeneralDOAException("Some of dependencies were not resolved!");
         }
-
-        // running deployment processor
-
         return newArtifact;
     }
 

@@ -23,6 +23,8 @@
         <module>json-entity-mapper</module>
         <module>xml-templates</module>
         <module>wicket-data-wrapper</module>
+        <module>renderer-json</module>
+        <module>archiver</module>
     </modules>
 
 </project>

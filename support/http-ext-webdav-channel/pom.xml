@@ -59,7 +59,20 @@
         <dependency>
             <groupId>io.milton</groupId>
             <artifactId>milton-server-ce</artifactId>
-
+            <exclusions>
+                <exclusion>
+                    <groupId>io.milton</groupId>
+                    <artifactId>milton-mail-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>io.milton</groupId>
+                    <artifactId>milton-mail-server</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.ftpserver</groupId>
+                    <artifactId>ftplet-api</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>

@@ -29,6 +29,7 @@
         <org.doa.support.http-tomcat-channel.version>0.0.1</org.doa.support.http-tomcat-channel.version>
         <org.doa.support.wicket-data-wrapper.version>0.0.1</org.doa.support.wicket-data-wrapper.version>
         <org.doa.support.http-ext-webdav-channel.version>0.0.1</org.doa.support.http-ext-webdav-channel.version>
+        <org.doa.support.renderer-json.version>0.0.1</org.doa.support.renderer-json.version>
         <org.doa.engine.core.version>0.0.1</org.doa.engine.core.version>
         <org.doa.environment.version>0.0.1</org.doa.environment.version>
         <org.doa.environment.standalone.version>0.0.1</org.doa.environment.standalone.version>
@@ -168,6 +169,12 @@
                 <groupId>org.doa.support</groupId>
                 <artifactId>json-entity-mapper</artifactId>
                 <version>${org.doa.support.json-entity-mapper.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.doa.support</groupId>
+                <artifactId>renderer-json</artifactId>
+                <version>${org.doa.support.renderer-json.version}</version>
             </dependency>
 
             <dependency>

@@ -12,28 +12,24 @@ import org.apache.ivy.core.report.DownloadStatus;
 import org.apache.ivy.core.resolve.DownloadOptions;
 import org.apache.ivy.core.resolve.ResolvedModuleRevision;
 import org.apache.ivy.core.settings.IvySettings;
-import org.apache.ivy.plugins.resolver.ChainResolver;
-import org.apache.ivy.plugins.resolver.FileSystemResolver;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Model;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import pl.doa.artifact.deployment.IArtifactManager;
 import pl.doa.artifact.impl.ArtifactDeploymentListener;
 
 import java.io.File;
 
 public class IvyMavenResolver implements IMavenResolver {
 
+    public static final String RESOLVER_NAME = "chain";
+
     private final static Logger LOG = LoggerFactory.getLogger(IvyMavenResolver.class);
 
-    private final IArtifactManager artifactManager;
     private final String cacheDirectory;
-    private ChainResolver chainResolver;
     private Ivy ivy;
 
-    public IvyMavenResolver(IArtifactManager artifactManager, String cacheDirectory) {
-        this.artifactManager = artifactManager;
+    public IvyMavenResolver(String cacheDirectory) {
         this.cacheDirectory = cacheDirectory;
 
         // initializing ivy repository
@@ -44,29 +40,14 @@ public class IvyMavenResolver implements IMavenResolver {
         // initializing Ivy
         IvySettings settings = new IvySettings();
         settings.setDefaultCache(new File(this.cacheDirectory));
-        chainResolver = new ChainResolver();
-        chainResolver.setName("chain");
-        settings.addResolver(chainResolver);
-        settings.setDefaultResolver("chain");
+
         this.ivy = Ivy.newInstance(settings);
         EventManager eventManager = ivy.getEventManager();
         eventManager.addIvyListener(new ArtifactDeploymentListener());
+        settings.addResolver(new IvyDependencyResolver(RESOLVER_NAME, eventManager, settings));
+        settings.setDefaultResolver(RESOLVER_NAME);
 
-        // setting default repositories
-        FileSystemResolver fsResolver = new FileSystemResolver();
-        fsResolver.setEventManager(eventManager);
-        fsResolver.setSettings(settings);
-        fsResolver.setName("local-maven-repo");
-        fsResolver.setM2compatible(true);
-        fsResolver.setLocal(true);
-        fsResolver.setCheckconsistency(false);
-        fsResolver
-                .addArtifactPattern(System.getProperty("user.home")
-                        + "/.m2/repository/[organisation]/[module]/[revision]/[module]-[revision](-[classifier]).jar");
-        fsResolver
-                .addIvyPattern(System.getProperty("user.home")
-                        + "/.m2/repository/[organisation]/[module]/[revision]/[module]-[revision](-[classifier]).pom");
-        chainResolver.add(fsResolver);
+        ivy.bind();
     }
 
     private ResolvedModuleRevision resolveRevision(Dependency dependency) {

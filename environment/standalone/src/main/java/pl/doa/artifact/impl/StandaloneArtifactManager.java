@@ -45,12 +45,12 @@ import org.apache.commons.configuration.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pl.doa.IDOA;
-import pl.doa.artifact.IDirectoryListener;
 import pl.doa.artifact.DirectoryMonitor;
 import pl.doa.artifact.IArtifact;
+import pl.doa.artifact.IDirectoryListener;
+import pl.doa.artifact.impl.maven.AbstractMavenArtifactManager;
 import pl.doa.artifact.impl.maven.IMavenResolver;
 import pl.doa.artifact.impl.maven.IvyMavenResolver;
-import pl.doa.artifact.impl.maven.AbstractMavenArtifactManager;
 import pl.doa.jvm.DOAURLHandlerFactory;
 
 import java.io.File;
@@ -110,7 +110,7 @@ public class StandaloneArtifactManager extends AbstractMavenArtifactManager {
         }
 
         // starting up dependency resolver
-        this.dependencyResolver = new IvyMavenResolver(this, getCacheDirectory());
+        this.dependencyResolver = new IvyMavenResolver(getCacheDirectory());
     }
 
     @Override

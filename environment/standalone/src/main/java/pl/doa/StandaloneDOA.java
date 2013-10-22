@@ -46,7 +46,6 @@ package pl.doa;
 
 import org.apache.commons.configuration.Configuration;
 import pl.doa.artifact.impl.StandaloneArtifactManager;
-import pl.doa.artifact.impl.StandaloneArtifactManagerOld;
 import pl.doa.entity.IEntityAttribute;
 import pl.doa.entity.startable.impl.StandaloneStartableEntityManager;
 import pl.doa.impl.AbstractBootstrapDOA;

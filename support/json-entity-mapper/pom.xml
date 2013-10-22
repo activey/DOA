@@ -29,7 +29,6 @@
         </plugins>
     </build>
     <dependencies>
-
         <dependency>
             <groupId>org.doa</groupId>
             <artifactId>api</artifactId>

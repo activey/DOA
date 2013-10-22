@@ -2,9 +2,11 @@ package pl.doa.artifact.impl.maven;
 
 import org.apache.ivy.core.module.descriptor.Artifact;
 import org.apache.ivy.core.module.descriptor.DependencyDescriptor;
+import org.apache.ivy.core.module.descriptor.ExcludeRule;
 import org.apache.ivy.core.module.descriptor.ModuleDescriptor;
 import org.apache.ivy.core.module.id.ModuleRevisionId;
 import org.apache.maven.model.Dependency;
+import org.apache.maven.model.Exclusion;
 import org.apache.maven.model.Model;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,6 +53,13 @@ public class IvyMavenModel extends Model {
             } else {
                 dependency.setScope(configuration);
             }
+
+            // collecting exclusions
+            ExcludeRule[] excludeRules = moduleDependency.getAllExcludeRules();
+            for (ExcludeRule excludeRule : excludeRules) {
+                dependency.addExclusion(new IvyExclusion(excludeRule));
+            }
+
             addDependency(dependency);
         }
     }
