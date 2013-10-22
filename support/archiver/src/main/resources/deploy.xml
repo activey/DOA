@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<deploy xmlns="http://doaplatform.org/deploy" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://doaplatform.org/deploy http://doaplatform.org/deploy">
+
+	<container name="archiver">
+		<definition name="archive_input" var="archive_input">
+			<listField name="sourceContainers" dataType="reference" required="true" />
+			<stringField name="archiveName" required="true" />
+			<referenceField name="destinationContainer"
+				entityType="pl.doa.container.IEntitiesContainer" required="true" />
+		</definition>
+
+		<definition name="archive_output" var="archive_output">
+			<referenceField name="archiveResource"
+				entityType="pl.doa.container.IEntitiesContainer" />
+			<longField name="archiveSize" />
+		</definition>
+
+		<service name="archive" inputDefinition="#archive_input"
+			logicClass="pl.doa.archive.ArchiveService">
+			<possibleOutput definition="#archive_output" />
+		</service>
+	</container>
+
+</deploy>
