@@ -76,13 +76,13 @@ public abstract class AbstractServiceDefinition extends AbstractEntity
     }
 
     public final IRunningService executeService(IDocument input, IAgent runAs,
-                                                boolean asynchronous) throws GeneralDOAException {
-        return PerformanceProfiler.runProfiled(new ExecuteServiceAction(doa,
+            boolean asynchronous) throws GeneralDOAException {
+        return PerformanceProfiler.runProfiled(new ExecuteServiceAction(getDoa(),
                 this, input, runAs, asynchronous));
     }
 
     public final IRunningService executeService(IDocument input,
-                                                boolean asynchronous) throws GeneralDOAException {
+            boolean asynchronous) throws GeneralDOAException {
         return executeService(input, null, asynchronous);
     }
 

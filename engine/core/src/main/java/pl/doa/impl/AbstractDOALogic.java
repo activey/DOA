@@ -62,15 +62,12 @@ import pl.doa.entity.ITransactionCallback;
 import pl.doa.entity.evaluator.EntityTypeEvaluator;
 import pl.doa.entity.sort.IEntitiesSortComparator;
 import pl.doa.entity.startable.IStartableEntity;
-import pl.doa.jvm.DOAClassLoader;
 import pl.doa.resource.IStaticResource;
 import pl.doa.resource.impl.DetachedStaticResource;
 import pl.doa.service.IRunningService;
 import pl.doa.service.IServiceDefinition;
 import pl.doa.service.impl.DetachedRunningService;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -83,7 +80,6 @@ public abstract class AbstractDOALogic implements IDOALogic {
     private final static Logger log = LoggerFactory
             .getLogger(AbstractDOALogic.class);
 
-    private DOAClassLoader classLoader;
 
     protected IDOA doa;
 
@@ -116,10 +112,10 @@ public abstract class AbstractDOALogic implements IDOALogic {
             IServiceDefinition serviceDefinition);
 
     protected abstract IDocument createDocumentImpl(String name,
-                                                    IDocumentDefinition definition) throws GeneralDOAException;
+            IDocumentDefinition definition) throws GeneralDOAException;
 
     public final IDocument createDocument(String name,
-                                          IDocumentDefinition definition, IEntitiesContainer container)
+            IDocumentDefinition definition, IEntitiesContainer container)
             throws GeneralDOAException {
         if (definition == null) {
             throw new GeneralDOAException("Document definition is required!");
@@ -226,7 +222,7 @@ public abstract class AbstractDOALogic implements IDOALogic {
 
     @Override
     public final IStaticResource createStaticResource(String name,
-                                                      String mimeType) throws GeneralDOAException {
+            String mimeType) throws GeneralDOAException {
         DetachedStaticResource resource =
                 new DetachedStaticResource(doa, name, mimeType);
         return resource;
@@ -275,12 +271,10 @@ public abstract class AbstractDOALogic implements IDOALogic {
         return found;
     }
 
-    protected abstract IEntity lookupEntityByLocation(
-            EntityLocationIterator entityLocation);
+    protected abstract IEntity lookupEntityByLocation(EntityLocationIterator entityLocation);
 
     @Override
-    public final IEntity lookupEntityFromLocation(String fromLocation,
-                                                  IEntityEvaluator evaluator, boolean deep) {
+    public final IEntity lookupEntityFromLocation(String fromLocation, IEntityEvaluator evaluator, boolean deep) {
         EntityLocationIterator locationIterator =
                 new EntityLocationIterator(fromLocation);
         return lookupEntityFromLocation(locationIterator, evaluator, deep);
@@ -304,14 +298,14 @@ public abstract class AbstractDOALogic implements IDOALogic {
 
     @Override
     public final IEntity lookup(String startLocation,
-                                IEntityEvaluator returnableEvaluator) {
+            IEntityEvaluator returnableEvaluator) {
         EntityLocationIterator locationIterator =
                 new EntityLocationIterator(startLocation);
         return lookup(locationIterator, returnableEvaluator);
     }
 
     protected abstract IEntity lookup(EntityLocationIterator startLocation,
-                                      IEntityEvaluator returnableEvaluator);
+            IEntityEvaluator returnableEvaluator);
 
     protected abstract void startupImpl() throws Exception;
 
@@ -323,7 +317,6 @@ public abstract class AbstractDOALogic implements IDOALogic {
         } catch (Exception e) {
             throw new GeneralDOAException(e);
         }
-        this.classLoader = new DOAClassLoader(doa, getClass().getClassLoader());
         if (needsTreeInitialization()) {
             log.debug("Starting DOA for the first time, initializing base tree ...");
             doa.doInTransaction(new ITransactionCallback<Object>() {
@@ -375,24 +368,6 @@ public abstract class AbstractDOALogic implements IDOALogic {
                 }
             });
         } else {
-            // wczytywanie artefaktow
-            log.debug("Registering artifacts ...");
-            Iterable<IArtifact> artifacts = getArtifacts(null);
-            for (IArtifact artifact : artifacts) {
-                String artifactUrl =
-                        MessageFormat.format("doa:{0}/{1}",
-                                IDOA.ARTIFACTS_CONTAINER, artifact.getName());
-                log.debug(MessageFormat.format(
-                        "Registering Class Loader artifact: [{0}.{1}.{2}]",
-                        artifact.getArtifactId(), artifact.getGroupId(),
-                        artifact.getVersion()));
-                try {
-                    addURL(new URL(artifactUrl));
-                } catch (MalformedURLException e) {
-                    log.error("", e);
-                }
-            }
-
             // uruchamianie obiektow typu startable
             log.debug("Running startable entities ...");
             Iterable<IEntity> startableEntities =
@@ -457,54 +432,6 @@ public abstract class AbstractDOALogic implements IDOALogic {
         log.debug(MessageFormat.format(
                 "DOA initialized in {0} sec [{1,number,#} ms] ...", totalSec,
                 totalMs));
-    }
-
-    @Override
-    public final Class<?> loadClass(String className,
-                                    boolean separateClassLoader, boolean useContinuations)
-            throws Exception {
-        try {
-            if (separateClassLoader) {
-                DOAClassLoader loader =
-                        new DOAClassLoader(doa, getClass().getClassLoader());
-                if (useContinuations) {
-                    return loader.loadContinuableClass(className);
-                } else {
-                    return Class.forName(className, false, loader);
-                }
-            }
-            return Class.forName(className, false, classLoader);
-        } catch (ClassNotFoundException e) {
-            log.error("", e);
-            return null;
-        }
-    }
-
-    @Override
-    public Class<?> loadClass(String className, boolean separateClassLoader,
-                              IEntityEvaluator artifactEvaluator) throws Exception {
-        return loadClass(className, separateClassLoader, false);
-    }
-
-    @Override
-    public Class<?> loadClass(String className, boolean separateClassLoader)
-            throws Exception {
-        return loadClass(className, separateClassLoader, null);
-    }
-
-    @Override
-    public Class<?> loadClass(String className) {
-        try {
-            return Class.forName(className, false, classLoader);
-        } catch (ClassNotFoundException e) {
-            log.error("", e);
-            return null;
-        }
-    }
-
-    @Override
-    public void addURL(URL url) {
-        classLoader.addURL(url);
     }
 
     @Override

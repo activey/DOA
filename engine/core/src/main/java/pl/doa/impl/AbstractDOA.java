@@ -78,7 +78,6 @@ import pl.doa.utils.profile.impl.ProfileAgentAction;
 
 import java.io.InputStream;
 import java.lang.reflect.Field;
-import java.net.URL;
 import java.text.MessageFormat;
 import java.util.UUID;
 
@@ -90,8 +89,7 @@ public abstract class AbstractDOA extends AbstractStartableEntity implements
 
     private final static ThreadLocal<Long> agentId = new ThreadLocal<Long>();
     private final static ThreadLocal<String> txId = new ThreadLocal<String>();
-    private final static Logger log = LoggerFactory
-            .getLogger(AbstractDOA.class);
+    private final static Logger log = LoggerFactory.getLogger(AbstractDOA.class);
 
     public AbstractDOA(IDOA doa) {
         super(doa);
@@ -503,68 +501,6 @@ public abstract class AbstractDOA extends AbstractStartableEntity implements
                 start, howMany, comparator, customEvaluator);
     }
 
-    public final Object instantiateObject(String className) {
-        return instantiateObject(className, true);
-    }
-
-    public final Object instantiateObject(String className,
-            boolean separateClassLoader) {
-        return instantiateObject(className, separateClassLoader, null);
-    }
-
-    @Override
-    public final Object instantiateObject(String className,
-            boolean separateClassLoader, boolean useContinuations) {
-        try {
-            if (getDoa().isRunning(this)) {
-                Class<?> clazz = getLogicInstance().loadClass(className,
-                        separateClassLoader, useContinuations);
-                Object obj = clazz.newInstance();
-                preprocessClass(clazz, obj);
-                return obj;
-            }
-
-            log.error(MessageFormat
-                    .format("DOA with id = [{0}] is not started yet, using system classloader",
-                            getId()));
-            Class<?> loadedClass = getClass().getClassLoader().loadClass(
-                    className);
-            Object createdObject = loadedClass.newInstance();
-            preprocessClass(loadedClass, createdObject);
-            return createdObject;
-        } catch (Exception e) {
-            log.error("", e);
-            return null;
-        }
-    }
-
-    @Override
-    public final Object instantiateObject(String className,
-            boolean separateClassLoader, IEntityEvaluator artifactEvaluator) {
-        try {
-            if (getDoa().isRunning(this)) {
-                Class<?> clazz = getLogicInstance().loadClass(className,
-                        separateClassLoader, artifactEvaluator);
-                Object obj = clazz.newInstance();
-                preprocessClass(clazz, obj);
-                return obj;
-            }
-
-            log.error(MessageFormat
-                    .format("DOA with id = [{0}] is not started yet, using system classloader",
-                            getId()));
-
-            Class<?> loadedClass = Class.forName(className, false, Thread
-                    .currentThread().getContextClassLoader());
-            Object createdObject = loadedClass.newInstance();
-            preprocessClass(loadedClass, createdObject);
-            return createdObject;
-        } catch (Exception e) {
-            log.error("", e);
-            return null;
-        }
-    }
-
     private void preprocessClass(Class<?> clazz, Object obj) {
         Field[] fields = clazz.getDeclaredFields();
         for (Field field : fields) {
@@ -612,11 +548,6 @@ public abstract class AbstractDOA extends AbstractStartableEntity implements
             return destContainer.addEntity(entity);
         }
         return null;
-    }
-
-    @Override
-    public void addURL(URL url) {
-        getLogicInstance().addURL(url);
     }
 
     @Override
@@ -919,20 +850,15 @@ public abstract class AbstractDOA extends AbstractStartableEntity implements
     @Override
     public IArtifact deployArtifact(String artifactFileName,
             byte[] artifactData) throws GeneralDOAException {
-        if (doa != null) {
-            return doa.deployArtifact(artifactFileName, artifactData);
-        }
-        return null;
+        return getDoa().deployArtifact(artifactFileName, artifactData);
+
     }
 
     @Override
     public IArtifact deployArtifact(String artifactFileName,
             InputStream artifactData)
             throws GeneralDOAException {
-        if (doa != null) {
-            return doa.deployArtifact(artifactFileName, artifactData);
-        }
-        return null;
+        return getDoa().deployArtifact(artifactFileName, artifactData);
     }
 
     @Override
@@ -947,84 +873,56 @@ public abstract class AbstractDOA extends AbstractStartableEntity implements
 
     @Override
     public void undeployArtifact(IArtifact artifact) throws GeneralDOAException {
-        if (doa != null) {
-            doa.undeployArtifact(artifact);
-            return;
-        }
+        getDoa().undeployArtifact(artifact);
+        return;
     }
 
     @Override
     public IServiceDefinitionLogic getRunning(IRunningService runningService) {
-        if (doa != null) {
-            return doa.getRunning(runningService);
-        }
-        return null;
+        return getDoa().getRunning(runningService);
+
     }
 
     @Override
     public IServiceDefinitionLogic getRunning(long runningServiceUUID) {
-        if (doa != null) {
-            return doa.getRunning(runningServiceUUID);
-        }
-        return null;
+        return getDoa().getRunning(runningServiceUUID);
     }
 
     @Override
     public IStartableEntityLogic startup(IStartableEntity startableEntity)
             throws GeneralDOAException {
-        if (doa != null) {
-            return doa.startup(startableEntity);
-        }
-        return null;
+        return getDoa().startup(startableEntity);
     }
 
     @Override
     public void shutdown(IStartableEntity startableEntity)
             throws GeneralDOAException {
-        if (doa != null) {
-            doa.shutdown(startableEntity);
-            return;
-        }
+        getDoa().shutdown(startableEntity);
     }
 
     @Override
     public IStartableEntityLogic getRunning(IStartableEntity startableEntity) {
-        if (doa != null) {
-            return doa.getRunning(startableEntity);
-        }
-        return null;
+        return getDoa().getRunning(startableEntity);
     }
 
     @Override
     public boolean isRunning(IStartableEntity startableEntity) {
-        if (doa != null) {
-            return doa.isRunning(startableEntity);
-        }
-        return false;
+        return getDoa().isRunning(startableEntity);
     }
 
     @Override
     public long storeOrUpdate(IStaticResource resource, InputStream dataStream)
             throws Exception {
-        if (doa != null) {
-            return doa.storeOrUpdate(resource, dataStream);
-        }
-        return 0;
+        return getDoa().storeOrUpdate(resource, dataStream);
     }
 
     @Override
     public boolean removeFileStream(IStaticResource resource) throws Exception {
-        if (doa != null) {
-            return doa.removeFileStream(resource);
-        }
-        return false;
+        return getDoa().removeFileStream(resource);
     }
 
     @Override
     public InputStream retrieve(IStaticResource resource) throws Exception {
-        if (doa != null) {
-            return doa.retrieve(resource);
-        }
-        return null;
+        return getDoa().retrieve(resource);
     }
 }

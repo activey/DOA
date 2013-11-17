@@ -45,7 +45,6 @@
 package pl.doa.impl.neo4j;
 
 import org.neo4j.graphdb.*;
-import org.neo4j.graphdb.event.TransactionEventHandler;
 import org.neo4j.graphdb.traversal.*;
 import org.neo4j.graphdb.traversal.Traverser;
 import org.neo4j.kernel.EmbeddedGraphDatabase;
@@ -707,7 +706,7 @@ public class NeoDOALogic extends AbstractDOALogic {
                 startableEntity.getAttribute(PROP_NEO_STORE_DIR);
         this.neo = new EmbeddedGraphDatabase(storeDirectory, params);
 
-        String transactionLogger = startableEntity.getAttribute(PROP_NEO_TRANSACTION_LOGGER);
+        /*String transactionLogger = startableEntity.getAttribute(PROP_NEO_TRANSACTION_LOGGER);
         if (transactionLogger != null) {
             log.debug("Registering Neo4j transaction logger: " + transactionLogger);
             try {
@@ -717,36 +716,7 @@ public class NeoDOALogic extends AbstractDOALogic {
             } catch (Exception e) {
                 log.error("", e);
             }
-        }
-
-		/*neo.registerTransactionEventHandler(new TransactionEventHandler<String>() {
-
-			@Override
-			public String beforeCommit(TransactionData data) throws Exception {
-				Iterable<Node> nodes = data.createdNodes();
-				for (Node node : nodes) {
-					if (node.hasProperty("_class")) {
-						System.out.println(">>>>>>>>>>>> "
-								+ node.getProperty("_class"));
-					} else {
-						System.out.println(">>>>>>>>>>>> " + node.getId());
-					}
-
-				}
-				return null;
-			}
-
-			@Override
-			public void afterCommit(TransactionData data, String state) {
-
-			}
-
-			@Override
-			public void afterRollback(TransactionData data, String state) {
-
-			}
-
-		});*/
+        } */
     }
 
     @Override

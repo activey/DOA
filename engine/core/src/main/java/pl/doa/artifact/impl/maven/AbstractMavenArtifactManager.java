@@ -1,6 +1,9 @@
 package pl.doa.artifact.impl.maven;
 
-import org.apache.maven.model.*;
+import org.apache.maven.model.Dependency;
+import org.apache.maven.model.Exclusion;
+import org.apache.maven.model.Model;
+import org.apache.maven.model.ModelBase;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +20,6 @@ import java.io.InputStream;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
 import static pl.doa.utils.JarUtils.findJarEntry;
 
@@ -64,11 +66,12 @@ public abstract class AbstractMavenArtifactManager extends AbstractArtifactManag
             LOG.error("Unable to find artifact file, resolving canceled");
             return null;
         }
-        IArtifact newArtifact = createArtifact(mavenArtifactModel.getGroupId(), mavenArtifactModel.getArtifactId(),
+        IArtifact newArtifact = createArtifactWithFile(mavenArtifactModel.getGroupId(),
+                mavenArtifactModel.getArtifactId(),
                 mavenArtifactModel.getVersion(), artifactFile);
         newArtifact.setDescription(mavenArtifactModel.getDescription());
 
-        List<Dependency> notResolved = resolveDependencies(mavenArtifactModel, newArtifact);
+        List<Dependency> notResolved = resolveAndDeployDependencies(mavenArtifactModel, newArtifact);
         if (notResolved != null && !notResolved.isEmpty()) {
             LOG.debug(String.format("Not resolved rependencies for artifact [%s.%s.%s]: ",
                     mavenArtifactModel.getGroupId(), mavenArtifactModel.getArtifactId(),
@@ -84,7 +87,7 @@ public abstract class AbstractMavenArtifactManager extends AbstractArtifactManag
         return newArtifact;
     }
 
-    private List<Dependency> resolveDependencies(ModelBase mavenArtifactModel, IArtifact artifact)
+    private List<Dependency> resolveAndDeployDependencies(ModelBase mavenArtifactModel, IArtifact artifact)
             throws GeneralDOAException {
         List<Dependency> notResolved = new ArrayList<Dependency>();
         List<Dependency> artifactDependencies = mavenArtifactModel.getDependencies();
@@ -126,6 +129,8 @@ public abstract class AbstractMavenArtifactManager extends AbstractArtifactManag
                 } else {
                     notResolved.add(artifactDependency);
                 }
+            } else {
+                artifact.addDependency(dependendArtifact);
             }
         }
         return notResolved;

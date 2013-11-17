@@ -159,14 +159,14 @@ public abstract class AbstractEntitiesContainer extends AbstractEntity
             DetachedEntity detached = (DetachedEntity) doaEntity;
             detached.setContainer(this);
             if (publishEvent) {
-                doa.publishEvent(new EntityCreatedEvent(doaEntity, this));
+                getDoa().publishEvent(new EntityCreatedEvent(doaEntity, this));
             }
             return detached.getStoredEntity();
         }
         try {
             IEntity added = addEntityImpl(doaEntity);
             if (publishEvent) {
-                doa.publishEvent(new EntityCreatedEvent(added, this));
+                getDoa().publishEvent(new EntityCreatedEvent(added, this));
             }
             return added;
         } catch (Throwable t) {
@@ -177,27 +177,27 @@ public abstract class AbstractEntitiesContainer extends AbstractEntity
     @Override
     public final IEntity lookupForEntity(IEntityEvaluator evaluator,
                                          boolean lookupDeep) {
-        return doa.lookupEntityFromLocation(getLocation(), evaluator,
+        return getDoa().lookupEntityFromLocation(getLocation(), evaluator,
                 lookupDeep);
     }
 
     @Override
     public final Iterable<IEntity> lookupForEntities(
             IEntityEvaluator evaluator, boolean lookupDeep) {
-        return doa.lookupEntitiesFromLocation(getLocation(), evaluator,
+        return getDoa().lookupEntitiesFromLocation(getLocation(), evaluator,
                 lookupDeep);
     }
 
     public final IEntity lookup(String startLocation,
                                 IEntityEvaluator returnableEvaluator) {
-        return doa.lookup(startLocation, returnableEvaluator);
+        return getDoa().lookup(startLocation, returnableEvaluator);
     }
 
     @Override
     public final Iterable<? extends IEntity> lookupEntitiesByLocation(
             String entityLocation, int start, int howMany) {
         if (entityLocation.startsWith("/")) {
-            return doa.lookupEntitiesByLocation(entityLocation, start, howMany);
+            return getDoa().lookupEntitiesByLocation(entityLocation, start, howMany);
         }
         String relativeLocation = entityLocation;
         if (relativeLocation.startsWith("./")) {
@@ -205,14 +205,14 @@ public abstract class AbstractEntitiesContainer extends AbstractEntity
         }
         String location =
                 MessageFormat.format("{0}{1}", getLocation(), relativeLocation);
-        return doa.lookupEntitiesByLocation(location, start, howMany);
+        return getDoa().lookupEntitiesByLocation(location, start, howMany);
     }
 
     @Override
     public final Iterable<? extends IEntity> lookupEntitiesByLocation(
             String entityLocation) {
         if (entityLocation.startsWith("/")) {
-            return doa.lookupEntitiesByLocation(entityLocation);
+            return getDoa().lookupEntitiesByLocation(entityLocation);
         }
         String relativeLocation = entityLocation;
         if (relativeLocation.startsWith("./")) {
@@ -220,14 +220,14 @@ public abstract class AbstractEntitiesContainer extends AbstractEntity
         }
         String location =
                 MessageFormat.format("{0}{1}", getLocation(), relativeLocation);
-        return doa.lookupEntitiesByLocation(location);
+        return getDoa().lookupEntitiesByLocation(location);
     }
 
     @Override
     public Iterable<? extends IEntity> lookupEntitiesByLocation(
             String entityLocation, IEntityEvaluator evaluator) {
         if (entityLocation.startsWith("/")) {
-            return doa.lookupEntitiesByLocation(entityLocation, evaluator);
+            return getDoa().lookupEntitiesByLocation(entityLocation, evaluator);
         }
         String relativeLocation = entityLocation;
         if (relativeLocation.startsWith("./")) {
@@ -235,7 +235,7 @@ public abstract class AbstractEntitiesContainer extends AbstractEntity
         }
         String location =
                 MessageFormat.format("{0}{1}", getLocation(), relativeLocation);
-        return doa.lookupEntitiesByLocation(location, evaluator);
+        return getDoa().lookupEntitiesByLocation(location, evaluator);
     }
 
     @Override
@@ -244,7 +244,7 @@ public abstract class AbstractEntitiesContainer extends AbstractEntity
             IEntitiesSortComparator<? extends IEntity> comparator,
             IEntityEvaluator customEvaluator) {
         if (entityLocation.startsWith("/")) {
-            return doa.lookupEntitiesByLocation(entityLocation, start, howMany,
+            return getDoa().lookupEntitiesByLocation(entityLocation, start, howMany,
                     comparator, customEvaluator);
         }
         String relativeLocation = entityLocation;
@@ -253,20 +253,20 @@ public abstract class AbstractEntitiesContainer extends AbstractEntity
         }
         String location =
                 MessageFormat.format("{0}{1}", getLocation(), relativeLocation);
-        return doa.lookupEntitiesByLocation(location, start, howMany,
+        return getDoa().lookupEntitiesByLocation(location, start, howMany,
                 comparator, customEvaluator);
     }
 
     public final IEntity lookupEntityByLocation(String entityLocation) {
         String location =
                 MessageFormat.format("{0}{1}", getLocation(), entityLocation);
-        return doa.lookupEntityByLocation(location);
+        return getDoa().lookupEntityByLocation(location);
     }
 
     public final IEntity lookupEntityFromLocation(String fromLocation,
                                                   IEntityEvaluator evaluator, boolean lookupDeep) {
         /*if (fromLocation.startsWith("/")) {
-			return doa.lookupEntityFromLocation(fromLocation, evaluator,
+			return getDoa().lookupEntityFromLocation(fromLocation, evaluator,
 					lookupDeep);
 		}*/
         String relativeLocation = fromLocation;
@@ -275,14 +275,14 @@ public abstract class AbstractEntitiesContainer extends AbstractEntity
         }
         String location =
                 MessageFormat.format("{0}{1}", getLocation(), relativeLocation);
-        return doa.lookupEntityFromLocation(location, evaluator, lookupDeep);
+        return getDoa().lookupEntityFromLocation(location, evaluator, lookupDeep);
     }
 
     @Override
     public final Iterable<IEntity> lookupEntitiesFromLocation(
             String fromLocation, IEntityEvaluator evaluator, boolean lookupDeep) {
         if (fromLocation.startsWith("/")) {
-            return doa.lookupEntitiesFromLocation(fromLocation, evaluator,
+            return getDoa().lookupEntitiesFromLocation(fromLocation, evaluator,
                     lookupDeep);
         }
         String relativeLocation = fromLocation;
@@ -291,7 +291,7 @@ public abstract class AbstractEntitiesContainer extends AbstractEntity
         }
         String location =
                 MessageFormat.format("{0}{1}", getLocation(), relativeLocation);
-        return doa.lookupEntitiesFromLocation(location, evaluator, lookupDeep);
+        return getDoa().lookupEntitiesFromLocation(location, evaluator, lookupDeep);
     }
 
     @Override

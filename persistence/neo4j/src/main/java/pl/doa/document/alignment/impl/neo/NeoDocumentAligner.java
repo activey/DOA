@@ -74,7 +74,6 @@ public class NeoDocumentAligner extends AbstractDocumentAligner implements
     private final static Logger log = LoggerFactory
             .getLogger(NeoDocumentAligner.class);
     private static final String PROP_LOGIC_CLASS = "logicClass";
-    private AbstractDocumentAligner alignerImpl;
 
     private NeoEntityDelegator delegator = null;
 
@@ -117,7 +116,7 @@ public class NeoDocumentAligner extends AbstractDocumentAligner implements
                         .getNode().getSingleRelationship(
                         DOARelationship.HAS_FROM_DEFINITION,
                         Direction.OUTGOING).getEndNode();
-        return new NeoDocumentDefinition(doa, node);
+        return new NeoDocumentDefinition(getDoa(), node);
     }
 
     /*
@@ -157,7 +156,7 @@ public class NeoDocumentAligner extends AbstractDocumentAligner implements
                 delegator.getNode().getSingleRelationship(
                         DOARelationship.HAS_TO_DEFINITION, Direction.OUTGOING)
                         .getEndNode();
-        return new NeoDocumentDefinition(doa, node);
+        return new NeoDocumentDefinition(getDoa(), node);
     }
 
     /*

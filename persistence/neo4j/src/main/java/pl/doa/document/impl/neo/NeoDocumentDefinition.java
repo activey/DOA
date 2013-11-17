@@ -135,7 +135,7 @@ public class NeoDocumentDefinition extends AbstractDocumentDefinition implements
             throw new GeneralDOAException("Field with name [" + fieldName
                     + "] is already registered!");
         NeoDocumentFieldType newField =
-                new NeoDocumentFieldType(doa, delegator.getNode().getGraphDatabase());
+                new NeoDocumentFieldType(getDoa(), delegator.getNode().getGraphDatabase());
         newField.setName(fieldName);
         newField.setRequired(required);
         newField.setFieldDataType(dataType);
@@ -252,7 +252,7 @@ public class NeoDocumentDefinition extends AbstractDocumentDefinition implements
         if (fieldNode == null) {
             return null;
         }
-        return NeoDocumentFieldType.createFieldTypeInstance(doa, fieldNode);
+        return NeoDocumentFieldType.createFieldTypeInstance(getDoa(), fieldNode);
     }
 
     /*
@@ -288,7 +288,7 @@ public class NeoDocumentDefinition extends AbstractDocumentDefinition implements
                 new LinkedHashSet<IDocumentFieldType>();
         for (Path path : traverser) {
             Node node = path.endNode();
-            fields.add(NeoDocumentFieldType.createFieldTypeInstance(doa, node));
+            fields.add(NeoDocumentFieldType.createFieldTypeInstance(getDoa(), node));
         }
         return fields.iterator();
     }
@@ -322,7 +322,7 @@ public class NeoDocumentDefinition extends AbstractDocumentDefinition implements
                         Direction.OUTGOING);
         Set<IDocumentFieldType> fields = new HashSet<IDocumentFieldType>();
         for (Node node : traverser) {
-            fields.add(NeoDocumentFieldType.createFieldTypeInstance(doa, node));
+            fields.add(NeoDocumentFieldType.createFieldTypeInstance(getDoa(), node));
         }
         return fields.iterator();
     }
@@ -359,7 +359,7 @@ public class NeoDocumentDefinition extends AbstractDocumentDefinition implements
         Set<IDocumentFieldType> fields = new HashSet<IDocumentFieldType>();
         Collection<Node> nodes = traverser.getAllNodes();
         for (Node node : nodes) {
-            fields.add(NeoDocumentFieldType.createFieldTypeInstance(doa, node));
+            fields.add(NeoDocumentFieldType.createFieldTypeInstance(getDoa(), node));
         }
         return fields.iterator();
     }

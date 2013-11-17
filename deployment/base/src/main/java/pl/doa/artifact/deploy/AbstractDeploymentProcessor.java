@@ -175,7 +175,8 @@ public abstract class AbstractDeploymentProcessor implements IDeploymentProcesso
 
     @Override
     public Object instantiateJavaObject(String value) {
-        return doa.instantiateObject(value);
+        //return doa.instantiateObject(value);
+        return null;
     }
 
     public abstract void deployArtifact(File deployedFile, IEntitiesContainer deploymentRoot) throws Exception;

@@ -57,18 +57,18 @@ public abstract class AbstractDocumentDefinition extends AbstractEntity
     @Override
     public final IDocument createDocumentInstance(String name)
             throws GeneralDOAException {
-        return doa.createDocument(name, this);
+        return getDoa().createDocument(name, this);
     }
 
     @Override
     public final IDocument createDocumentInstance() throws GeneralDOAException {
-        return doa.createDocument(this);
+        return getDoa().createDocument(this);
     }
 
     @Override
     public final IDocument createDocumentInstance(String name,
                                                   IEntitiesContainer container) throws GeneralDOAException {
-        return doa.createDocument(name, this, container);
+        return getDoa().createDocument(name, this, container);
     }
 
     @Override

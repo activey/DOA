@@ -3,17 +3,8 @@
  */
 package pl.doa.servlet.profile;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletResponse;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import pl.doa.GeneralDOAException;
 import pl.doa.IDOA;
 import pl.doa.container.IEntitiesContainer;
@@ -23,11 +14,16 @@ import pl.doa.entity.IEntity;
 import pl.doa.entity.IEntityEvaluator;
 import pl.doa.renderer.IRenderer;
 import pl.doa.renderer.IRenderingContext;
-import pl.doa.renderer.ITemplateFinder;
 import pl.doa.resource.IStaticResource;
-import pl.doa.servlet.renderer.MultiContainerFinder;
 import pl.doa.utils.DataUtils;
 import pl.doa.utils.profile.IProfiledAction;
+
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author activey
@@ -46,8 +42,7 @@ public class RenderResponseAction implements IProfiledAction<Boolean> {
 
     private IRenderer renderer;
 
-    public RenderResponseAction(IDOA doa, HttpServletResponse httpResponse,
-                                IDocument output, IDocument appDocument) {
+    public RenderResponseAction(IDOA doa, HttpServletResponse httpResponse, IDocument output, IDocument appDocument) {
         this.doa = doa;
         this.httpResponse = httpResponse;
         this.output = output;
@@ -55,7 +50,7 @@ public class RenderResponseAction implements IProfiledAction<Boolean> {
     }
 
     private void renderException(final HttpServletResponse response,
-                                 final Throwable throwable) {
+            final Throwable throwable) {
         try {
             renderResponse(response, doa.createExceptionDocument(throwable));
         } catch (GeneralDOAException e) {
@@ -64,7 +59,7 @@ public class RenderResponseAction implements IProfiledAction<Boolean> {
     }
 
     private boolean renderResponse(HttpServletResponse response,
-                                   IDocument document) throws GeneralDOAException {
+            IDocument document) throws GeneralDOAException {
         if (output == null) {
             log.error("Output document is not available!");
             return false;
@@ -96,7 +91,7 @@ public class RenderResponseAction implements IProfiledAction<Boolean> {
                     httpResponse.setContentLength(new Long(responseResource
                             .getContentSize()).intValue());
                     /*
-					 * if (!httpResponse.isCommitted()) {
+                     * if (!httpResponse.isCommitted()) {
 					 * httpResponse.setBufferSize(128); }
 					 */
                     try {
@@ -127,32 +122,10 @@ public class RenderResponseAction implements IProfiledAction<Boolean> {
             }
         }
 
-        // identyfikator szablonu dla renderera
-        long templateResourceId = 0L;
-
         // parametry dla renderera
         Map<String, Object> rendererContextVariables = new HashMap<String, Object>();
 
         String contentType = DEFAULT_CONTENT_TYPE;
-		/*
-		 * Enumeration<String> headerNames = httpRequest.getHeaderNames(); while
-		 * (headerNames.hasMoreElements()) { String headerName = (String)
-		 * headerNames.nextElement(); if (headerName == null) { continue; } if
-		 * ("accept".equalsIgnoreCase(headerName)) { Enumeration<String>
-		 * acceptType = httpRequest .getHeaders(headerName); while
-		 * (acceptType.hasMoreElements()) { String accept = (String)
-		 * acceptType.nextElement(); String[] acceptParts = accept.split(",");
-		 * for (String acceptPart : acceptParts) { if (!"
-		 *//*
-			 * ".equals(acceptPart)) { contentType = acceptPart.trim(); break; }
-			 * } } } // ustalanie parametrow dla renderera na podstawie
-			 * naglowkow if (headerName.startsWith("doa.renderer")) { String
-			 * headerValue = httpRequest.getHeader(headerName); if
-			 * (headerName.equals("doa.renderer.template.id")) { try {
-			 * templateResourceId = Long.parseLong(headerValue); } catch
-			 * (NumberFormatException e) { // do nothing ... } }
-			 * rendererContextVariables.put(headerName, headerValue); } }
-			 */
 
         // szukanie renderera wedlug contentType
         this.renderer = (appDocument == null) ? getRenderer(contentType, doa)
@@ -167,47 +140,11 @@ public class RenderResponseAction implements IProfiledAction<Boolean> {
         IRenderingContext context = renderer.createContext();
         context.setVariables(rendererContextVariables);
 
-        final IDocument toRender = output;
         OutputStream outputStream = null;
         try {
-            long renderedSize = 0L;
             outputStream = httpResponse.getOutputStream();
-            if (templateResourceId > 0) {
-                IEntity entity = doa.lookupByUUID(templateResourceId);
-                if (entity == null || !(entity instanceof IStaticResource)) {
-                    renderException(httpResponse, new GeneralDOAException(
-                            "Unable to find template with id = "
-                                    + templateResourceId));
-                    return false;
-                }
-                IStaticResource templateResource = (IStaticResource) entity;
-                httpResponse.setHeader("Content-Type", renderer.getMimetype());
-                renderedSize = renderer.renderEntity(toRender, outputStream,
-                        templateResource, context);
-            } else {
-                ITemplateFinder templateFinder = null;
-                if (appDocument != null) {
-                    String templateFinderClass = (String) appDocument
-                            .getFieldValue("templateFinder");
-                    if (templateFinderClass != null) {
-                        try {
-                            templateFinder = (ITemplateFinder) doa
-                                    .instantiateObject(templateFinderClass,
-                                            false);
-                        } catch (Exception e) {
-                            log.error("Could not instantinate templateFinder class: "
-                                    + templateFinderClass);
-                        }
-                    }
-                }
-                ITemplateFinder finder = new MultiContainerFinder(
-                        templateFinder, (appDocument == null) ? doa
-                        : appDocument.getContainer());
-                httpResponse.setHeader("Content-Type", renderer.getMimetype());
-                renderedSize = renderer.renderEntity(toRender, outputStream,
-                        finder, context);
-            }
-            httpResponse.setHeader("Content-Length", renderedSize + "");
+            httpResponse.setHeader("Content-Type", renderer.getMimetype());
+            httpResponse.setHeader("Content-Length", renderer.renderEntity(this.output, outputStream) + "");
             httpResponse.setStatus(HttpServletResponse.SC_OK);
             return true;
         } catch (Exception e) {
@@ -241,24 +178,8 @@ public class RenderResponseAction implements IProfiledAction<Boolean> {
         return "RenderResponseAction";
     }
 
-	/*
-	 * private void renderExceptionRaw(final HttpServletResponse response, final
-	 * Throwable throwable) { // tworzenie dokumentu wyjatku PrintWriter writer
-	 * = null; try { response.setContentType("text/plain");
-	 * response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR); writer
-	 * = response.getWriter();
-	 * writer.println(MessageFormat.format("Exception: {0}",
-	 * throwable.getMessage())); writer.println("Stack trace:");
-	 * writer.println("------------"); StackTraceElement[] stackTrace =
-	 * throwable.getStackTrace(); for (StackTraceElement stackTraceElement :
-	 * stackTrace) { writer.println(MessageFormat.format("--- {0}",
-	 * stackTraceElement.toString())); } } catch (IOException e) { log.error("",
-	 * e); } finally { if (writer != null) { writer.flush(); writer.close(); } }
-	 * }
-	 */
-
     private IRenderer getRenderer(final String contentType,
-                                  IEntitiesContainer... lookupContainers) {
+            IEntitiesContainer... lookupContainers) {
         return (IRenderer) doa.lookupEntityFromLocation("/renderers",
                 new IEntityEvaluator() {
 

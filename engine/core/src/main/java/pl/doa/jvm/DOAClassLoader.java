@@ -75,23 +75,16 @@ public class DOAClassLoader extends URLClassLoader {
     private List<URL> urls = new ArrayList<URL>();
 
     public DOAClassLoader(IDOA doa) {
-        this(doa, (ClassLoader) null);
+        this(doa, null);
     }
 
     public DOAClassLoader(IDOA doa, ClassLoader parent) {
-        this(doa, parent, null);
-    }
-
-    public DOAClassLoader(IDOA doa, IEntityEvaluator evaluator) {
-        this(doa, null, evaluator);
-    }
-
-    public DOAClassLoader(IDOA doa, ClassLoader parent,
-                          IEntityEvaluator evaluator) {
         super(new URL[0], parent, new DOAURLHandlerFactory(doa));
         this.doa = doa;
-        log.debug(MessageFormat.format(
-                "Initializing repository class loader, parent: {0}", parent));
+        this.mBytesLoader = new ClassBytesLoader(this);
+    }
+
+    public DOAClassLoader loadArtifacts(IEntityEvaluator evaluator) {
         log.debug("Loading artifacts ...");
         Iterable<IArtifact> artifacts = doa.getArtifacts(evaluator);
         for (IArtifact artifact : artifacts) {
@@ -103,8 +96,7 @@ public class DOAClassLoader extends URLClassLoader {
                 continue;
             }
         }
-
-        this.mBytesLoader = new ClassBytesLoader(this);
+        return this;
     }
 
     public byte[] getClassBytes(String className, boolean reloadAutomatically)
@@ -135,18 +127,18 @@ public class DOAClassLoader extends URLClassLoader {
             if (classBytes == null) {
                 return loadClass(name);
             }
-            PublicByteArrayOutputStream classStream =
-                    new PublicByteArrayOutputStream();
+            PublicByteArrayOutputStream classStream = new PublicByteArrayOutputStream();
             classStream.write(classBytes);
 
-            DOAClassLoader separate = new DOAClassLoader(doa, getClass().getClassLoader());
+            DOAClassLoader separate = new DOAClassLoader(doa, getClass()
+                    .getClassLoader());
             LightWolfEnhancer enhancer = new LightWolfEnhancer(separate);
             int transformResult = enhancer.transform(classStream);
             if (transformResult == 0) {
                 log.warn(MessageFormat
-                        .format("Class [{0}] can not be processed as continuable class! " +
-                                "Make sure that @FlowMethod annotation is used. " +
-                                "Using normal classloader mechanism ...",
+                        .format("Class [{0}] can not be processed as continuable class! "
+                                + "Make sure that @FlowMethod annotation is used. "
+                                + "Using normal classloader mechanism ...",
                                 name));
                 return (loadClass(name, true));
             }
@@ -166,7 +158,8 @@ public class DOAClassLoader extends URLClassLoader {
         return loadClass(name, true);
     }
 
-    public Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
+    public Class<?> loadClass(String name, boolean resolve)
+            throws ClassNotFoundException {
         Class<?> clazz = loadClass0(name, false);
         if (clazz != null && resolve) {
             resolveClass(clazz);
@@ -176,7 +169,7 @@ public class DOAClassLoader extends URLClassLoader {
 
     public Class<?> loadClass0(String name, boolean separateClassLoader)
             throws ClassNotFoundException {
-        //log.debug(MessageFormat.format("Loading class: [{0}]", name));
+        // log.debug(MessageFormat.format("Loading class: [{0}]", name));
         if (separateClassLoader) {
             ClassLoader separate = new DOAClassLoader(doa, this.getParent());
             return separate.loadClass(name);
@@ -226,10 +219,6 @@ public class DOAClassLoader extends URLClassLoader {
         return super.getURLs();
     }
 
-    public IDOA getDoa() {
-        return doa;
-    }
-
     public void setDoa(IDOA doa) {
         this.doa = doa;
     }
@@ -241,9 +230,8 @@ public class DOAClassLoader extends URLClassLoader {
 
     private void registerClassloaderArtifact(IArtifact artifact)
             throws Exception {
-        String artifactUrl =
-                MessageFormat.format("doa:{0}/{1}", IDOA.ARTIFACTS_CONTAINER,
-                        artifact.getName());
+        String artifactUrl = MessageFormat.format("doa:{0}",
+                artifact.getLocation());
         addURL(new URL(artifactUrl));
     }
 }

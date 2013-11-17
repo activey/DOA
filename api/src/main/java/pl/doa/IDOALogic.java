@@ -240,19 +240,6 @@ public interface IDOALogic extends IStartableEntityLogic {
     public <T> T doInTransaction(ITransactionCallback<T> callback,
             ITransactionErrorHandler errorHandler);
 
-    public Class<?> loadClass(String className, boolean separateClassLoader,
-            IEntityEvaluator artifactEvaluator) throws Exception;
-
-    public Class<?> loadClass(String className, boolean separateClassLoader)
-            throws Exception;
-
-    public Class<?> loadClass(String className, boolean separateClassLoader,
-            boolean useContinuations) throws Exception;
-
-    public Class<?> loadClass(String className);
-
-    public void addURL(URL url);
-
     public IEntity lookupByUUID(long entityId);
 
     public int countEntities();

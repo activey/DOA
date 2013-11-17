@@ -44,16 +44,18 @@
  */
 package pl.doa.entity.startable.impl;
 
-import java.text.MessageFormat;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import pl.doa.GeneralDOAException;
 import pl.doa.IDOA;
 import pl.doa.entity.impl.AbstractEntity;
 import pl.doa.entity.startable.IStartableEntity;
 import pl.doa.entity.startable.IStartableEntityLogic;
+import pl.doa.jvm.factory.EntityArtifactDependenciesEvaluator;
+
+import java.text.MessageFormat;
+
+import static pl.doa.jvm.factory.ObjectFactory.instantiateObject;
 
 /**
  * @author activey
@@ -73,28 +75,18 @@ public abstract class AbstractStartableEntity extends AbstractEntity implements
      * @see pl.doa.entity.IStartableEntity#createLogicInstance()
      */
     @Override
-    public final IStartableEntityLogic getRunningInstance()
-            throws GeneralDOAException {
+    public final IStartableEntityLogic getRunningInstance() throws GeneralDOAException {
         IStartableEntityLogic runningLogic = getDoa().getRunning(this);
         if (runningLogic != null && runningLogic.isStartedUp()) {
             return runningLogic;
         }
-        log.debug(MessageFormat.format(
-                "unable to find running instance of [{0}], creating a new one",
-                getLocation()));
+        log.debug(MessageFormat.format("Unable to find running instance of [{0}], creating a new one", getLocation()));
         String logicClass = getLogicClass();
         if (logicClass == null) {
-            throw new GeneralDOAException("logic class name can't be null!");
+            throw new GeneralDOAException("Logic class name can't be null!");
         }
         try {
-            Object logicClassInstance = getDoa().instantiateObject(logicClass);
-            if (!(logicClassInstance instanceof IStartableEntityLogic)) {
-                throw new GeneralDOAException(
-                        "wrong startable entity logic class type!");
-            }
-            IStartableEntityLogic logicInstance =
-                    (IStartableEntityLogic) logicClassInstance;
-            return logicInstance;
+            return instantiateObject(getDoa(), logicClass, new EntityArtifactDependenciesEvaluator(this));
         } catch (Exception e) {
             throw new GeneralDOAException(e);
         }
@@ -121,13 +113,13 @@ public abstract class AbstractStartableEntity extends AbstractEntity implements
         setAutostartImpl(autostart);
     }
 
-    public final void startup() throws GeneralDOAException {
+    public void startup() throws GeneralDOAException {
         if (this instanceof IDOA) {
             IDOA doa = (IDOA) this;
             doa.startup(this);
             return;
         }
-        doa.startup(this);
+        getDoa().startup(this);
     }
 
     public final void shutdown() throws GeneralDOAException {
@@ -136,7 +128,7 @@ public abstract class AbstractStartableEntity extends AbstractEntity implements
             doa.shutdown(this);
             return;
         }
-        doa.shutdown(this);
+        getDoa().shutdown(this);
     }
 
     protected abstract String getLogicClassImpl();

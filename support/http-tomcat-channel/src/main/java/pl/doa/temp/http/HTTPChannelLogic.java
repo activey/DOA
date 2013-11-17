@@ -57,7 +57,6 @@ import org.apache.catalina.startup.Tomcat.FixContextListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pl.doa.GeneralDOAException;
-import pl.doa.artifact.IArtifact;
 import pl.doa.channel.impl.AbstractIncomingChannelLogic;
 import pl.doa.container.IEntitiesContainer;
 import pl.doa.document.IDocument;
@@ -69,9 +68,9 @@ import pl.doa.entity.IEntity;
 import pl.doa.entity.IEntityEvaluator;
 import pl.doa.entity.IEntityReference;
 import pl.doa.entity.event.IEntityEventDescription;
-import pl.doa.jvm.DOAClassLoader;
 import pl.doa.service.IRunningService;
 import pl.doa.service.IServiceDefinition;
+import pl.doa.servlet.classloader.WebAppClassLoader;
 import pl.doa.temp.http.resource.StaticResourceContext;
 
 import javax.servlet.ServletContext;
@@ -172,7 +171,7 @@ public class HTTPChannelLogic extends AbstractIncomingChannelLogic implements
     }
 
     private void deployApplication(String applicationName,
-                                   IDocument applicationDocument) throws Exception {
+            IDocument applicationDocument) throws Exception {
         String appName = applicationDocument
                 .getFieldValueAsString("applicationName");
         log.debug(MessageFormat.format("Initializing web application: [{0}]",
@@ -188,28 +187,7 @@ public class HTTPChannelLogic extends AbstractIncomingChannelLogic implements
         Context context = new StandardContext();
 
         // ustawianie custom classloadera
-        DOAClassLoader applicationLoader = new DOAClassLoader(doa, getClass()
-                .getClassLoader(), new IEntityEvaluator() {
-
-            @Override
-            public boolean isReturnableEntity(IEntity currentEntity) {
-                if (!(currentEntity instanceof IArtifact)) {
-                    return false;
-                }
-                IArtifact artifact = (IArtifact) currentEntity;
-                String artifactId = artifact.getArtifactId();
-                String groupId = artifact.getGroupId();
-                if ((artifactId != null && artifactId.contains("servlet-api"))
-                        || (groupId != null && groupId
-                        .startsWith("org.apache.tomcat"))) {
-                    log.debug(MessageFormat.format(
-                            "Ignoring [{0}] artifact ...", artifactId));
-                    return false;
-                }
-                return true;
-            }
-        });
-        WebappLoader loader = new WebappLoader(applicationLoader);
+        WebappLoader loader = new WebappLoader(new WebAppClassLoader(doa, getClass().getClassLoader()));
         loader.setSearchExternalFirst(true);
         loader.setDelegate(true);
         loader.setReloadable(true);
@@ -268,7 +246,7 @@ public class HTTPChannelLogic extends AbstractIncomingChannelLogic implements
     }
 
     private void initApplicationExtensions(Context context,
-                                           IEntitiesContainer applicationContainer) throws GeneralDOAException {
+            IEntitiesContainer applicationContainer) throws GeneralDOAException {
         IDocumentDefinition extensionDefinition = (IDocumentDefinition) doa
                 .lookupEntityByLocation(DEFINITION_EXTENSION);
         if (extensionDefinition == null) {

@@ -243,6 +243,10 @@ public abstract class AbstractBootstrapDOA extends AbstractDOA {
         return startableManager.startup(startableEntity);
     }
 
+    public final void startup() throws GeneralDOAException {
+        startup(this);
+    }
+
     @Override
     public final void shutdown(IStartableEntity startableEntity)
             throws GeneralDOAException {

@@ -82,7 +82,7 @@ public class NeoDocument extends AbstractDocument implements INeoObject,
     }
 
     public NeoDocument(IDOA doa, GraphDatabaseService neo,
-                       IDocumentDefinition definition, String name) {
+            IDocumentDefinition definition, String name) {
         super(doa);
         this.delegator =
                 new NeoEntityDelegator(doa, neo, this.getClass().getName());
@@ -107,7 +107,7 @@ public class NeoDocument extends AbstractDocument implements INeoObject,
         Node node =
                 delegator.getNode().getSingleRelationship(DOARelationship.HAS_DEFINITION,
                         Direction.OUTGOING).getEndNode();
-        return new NeoDocumentDefinition(doa, node);
+        return new NeoDocumentDefinition(getDoa(), node);
     }
 
     /*
@@ -200,7 +200,7 @@ public class NeoDocument extends AbstractDocument implements INeoObject,
         if (fieldNode == null) {
             return null;
         }
-        return NeoDocumentFieldValueDelegator.createFieldValueInstance(doa,
+        return NeoDocumentFieldValueDelegator.createFieldValueInstance(getDoa(),
                 fieldNode);
     }
 
@@ -261,8 +261,7 @@ public class NeoDocument extends AbstractDocument implements INeoObject,
         return new NeoNodesIterator<IDocumentFieldValue>(fieldsNodesTraverser) {
             @Override
             public IDocumentFieldValue next(Node node) {
-                return NeoDocumentFieldValueDelegator.createFieldValueInstance(
-                        doa, node);
+                return NeoDocumentFieldValueDelegator.createFieldValueInstance(getDoa(), node);
             }
         };
     }

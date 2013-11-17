@@ -50,34 +50,27 @@ import pl.doa.GeneralDOAException;
 import pl.doa.IDOA;
 import pl.doa.agent.IAgent;
 import pl.doa.document.IDocument;
+import pl.doa.jvm.factory.EntityArtifactDependenciesEvaluator;
 import pl.doa.service.*;
 
-import java.text.MessageFormat;
+import static pl.doa.jvm.factory.ObjectFactory.instantiateObject;
 
 /**
  * @author activey
  */
 public abstract class AbstractServicesManager implements IServicesManager {
 
-    private static final Logger log = LoggerFactory
-            .getLogger(AbstractServicesManager.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractServicesManager.class);
     private final IDOA doa;
 
     public AbstractServicesManager(IDOA doa) {
         this.doa = doa;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * pl.doa.service.IServicesManager#executeService(pl.doa.service.IRunningService
-     * , boolean)
-     */
+    @Override
     public final void executeService(IRunningService runningService,
-                                     final boolean asynchronous) throws GeneralDOAException {
-        IServiceDefinition definition = null;
-        definition = runningService.getServiceDefinition();
+            final boolean asynchronous) throws GeneralDOAException {
+        IServiceDefinition definition = runningService.getServiceDefinition();
         IAgent agent = runningService.getAgent();
         IDocument input = runningService.getInput();
 
@@ -87,16 +80,8 @@ public abstract class AbstractServicesManager implements IServicesManager {
                     @Override
                     public void run() {
                         try {
-                            final AbstractServiceDefinitionLogic logicInstance =
-                                    (AbstractServiceDefinitionLogic) doa.instantiateObject(definition.getLogicClass(),
-                                                    true, asynchronous);
-                            if (logicInstance == null) {
-                                throw new GeneralDOAException(
-                                        MessageFormat
-                                                .format("Unable to instantiate service class: [{0}]",
-                                                        definition
-                                                                .getLogicClass()));
-                            }
+                            AbstractServiceDefinitionLogic logicInstance = instantiateObject(doa,
+                                    definition.getLogicClass(), new EntityArtifactDependenciesEvaluator(definition));
                             logicInstance.setRunningService(runningService);
                             logicInstance.setDoa(doa);
                             try {
@@ -105,15 +90,10 @@ public abstract class AbstractServicesManager implements IServicesManager {
                                 throw new GeneralDOAException(t);
                             }
                         } catch (Throwable e) {
-                            log.error("", e);
+                            LOG.error("", e);
                         }
                     }
-
                 };
-
-		/*
-         * uruchamianie uslugi w odpowiednim trybie
-		 */
         if (asynchronous) {
             // TODO zaimplementowac grupe watkow startowych
             new Thread(runnable).start();

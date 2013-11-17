@@ -48,21 +48,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pl.doa.GeneralDOAException;
 import pl.doa.IDOA;
-import pl.doa.artifact.IArtifact;
-import pl.doa.entity.IEntity;
-import pl.doa.entity.IEntityEvaluator;
 import pl.doa.entity.startable.IStartableEntity;
 import pl.doa.entity.startable.IStartableEntityLogic;
 import pl.doa.entity.startable.IStartableEntityManager;
 
-import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.List;
+import static pl.doa.jvm.factory.ObjectFactory.instantiateObjectWithArtifactDependencies;
 
 /**
  * @author activey
  */
-public abstract class AbstractStartableEntityManager implements
+public abstract class AbstractStartableEntityManager
+        implements
         IStartableEntityManager {
 
     private final static Logger log = LoggerFactory
@@ -75,6 +71,7 @@ public abstract class AbstractStartableEntityManager implements
 
     /*
      * (non-Javadoc)
+     *
      * @see
      * pl.doa.entity.startable.IStartableEntityManager#startup(pl.doa.entity
      * .startable.IStartableEntity)
@@ -90,68 +87,11 @@ public abstract class AbstractStartableEntityManager implements
         IStartableEntityLogic entityLogic = getRunning(startableEntity);
         if (entityLogic == null) {
             String logicClass = startableEntity.getLogicClass();
-            entityLogic = null;
             if (logicClass == null) {
                 throw new GeneralDOAException("Logic class name can't be null!");
             }
             try {
-                final List<IArtifact> classpath = new ArrayList<IArtifact>();
-
-                analyzeDependencies(startableEntity, classpath);
-
-                Object loadedInstance =
-                        doa.instantiateObject(logicClass, true,
-                                new IEntityEvaluator() {
-
-                                    @Override
-                                    public boolean isReturnableEntity(
-                                            IEntity currentEntity) {
-                                        if (!(currentEntity instanceof IArtifact)) {
-                                            return false;
-                                        }
-                                        IArtifact dependency =
-                                                (IArtifact) currentEntity;
-                                        if (dependency.equals(startableEntity
-                                                .getArtifact())) {
-                                            return true;
-                                        }
-                                        boolean oneOf = false;
-                                        //System.out.println("-----------------------");
-                                        for (IArtifact dependend : classpath) {
-                                            /*System.out.println(" dependend > "
-                                                    + dependend);
-											System.out.println(" dependency > "
-													+  dependency);*/
-                                            // sprawdzanie, czy artefakt jest jedna z zaleznosci obiektu, ktory uruchamiamy
-                                            if (dependend.equals(dependency)) {
-                                                oneOf = true;
-                                            }
-                                        }
-                                        //System.out.println("-----------------------");
-                                        if (!oneOf) {
-                                            return false;
-                                        }
-                                        log.debug(MessageFormat
-                                                .format("Using artifact dependency: [{0}.{1}.{2}]",
-                                                        dependency.getGroupId(),
-                                                        dependency
-                                                                .getArtifactId(),
-                                                        dependency.getVersion()));
-                                        return true;
-                                    }
-                                });
-                if (loadedInstance == null) {
-                    throw new GeneralDOAException(
-                            "Unable to instantiate startable entity logic class: [{0}]",
-                            logicClass);
-                }
-                try {
-                    entityLogic = (IStartableEntityLogic) loadedInstance;
-                } catch (ClassCastException e) {
-                    throw new GeneralDOAException(
-                            "Wrong startable entity logic class type!");
-                }
-                entityLogic = (IStartableEntityLogic) loadedInstance;
+                entityLogic = instantiateObjectWithArtifactDependencies(doa, logicClass, startableEntity.getArtifact());
                 entityLogic.setDoa(doa);
             } catch (Exception e) {
                 throw new GeneralDOAException(e);
@@ -167,33 +107,12 @@ public abstract class AbstractStartableEntityManager implements
         return entityLogic;
     }
 
-    private void analyzeDependencies(IStartableEntity startable,
-                                     List<IArtifact> includeArtifacts) {
-        IArtifact artifact = startable.getArtifact();
-        if (artifact == null) {
-            return;
-        }
-        log.debug(MessageFormat.format(
-                "Analyzing dependencies for artifact: [{0}.{1}.{2}]",
-                artifact.getGroupId(), artifact.getArtifactId(),
-                artifact.getVersion()));
-        collectDependencies(includeArtifacts, artifact);
-    }
-
-    private void collectDependencies(List<IArtifact> dependencyList,
-                                     IArtifact forArtifact) {
-        List<IArtifact> dependencies = forArtifact.getDependencies();
-        for (IArtifact dependency : dependencies) {
-            dependencyList.add(dependency);
-            collectDependencies(dependencyList, dependency);
-        }
-    }
-
     protected abstract void registerRunning(long entityId,
-                                            IStartableEntityLogic instance) throws GeneralDOAException;
+            IStartableEntityLogic instance) throws GeneralDOAException;
 
     /*
      * (non-Javadoc)
+     *
      * @see
      * pl.doa.entity.startable.IStartableEntityManager#shutdown(pl.doa.entity
      * .startable.IStartableEntity)

@@ -81,14 +81,14 @@ public class NeoEntityDelegator extends AbstractEntity implements
     }
 
     public NeoEntityDelegator(IDOA doa, GraphDatabaseService neo,
-                              String className) {
+            String className) {
         super(doa);
         this.delegator = new NodeDelegate(neo, className);
 
     }
 
     public NeoEntityDelegator(IDOA doa, GraphDatabaseService neo,
-                              String className, IEntity ancestor) {
+            String className, IEntity ancestor) {
         super(doa);
         this.delegator = new NodeDelegate(neo, className);
         INeoObject neoEntity = (INeoObject) ancestor;
@@ -165,10 +165,9 @@ public class NeoEntityDelegator extends AbstractEntity implements
         }, DOARelationship.HAS_ENTITY, Direction.INCOMING);
         for (Node node : traverser) {
             if ("/".equals(node.getProperty("name"))) {
-                return doa;
+                return getDoa();
             }
-            return (IEntitiesContainer) NeoEntityDelegator
-                    .createEntityInstance(doa, node);
+            return (IEntitiesContainer) NeoEntityDelegator.createEntityInstance(getDoa(), node);
         }
         return null;
     }
@@ -182,7 +181,7 @@ public class NeoEntityDelegator extends AbstractEntity implements
                     DOARelationship.HAS_ENTITY, Direction.INCOMING);
             Node containerNode = containerRel.getStartNode();
             IEntitiesContainer exisingContainer = (IEntitiesContainer) NeoEntityDelegator
-                    .createEntityInstance(doa, containerNode);
+                    .createEntityInstance(getDoa(), containerNode);
             if (!exisingContainer.equals(container)) {
                 containerRel.delete();
             } else {
@@ -338,10 +337,10 @@ public class NeoEntityDelegator extends AbstractEntity implements
     }
 
     public final IEntity storeImpl(String location) throws GeneralDOAException {
-        if (doa == null) {
+        if (getDoa() == null) {
             throw new GeneralDOAException("DOA is null! set it first!");
         }
-        return doa.store(location, this);
+        return getDoa().store(location, this);
     }
 
     /**
@@ -375,7 +374,7 @@ public class NeoEntityDelegator extends AbstractEntity implements
                 ReturnableEvaluator.ALL_BUT_START_NODE,
                 DOARelationship.HAS_LISTENER_EVENT_SOURCE, Direction.INCOMING);
         for (Node node : traverser) {
-            listeners.add(new NeoEntityEventListener(doa, node));
+            listeners.add(new NeoEntityEventListener(getDoa(), node));
         }
         return listeners;
     }
@@ -394,7 +393,7 @@ public class NeoEntityDelegator extends AbstractEntity implements
                 DOARelationship.HAS_EVENT_RECEIVER, Direction.INCOMING);
 
         for (Node node : traverser) {
-            listener = new NeoEntityEventListener(doa, node);
+            listener = new NeoEntityEventListener(getDoa(), node);
             break;
         }
 
@@ -413,7 +412,7 @@ public class NeoEntityDelegator extends AbstractEntity implements
         Relationship relation = delegator.getSingleRelationship(
                 DOARelationship.HAS_ARTIFACT_ENTITY, Direction.INCOMING);
         Node node = relation.getStartNode();
-        return new NeoArtifact(doa, node);
+        return new NeoArtifact(getDoa(), node);
     }
 
     @Override
@@ -438,7 +437,7 @@ public class NeoEntityDelegator extends AbstractEntity implements
             return null;
         }
         return NeoEntityDelegator.createEntityInstance(
-                doa, delegator.getSingleRelationship(DOARelationship.HAS_ANCESTOR,
+                getDoa(), delegator.getSingleRelationship(DOARelationship.HAS_ANCESTOR,
                 Direction.OUTGOING).getEndNode());
     }
 

@@ -23,19 +23,14 @@ public class XMLDeploymentProcessor extends AbstractDeploymentProcessor {
     @Override
     public void deployArtifact(File deployedFile, IEntitiesContainer root) throws Exception {
         JarFile jarFile = new JarFile(deployedFile);
-        JarEntry deployScriptEntry = jarFile.getJarEntry("deploy.core");
+        JarEntry deployScriptEntry = jarFile.getJarEntry("deploy.xml");
         if (deployScriptEntry == null) {
-            deployScriptEntry = jarFile.getJarEntry("deploy.xml");
-        }
-        if (deployScriptEntry == null) {
-            log.warn("unable to find deploy.core, skipping ...");
+            log.warn("Unable to find deployment script, skipping ...");
             return;
         }
         try {
             InputStream deployFile =
                     jarFile.getInputStream(deployScriptEntry);
-            // uruchamianie skryptu z pliku "deploy.core"
-
             TemplateContext context = new DeploymentContext(this, deployedFile, root);
             try {
                 context.registerTagLibrary(new DeploymentTagLibrary());
@@ -51,7 +46,7 @@ public class XMLDeploymentProcessor extends AbstractDeploymentProcessor {
             deployFile.close();
         } catch (Exception e) {
             throw new GeneralDOAException(
-                    "error while processing deployment plan file ...", e);
+                    "Error while processing deployment script ...", e);
         }
     }
 }

@@ -149,7 +149,6 @@ public class LoadTag extends DeploymentProcessorSupportTag {
                     if (destLocation == null || destLocation.length() == 0) {
                         getParentContainer().addEntity(entity);
                     } else {
-                        System.out.println("AAAAAAAAAAAAAAA");
                         /*TODO think about it
                         entity.store(MessageFormat.format("{0}{1}",
                                 destContainer.getLocation(), destLocation));   */

@@ -99,7 +99,7 @@ public abstract class AbstractDocument extends AbstractEntity implements
 
     @Override
     public final void setFieldValue(String fieldName,
-                                    IDocumentFieldValue otherField) throws GeneralDOAException {
+            IDocumentFieldValue otherField) throws GeneralDOAException {
         if (otherField == null) {
             return;
         }
@@ -118,7 +118,7 @@ public abstract class AbstractDocument extends AbstractEntity implements
 
     @Override
     public final void setFieldValue(String fieldName, Object fieldValue,
-                                    DocumentFieldDataType dataType) throws GeneralDOAException {
+            DocumentFieldDataType dataType) throws GeneralDOAException {
         IDocumentFieldValue documentField = getField(fieldName, true, dataType);
         if (documentField == null) {
             return;
@@ -131,7 +131,7 @@ public abstract class AbstractDocument extends AbstractEntity implements
     protected abstract void addFieldImpl(IDocumentFieldValue fieldValue);
 
     private final IDocumentFieldValue getField(String fieldName,
-                                               boolean createIfNull, DocumentFieldDataType dataType)
+            boolean createIfNull, DocumentFieldDataType dataType)
             throws GeneralDOAException {
         if (fieldName.indexOf(".") > 0) {
             StringTokenizer tokenizer = new StringTokenizer(fieldName, ".");
@@ -162,7 +162,7 @@ public abstract class AbstractDocument extends AbstractEntity implements
     }
 
     public final IDocumentFieldValue getField(String fieldName,
-                                              boolean createIfNull) throws GeneralDOAException {
+            boolean createIfNull) throws GeneralDOAException {
         return getField(fieldName, createIfNull, null);
     }
 
@@ -218,7 +218,7 @@ public abstract class AbstractDocument extends AbstractEntity implements
     }
 
     public static final boolean isDefinedBy(IDocument document,
-                                            IDocumentDefinition documentDefinition) {
+            IDocumentDefinition documentDefinition) {
         IDocumentDefinition thisDefinition = document.getDefinition();
         if (thisDefinition.getId() == documentDefinition.getId()) {
             return true;
@@ -227,7 +227,7 @@ public abstract class AbstractDocument extends AbstractEntity implements
     }
 
     public final boolean isDefinedBy(String documentDefinitionLocation) {
-        IDocumentDefinition definition = (IDocumentDefinition) doa
+        IDocumentDefinition definition = (IDocumentDefinition) getDoa()
                 .lookupEntityByLocation(documentDefinitionLocation);
         if (definition == null) {
             log.error(MessageFormat.format(
@@ -245,17 +245,16 @@ public abstract class AbstractDocument extends AbstractEntity implements
     }
 
     public static IDocumentAligner getAligner(IDOA doa,
-                                              IDocumentDefinition fromDefinition, IDocumentDefinition toDefinition) {
+            IDocumentDefinition fromDefinition, IDocumentDefinition toDefinition) {
         return doa.lookupAligner(fromDefinition, toDefinition);
     }
 
     public final IDocumentAligner getAligner(IDocumentDefinition toDefinition) {
-        return AbstractDocument.getAligner(doa, this.getDefinition(),
-                toDefinition);
+        return AbstractDocument.getAligner(getDoa(), this.getDefinition(), toDefinition);
     }
 
     public static IDocument align(IDOA doa, IDocument fromDocument,
-                                  IDocumentDefinition toDefinition) throws GeneralDOAException {
+            IDocumentDefinition toDefinition) throws GeneralDOAException {
         IDocumentDefinition fromDefinition = fromDocument.getDefinition();
         IDocumentAligner aligner = AbstractDocument.getAligner(doa,
                 fromDefinition, toDefinition);
@@ -271,7 +270,7 @@ public abstract class AbstractDocument extends AbstractEntity implements
 
     public final IDocument align(IDocumentDefinition toDefinition)
             throws GeneralDOAException {
-        return AbstractDocument.align(doa, this, toDefinition);
+        return AbstractDocument.align(getDoa(), this, toDefinition);
     }
 
     @Override
@@ -289,7 +288,7 @@ public abstract class AbstractDocument extends AbstractEntity implements
     }
 
     public final void copyFieldFrom(IDocument input, String sourceFieldName,
-                                    String destFileName) throws GeneralDOAException {
+            String destFileName) throws GeneralDOAException {
         if (input == null) {
             throw new GeneralDOAException("Input document is null!");
         }
@@ -320,12 +319,12 @@ public abstract class AbstractDocument extends AbstractEntity implements
     @Override
     public final IDocument createCopy(IDocumentFieldEvaluator evaluator)
             throws GeneralDOAException {
-        return AbstractDocument.createCopy(doa, this, evaluator);
+        return AbstractDocument.createCopy(getDoa(), this, evaluator);
     }
 
     public static IDocumentFieldValue getInnerField(IDocument document,
-                                                    StringTokenizer tokenizer, IListDocumentFieldValue parentField,
-                                                    boolean createIfNull, DocumentFieldDataType dataType)
+            StringTokenizer tokenizer, IListDocumentFieldValue parentField,
+            boolean createIfNull, DocumentFieldDataType dataType)
             throws GeneralDOAException {
         if (tokenizer.hasMoreTokens()) {
             String namePart = tokenizer.nextToken();
@@ -370,7 +369,7 @@ public abstract class AbstractDocument extends AbstractEntity implements
     }
 
     public final static IDocument createCopy(IDOA doa, IDocument document,
-                                             IDocumentFieldEvaluator evaluator) throws GeneralDOAException {
+            IDocumentFieldEvaluator evaluator) throws GeneralDOAException {
         Iterator<IDocumentFieldValue> fields = document.getFields();
         DetachedDocument copy = new DetachedDocument(doa,
                 document.getDefinition());
@@ -391,7 +390,7 @@ public abstract class AbstractDocument extends AbstractEntity implements
     }
 
     public final static void validateDocument(IDocument document,
-                                              IDocumentDefinition definition) throws DocumentValidationException {
+            IDocumentDefinition definition) throws DocumentValidationException {
 
         IDocumentDefinition docDefinition = (definition == null) ? document
                 .getDefinition() : definition;

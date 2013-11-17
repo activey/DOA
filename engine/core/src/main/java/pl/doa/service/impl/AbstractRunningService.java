@@ -182,7 +182,7 @@ public abstract class AbstractRunningService extends AbstractEntity implements
                             return super.resolveClass(clazz);
                         }
                         DOAClassLoader loader =
-                                new DOAClassLoader(doa,
+                                new DOAClassLoader(getDoa(),
                                         AbstractRunningService.class
                                                 .getClassLoader());
                         return loader.loadContinuableClass(className);

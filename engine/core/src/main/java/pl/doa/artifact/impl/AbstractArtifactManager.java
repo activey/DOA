@@ -12,6 +12,8 @@ import pl.doa.container.IEntitiesContainer;
 import pl.doa.entity.IEntity;
 import pl.doa.entity.IEntityEvaluator;
 import pl.doa.impl.EntityLocationIterator;
+import pl.doa.jvm.factory.EntityArtifactDependenciesEvaluator;
+import pl.doa.jvm.factory.ObjectFactory;
 import pl.doa.utils.FileUtils;
 import pl.doa.utils.JarUtils;
 import pl.doa.utils.PathIterator;
@@ -21,6 +23,8 @@ import java.text.MessageFormat;
 import java.util.List;
 import java.util.Properties;
 import java.util.jar.JarFile;
+
+import static pl.doa.jvm.factory.ObjectFactory.instantiateObject;
 
 public abstract class AbstractArtifactManager implements IArtifactManager {
 
@@ -45,34 +49,34 @@ public abstract class AbstractArtifactManager implements IArtifactManager {
         IArtifact newArtifact = this.resolveArtifact(artifactFile);
 
         // processing dependencies
-        resolveDependencies(newArtifact);
+        processArtifactDependencies(newArtifact);
 
         // running deployment processor
-        runDeploymentProcessor(newArtifact);
+        processArtifact(newArtifact);
 
         return newArtifact;
     }
 
-    private void resolveDependencies(IArtifact artifact) {
+    private void processArtifactDependencies(IArtifact artifact) {
         List<IArtifact> dependencies = artifact.getDependencies();
         for (IArtifact dependency : dependencies) {
             try {
                 // resolving nested dependencies
-                resolveDependencies(dependency);
+                processArtifactDependencies(dependency);
 
-                runDeploymentProcessor(dependency);
+                processArtifact(dependency);
             } catch (GeneralDOAException e) {
                 LOG.error("Unable to process dependency", e);
             }
         }
     }
 
-    private void runDeploymentProcessor(IArtifact artifact) throws GeneralDOAException {
+    private void processArtifact(IArtifact artifact) throws GeneralDOAException {
         // looking for artifact properties file
         File artifactFile = null;
         try {
             artifactFile = File.createTempFile("deploy-", ".tmp");
-            JarFile jarFile = new JarFile(FileUtils.copy(artifact.getArtifactFileStream(), artifactFile));
+            FileUtils.copy(artifact.getArtifactFileStream(), artifactFile);
         } catch (Exception e) {
             throw new GeneralDOAException(e);
         }
@@ -98,8 +102,8 @@ public abstract class AbstractArtifactManager implements IArtifactManager {
             LOG.error(String.format("Unable to find deployment root: [%s]", rootLocation));
             return;
         }
-        IDeploymentProcessor processor = (IDeploymentProcessor) doa.instantiateObject(artifactProperties
-                .getProperty(ARTIFACT_PROCESSOR, ARTIFACT_PROCESSOR_DEFAULT));
+        IDeploymentProcessor processor = instantiateObject(doa, artifactProperties.getProperty(
+                ARTIFACT_PROCESSOR, ARTIFACT_PROCESSOR_DEFAULT), new EntityArtifactDependenciesEvaluator(artifact));
         if (processor != null) {
             LOG.debug(String.format("Running deployment processor: %s", processor.getClass()));
             processor.setDoa(doa);
@@ -120,8 +124,7 @@ public abstract class AbstractArtifactManager implements IArtifactManager {
         return createContainers(doa, new EntityLocationIterator(rootLocation));
     }
 
-    private IEntitiesContainer createContainers(
-            IEntitiesContainer restoreContainer, PathIterator<String> entryPath) {
+    private IEntitiesContainer createContainers(IEntitiesContainer restoreContainer, PathIterator<String> entryPath) {
         if (entryPath.hasNext()) {
             String part = entryPath.next();
             if (!entryPath.hasNext()) {
@@ -164,6 +167,7 @@ public abstract class AbstractArtifactManager implements IArtifactManager {
     @Override
     public final void undeployArtifact(IArtifact artifact) throws GeneralDOAException {
         // TODO implement it!
+        throw new UnsupportedOperationException("Not implemented yet!");
     }
 
     protected final IArtifact findExistingArtifact(final String groupId, final String artifactId,
@@ -207,7 +211,7 @@ public abstract class AbstractArtifactManager implements IArtifactManager {
         return artifact;
     }
 
-    protected final IArtifact createArtifact(String groupId, String artifactId,
+    protected final IArtifact createArtifactWithFile(String groupId, String artifactId,
             String artifactVersion, File artifactFile) throws GeneralDOAException {
         IArtifact artifact = createArtifact(groupId, artifactId, artifactVersion);
         artifact.setArtifactFileName(artifactFile.getName());

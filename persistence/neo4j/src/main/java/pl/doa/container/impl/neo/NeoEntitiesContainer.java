@@ -121,10 +121,10 @@ public class NeoEntitiesContainer extends AbstractEntitiesContainer implements
                                 (deep) ? Evaluators.fromDepth(1) : Evaluators
                                         .toDepth(1))
                         .evaluator(
-                                new NeoReturnableEvaluator(doa, evaluator, deep))
+                                new NeoReturnableEvaluator(getDoa(), evaluator, deep))
                         .sort(new EntitiesComparator(getDoa(), comparator));
         Traverser nodesTraverser = travDesc.traverse(delegator.getNode());
-        return new EntitiesListIterable(doa, nodesTraverser.iterator(), start,
+        return new EntitiesListIterable(getDoa(), nodesTraverser.iterator(), start,
                 howMany);
     }
 
@@ -177,7 +177,7 @@ public class NeoEntitiesContainer extends AbstractEntitiesContainer implements
                                 (deep) ? Evaluators.fromDepth(1) : Evaluators
                                         .toDepth(1))
                         .evaluator(
-                                new NeoReturnableEvaluator(doa, evaluator, deep));
+                                new NeoReturnableEvaluator(getDoa(), evaluator, deep));
         Traverser nodesTraverser = travDesc.traverse(delegator.getNode());
         for (Path node : nodesTraverser) {
             dyn.modify(1);
@@ -355,13 +355,13 @@ public class NeoEntitiesContainer extends AbstractEntitiesContainer implements
                         .breadthFirst()
                         .evaluator(
                                 (evaluator != null) ? new NeoReturnableEvaluator(
-                                        doa, evaluator, false) : Evaluators
+                                        getDoa(), evaluator, false) : Evaluators
                                         .all())
                         .evaluator(Evaluators.atDepth(1))
                         .relationships(DOARelationship.HAS_ENTITY,
                                 Direction.OUTGOING).traverse(delegator.getNode());
         Iterable<IEntity> entities =
-                new EntitiesListIterable(doa, traverser.iterator());
+                new EntitiesListIterable(getDoa(), traverser.iterator());
         for (IEntity entity : entities) {
             iterator.next(entity);
         }

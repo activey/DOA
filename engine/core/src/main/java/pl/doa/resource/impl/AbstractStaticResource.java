@@ -85,7 +85,7 @@ public abstract class AbstractStaticResource extends AbstractEntity implements
     public final void setContentFromStream(InputStream contentStream)
             throws GeneralDOAException {
         try {
-            long contentSize = doa.storeOrUpdate(this, contentStream);
+            long contentSize = getDoa().storeOrUpdate(this, contentStream);
             setContentSizeImpl(contentSize);
         } catch (Exception e) {
             throw new GeneralDOAException(e);
@@ -93,14 +93,14 @@ public abstract class AbstractStaticResource extends AbstractEntity implements
     }
 
     public final boolean removeStreamContent() throws Exception {
-        return doa.removeFileStream(this);
+        return getDoa().removeFileStream(this);
     }
 
     public final void setContentFromBytes(byte[] bytes)
             throws GeneralDOAException {
         try {
             long contentSize =
-                    doa.storeOrUpdate(this, new ByteArrayInputStream(bytes));
+                    getDoa().storeOrUpdate(this, new ByteArrayInputStream(bytes));
             setContentSizeImpl(contentSize);
         } catch (Exception e) {
             throw new GeneralDOAException(e);
@@ -112,7 +112,7 @@ public abstract class AbstractStaticResource extends AbstractEntity implements
     public final void setContentFromStream(InputStream contentStream,
                                            Long contentSize) throws GeneralDOAException {
         try {
-            long storedSize = doa.storeOrUpdate(this, contentStream);
+            long storedSize = getDoa().storeOrUpdate(this, contentStream);
             if (contentSize == null || contentSize != storedSize) {
                 contentSize = storedSize;
             }
@@ -124,7 +124,7 @@ public abstract class AbstractStaticResource extends AbstractEntity implements
 
     public final InputStream getContentStream() throws GeneralDOAException {
         try {
-            return doa.retrieve(this);
+            return getDoa().retrieve(this);
         } catch (Exception e) {
             throw new GeneralDOAException(e);
         }
@@ -133,7 +133,7 @@ public abstract class AbstractStaticResource extends AbstractEntity implements
     public final byte[] getContent() throws GeneralDOAException {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         try {
-            InputStream data = doa.retrieve(this);
+            InputStream data = getDoa().retrieve(this);
             DataUtils.copyStream(data, out, 1024);
         } catch (Exception e) {
             throw new GeneralDOAException(e);

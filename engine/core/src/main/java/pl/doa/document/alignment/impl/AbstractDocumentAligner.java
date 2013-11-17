@@ -56,6 +56,10 @@ import pl.doa.document.IDocumentDefinition;
 import pl.doa.document.alignment.IDocumentAligner;
 import pl.doa.document.alignment.IDocumentAlignerLogic;
 import pl.doa.entity.impl.AbstractEntity;
+import pl.doa.jvm.factory.EntityArtifactDependenciesEvaluator;
+import pl.doa.jvm.factory.ObjectFactory;
+
+import static pl.doa.jvm.factory.ObjectFactory.instantiateObject;
 
 /**
  * @author activey
@@ -118,9 +122,7 @@ public abstract class AbstractDocumentAligner extends AbstractEntity implements
             log.error("unable to create aligner instance!");
             return null;
         }
-        IDocument aligned = logicInstance.align(input, toDefinition);
-        // aligned.store("/tmp");
-        return aligned;
+        return logicInstance.align(input, toDefinition);
     }
 
     private IDocumentAlignerLogic createLogicInstance()
@@ -130,14 +132,10 @@ public abstract class AbstractDocumentAligner extends AbstractEntity implements
             throw new GeneralDOAException("logic class name can't be null!");
         }
         try {
-            Object logicClassInstance = doa.instantiateObject(logicClass);
-            if (!(logicClassInstance instanceof IDocumentAlignerLogic)) {
-                throw new GeneralDOAException("wrong aligner logic class type!");
-            }
             IDocumentAlignerLogic logicInstance =
-                    (IDocumentAlignerLogic) logicClassInstance;
+                    instantiateObject(getDoa(), logicClass, new EntityArtifactDependenciesEvaluator(this));
             logicInstance.setAligner(this);
-            logicInstance.setDoa(doa);
+            logicInstance.setDoa(getDoa());
             return logicInstance;
         } catch (Exception e) {
             throw new GeneralDOAException(e);

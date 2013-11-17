@@ -219,7 +219,7 @@ public class NeoEntityEventListener extends AbstractEntityEventListener
             return null;
         }
         IEntity entity =
-                NeoEntityDelegator.createEntityInstance(doa, receiverNode);
+                NeoEntityDelegator.createEntityInstance(getDoa(), receiverNode);
         if (entity instanceof IEntityEventReceiver) {
             return (IEntityEventReceiver) entity;
         }
@@ -266,7 +266,7 @@ public class NeoEntityEventListener extends AbstractEntityEventListener
                 delegate.getNode().getSingleRelationship(
                         DOARelationship.HAS_LISTENER_EVENT_SOURCE,
                         Direction.OUTGOING);
-        return NeoEntityDelegator.createEntityInstance(doa,
+        return NeoEntityDelegator.createEntityInstance(getDoa(),
                 relation.getEndNode());
     }
 

@@ -117,7 +117,7 @@ public class NeoAgent extends AbstractEntity implements IAgent, INeoObject,
         IEntitiesContainer fingerprints = agentContainer.getEntityByName(
                 CONTAINER_FINGERPRINTS, IEntitiesContainer.class);
         if (fingerprints == null && createIfNull) {
-            fingerprints = doa.createContainer(CONTAINER_FINGERPRINTS,
+            fingerprints = getDoa().createContainer(CONTAINER_FINGERPRINTS,
                     agentContainer);
         }
         return fingerprints;

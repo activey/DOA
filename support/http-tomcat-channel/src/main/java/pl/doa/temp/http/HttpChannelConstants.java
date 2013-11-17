@@ -49,8 +49,6 @@ public interface HttpChannelConstants {
 
     public static final String SESSION_KEY_DOA = "__DOA";
 
-    public static final String CONFIG_USE_2ND_LEVEL_CACHE = "__DOA";
-
     public static final int HTTP_STATUS_OK = 200;
 
     public static final int HTTP_STATUS_ERROR_INTERNAL = 500;

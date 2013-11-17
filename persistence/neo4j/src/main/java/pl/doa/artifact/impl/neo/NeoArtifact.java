@@ -227,7 +227,7 @@ public class NeoArtifact extends AbstractArtifact implements INeoObject,
                         DOARelationship.HAS_ARTIFACT_RESOURCE,
                         Direction.OUTGOING);
         Node resourceNode = hasFileRelation.getEndNode();
-        return new NeoStaticResource(doa, resourceNode);
+        return new NeoStaticResource(getDoa(), resourceNode);
     }
 
     /*
@@ -289,7 +289,7 @@ public class NeoArtifact extends AbstractArtifact implements INeoObject,
         IStaticResource resource;
         try {
             resource =
-                    doa.createStaticResource(getName() + ".jar",
+                    getDoa().createStaticResource(getName() + ".jar",
                             "application/x-jar", getContainer());
         } catch (GeneralDOAException e) {
             log.error("", e);
@@ -337,7 +337,7 @@ public class NeoArtifact extends AbstractArtifact implements INeoObject,
                         DOARelationship.HAS_ARTIFACT_BASE_CONTAINER,
                         Direction.OUTGOING);
         Node conainerNode = hasBaseContainerRelation.getEndNode();
-        return new NeoEntitiesContainer(doa, conainerNode);
+        return new NeoEntitiesContainer(getDoa(), conainerNode);
     }
 
     /*
@@ -371,7 +371,7 @@ public class NeoArtifact extends AbstractArtifact implements INeoObject,
         List<IArtifact> dependencies = new ArrayList<IArtifact>();
         for (Relationship relation : delegator.getNode().getRelationships(
                 DOARelationship.HAS_ARTIFACT_DEPENDENCY, Direction.OUTGOING)) {
-            IArtifact dependency = new NeoArtifact(doa, relation.getEndNode());
+            IArtifact dependency = new NeoArtifact(getDoa(), relation.getEndNode());
             dependencies.add(dependency);
         }
         return dependencies;
@@ -395,7 +395,7 @@ public class NeoArtifact extends AbstractArtifact implements INeoObject,
                 DOARelationship.HAS_ARTIFACT_ENTITY, Direction.OUTGOING)) {
             // TODO create instance of entity depends on class
             IEntity entity =
-                    NeoEntityDelegator.createEntityInstance(doa,
+                    NeoEntityDelegator.createEntityInstance(getDoa(),
                             relation.getEndNode());
             entities.add(entity);
         }

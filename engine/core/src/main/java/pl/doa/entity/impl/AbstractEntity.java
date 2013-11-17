@@ -65,7 +65,7 @@ import java.util.*;
  */
 public abstract class AbstractEntity implements IEntity {
 
-    protected final IDOA doa;
+    private final IDOA doa;
 
     public AbstractEntity(IDOA doa) {
         this.doa = doa;

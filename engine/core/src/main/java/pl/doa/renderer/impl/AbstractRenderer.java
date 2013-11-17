@@ -93,7 +93,7 @@ public abstract class AbstractRenderer extends AbstractStartableEntity
         if (template == null) {
             return renderEntity(document);
         }
-        IRendererLogic runningInstance = (IRendererLogic) doa.getRunning(this);
+        IRendererLogic runningInstance = (IRendererLogic) getDoa().getRunning(this);
         if (runningInstance == null) {
             log.error(MessageFormat
                     .format("Unable to find running instance of [{0}], creating a new one ...",
@@ -115,7 +115,7 @@ public abstract class AbstractRenderer extends AbstractStartableEntity
         if (template == null) {
             return renderEntity(document, stream);
         }
-        IRendererLogic runningInstance = (IRendererLogic) doa.getRunning(this);
+        IRendererLogic runningInstance = (IRendererLogic) getDoa().getRunning(this);
         if (runningInstance == null) {
             log.error(MessageFormat
                     .format("Unable to find running instance of [{0}], creating a new one ...",
@@ -135,7 +135,7 @@ public abstract class AbstractRenderer extends AbstractStartableEntity
         if (templateFinder == null) {
             return renderEntity(document);
         }
-        IRendererLogic runningInstance = (IRendererLogic) doa.getRunning(this);
+        IRendererLogic runningInstance = (IRendererLogic) getDoa().getRunning(this);
         if (runningInstance == null) {
             log.error(MessageFormat
                     .format("Unable to find running instance of [{0}], creating a new one ...",
@@ -163,7 +163,7 @@ public abstract class AbstractRenderer extends AbstractStartableEntity
         if (templateFinder == null) {
             return renderEntity(document, output);
         }
-        IRendererLogic runningInstance = (IRendererLogic) doa.getRunning(this);
+        IRendererLogic runningInstance = (IRendererLogic) getDoa().getRunning(this);
         if (runningInstance == null) {
             log.error(MessageFormat
                     .format("Unable to find running instance of [{0}], creating a new one ...",
@@ -185,7 +185,7 @@ public abstract class AbstractRenderer extends AbstractStartableEntity
         if (template == null) {
             return renderEntity(document, output);
         }
-        IRendererLogic runningInstance = (IRendererLogic) doa.getRunning(this);
+        IRendererLogic runningInstance = (IRendererLogic) getDoa().getRunning(this);
         if (runningInstance == null) {
             log.error(MessageFormat
                     .format("Unable to find running instance of [{0}], creating a new one ...",
@@ -202,7 +202,7 @@ public abstract class AbstractRenderer extends AbstractStartableEntity
     @Override
     public final IStaticResource renderEntity(IEntity document)
             throws GeneralDOAException {
-        IRendererLogic runningInstance = (IRendererLogic) doa.getRunning(this);
+        IRendererLogic runningInstance = (IRendererLogic) getDoa().getRunning(this);
         if (runningInstance == null) {
             log.error(MessageFormat
                     .format("Unable to find running instance of [{0}], creating a new one ...",
@@ -225,7 +225,7 @@ public abstract class AbstractRenderer extends AbstractStartableEntity
     @Override
     public final long renderEntity(IEntity document, OutputStream stream)
             throws GeneralDOAException {
-        IRendererLogic runningInstance = (IRendererLogic) doa.getRunning(this);
+        IRendererLogic runningInstance = (IRendererLogic) getDoa().getRunning(this);
         if (runningInstance == null) {
             log.error(MessageFormat
                     .format("Unable to find running instance of [{0}], creating a new one ...",

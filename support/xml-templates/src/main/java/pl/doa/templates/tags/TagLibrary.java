@@ -68,7 +68,7 @@ public abstract class TagLibrary {
      * Metoda rejestruje instancje znacznika w bibliotece znacznikow.
      *
      * @param tagName
-     * @param tagInstance
+     * @param tagClass
      */
     protected final void registerTag(String tagName,
                                      Class<? extends Tag> tagClass) throws Exception {

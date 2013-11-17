@@ -125,7 +125,7 @@ public class NeoServiceDefinition extends AbstractServiceDefinition implements
         if (inputNode == null) {
             return null;
         }
-        return new NeoDocumentDefinition(doa, inputNode);
+        return new NeoDocumentDefinition(getDoa(), inputNode);
     }
 
     /*
@@ -169,7 +169,7 @@ public class NeoServiceDefinition extends AbstractServiceDefinition implements
                         DOARelationship.HAS_OUTPUT_DEFINITION,
                         Direction.OUTGOING);
         for (Node node : traverser) {
-            outputs.add(new NeoDocumentDefinition(doa, node));
+            outputs.add(new NeoDocumentDefinition(getDoa(), node));
         }
         return outputs;
     }
@@ -206,7 +206,7 @@ public class NeoServiceDefinition extends AbstractServiceDefinition implements
             return null;
         }
         return (IDocumentDefinition) NeoEntityDelegator.createEntityInstance(
-                doa, possibleOutputNode);
+                getDoa(), possibleOutputNode);
     }
 
     /*
@@ -270,7 +270,7 @@ public class NeoServiceDefinition extends AbstractServiceDefinition implements
         List<IRunningService> runningServices =
                 new ArrayList<IRunningService>();
         for (Node node : runningNodes) {
-            NeoRunningService runningService = new NeoRunningService(doa, node);
+            NeoRunningService runningService = new NeoRunningService(getDoa(), node);
             runningServices.add(runningService);
         }
         return runningServices;

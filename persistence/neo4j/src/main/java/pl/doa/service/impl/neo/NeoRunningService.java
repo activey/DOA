@@ -123,7 +123,7 @@ public class NeoRunningService extends AbstractRunningService implements
             return null;
         }
         Node serviceDefNode = relation.getStartNode();
-        return new NeoServiceDefinition(doa, serviceDefNode);
+        return new NeoServiceDefinition(getDoa(), serviceDefNode);
     }
 
     /*
@@ -151,7 +151,7 @@ public class NeoRunningService extends AbstractRunningService implements
         }
         Node agentNode = delegator.getNode().getSingleRelationship(
                 DOARelationship.IS_STARTED_BY, Direction.OUTGOING).getEndNode();
-        return new NeoAgent(doa, agentNode);
+        return new NeoAgent(getDoa(), agentNode);
 
     }
 
@@ -187,7 +187,7 @@ public class NeoRunningService extends AbstractRunningService implements
         }
         Node inputNode = delegator.getNode().getSingleRelationship(
                 DOARelationship.HAS_INPUT, Direction.OUTGOING).getEndNode();
-        return new NeoDocument(doa, inputNode);
+        return new NeoDocument(getDoa(), inputNode);
     }
 
     /*
@@ -233,7 +233,7 @@ public class NeoRunningService extends AbstractRunningService implements
         if (outputNode == null) {
             return createWaitingDocument();
         }
-        IDocument doc = new NeoDocument(doa, outputNode);
+        IDocument doc = new NeoDocument(getDoa(), outputNode);
         return doc;
     }
 
@@ -268,7 +268,7 @@ public class NeoRunningService extends AbstractRunningService implements
 
     protected final IDocument createWaitingDocument() {
         try {
-            IDocumentDefinition def = (IDocumentDefinition) doa
+            IDocumentDefinition def = (IDocumentDefinition) getDoa()
                     .lookupEntityByLocation("/documents/system/waiting_for_document");
             IDocument doc = def.createDocumentInstance();
             // sprawdzanie, czy uruchomoina usluga jest skojarzona z jakims

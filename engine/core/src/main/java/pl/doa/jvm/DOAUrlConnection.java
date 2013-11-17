@@ -66,7 +66,6 @@ public class DOAUrlConnection extends URLConnection {
     private final static Logger log = LoggerFactory
             .getLogger(DOAUrlConnection.class);
 
-    private static final String BANNED = "pl.doa.doa-core.0.0.1";
 
     private IDOA doa;
 
@@ -80,14 +79,8 @@ public class DOAUrlConnection extends URLConnection {
 
     public InputStream getInputStream() throws IOException {
         String artifactName = url.getPath();
-        if (BANNED.equals(artifactName)) {
-            return null;
-        }
         String artifactsContainer = url.getHost();
-        String artifactPath =
-                MessageFormat
-                        .format("{0}{1}", artifactsContainer, artifactName);
-        // String entityLocation = url.getQuery();
+        String artifactPath = MessageFormat.format("{0}{1}", artifactsContainer, artifactName);
         IArtifact artifact = (IArtifact) doa.lookupEntityByLocation(artifactPath);
         if (artifact == null) {
             throw new IOException(
@@ -95,16 +88,14 @@ public class DOAUrlConnection extends URLConnection {
                             "unable to find resource under location: {0}",
                             artifactPath));
         }
-        ByteArrayInputStream stream;
-        try {
-            stream = new ByteArrayInputStream(artifact.getArtifactResource()
-                    .getContent());
-        } catch (GeneralDOAException e) {
-            throw new IOException(e);
-        }
         log.debug(MessageFormat.format(
                 "getting classpath resource from artifact: {0}", artifactPath));
-        return stream;
+        try {
+            return artifact.getArtifactResource().getContentStream();
+        } catch (GeneralDOAException e) {
+            log.error("", e);
+            return null;
+        }
 
     }
 }

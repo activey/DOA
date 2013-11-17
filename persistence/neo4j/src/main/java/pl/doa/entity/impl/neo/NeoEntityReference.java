@@ -99,7 +99,7 @@ public class NeoEntityReference extends AbstractEntityReference implements
                 delegator.getNode().getSingleRelationship(
                         DOARelationship.HAS_ENTITY_REFERENCE,
                         Direction.OUTGOING);
-        return NeoEntityDelegator.createEntityInstance(doa,
+        return NeoEntityDelegator.createEntityInstance(getDoa(),
                 relation.getEndNode());
     }
 

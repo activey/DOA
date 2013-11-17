@@ -14,6 +14,11 @@ public class JarUtils {
     public static InputStream findJarEntry(File dataFile, IJarEntryMatcher entryMatcher)
             throws IOException {
         JarFile jarFile = new JarFile(dataFile);
+        return findJarEntry(jarFile, entryMatcher);
+    }
+
+    public static InputStream findJarEntry(JarFile jarFile, IJarEntryMatcher entryMatcher)
+            throws IOException {
         Enumeration<JarEntry> entries = jarFile.entries();
         while (entries.hasMoreElements()) {
             JarEntry jarEntry = entries.nextElement();

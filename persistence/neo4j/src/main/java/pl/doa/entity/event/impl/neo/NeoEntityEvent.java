@@ -210,7 +210,7 @@ public class NeoEntityEvent extends AbstractEntityEvent implements INeoObject {
         Relationship relation =
                 delegate.getNode().getSingleRelationship(
                         DOARelationship.HAS_EVENT_SOURCE, Direction.OUTGOING);
-        return NeoEntityDelegator.createEntityInstance(doa,
+        return NeoEntityDelegator.createEntityInstance(getDoa(),
                 relation.getEndNode());
     }
 
