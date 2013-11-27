@@ -30,6 +30,4 @@
         </document>
     </container>
 
-
-    <reference name="wicket-app" referencedEntity="#wicket-app"/>
 </deploy>

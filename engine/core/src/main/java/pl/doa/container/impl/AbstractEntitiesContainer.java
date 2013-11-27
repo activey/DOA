@@ -44,8 +44,6 @@
  */
 package pl.doa.container.impl;
 
-import java.text.MessageFormat;
-
 import pl.doa.GeneralDOAException;
 import pl.doa.IDOA;
 import pl.doa.container.IEntitiesContainer;
@@ -56,6 +54,8 @@ import pl.doa.entity.event.impl.EntityCreatedEvent;
 import pl.doa.entity.impl.AbstractEntity;
 import pl.doa.entity.sort.IEntitiesSortComparator;
 import pl.doa.utils.PathIterator;
+
+import java.text.MessageFormat;
 
 /**
  * @author activey
@@ -68,13 +68,13 @@ public abstract class AbstractEntitiesContainer extends AbstractEntity
     }
 
     protected abstract Iterable<? extends IEntity> getEntitiesImpl(int start,
-                                                                   int howMany, IEntitiesSortComparator<? extends IEntity> comparator,
-                                                                   IEntityEvaluator evaluator, boolean deep);
+            int howMany, IEntitiesSortComparator<? extends IEntity> comparator,
+            IEntityEvaluator evaluator, boolean deep);
 
     @Override
     public final Iterable<? extends IEntity> getEntities(int start,
-                                                         int howMany, IEntitiesSortComparator<? extends IEntity> comparator,
-                                                         IEntityEvaluator evaluator, boolean deep) {
+            int howMany, IEntitiesSortComparator<? extends IEntity> comparator,
+            IEntityEvaluator evaluator, boolean deep) {
         Iterable<IEntity> result =
                 (Iterable<IEntity>) getEntitiesImpl(start, howMany, comparator,
                         evaluator, deep);
@@ -82,13 +82,13 @@ public abstract class AbstractEntitiesContainer extends AbstractEntity
     }
 
     protected abstract Iterable<? extends IEntity> getEntitiesImpl(int start,
-                                                                   int howMany, IEntitiesSortComparator<? extends IEntity> comparator,
-                                                                   IEntityEvaluator evaluator);
+            int howMany, IEntitiesSortComparator<? extends IEntity> comparator,
+            IEntityEvaluator evaluator);
 
     @Override
     public final Iterable<? extends IEntity> getEntities(int start,
-                                                         int howMany, IEntitiesSortComparator<? extends IEntity> comparator,
-                                                         IEntityEvaluator evaluator) {
+            int howMany, IEntitiesSortComparator<? extends IEntity> comparator,
+            IEntityEvaluator evaluator) {
         Iterable<IEntity> result =
                 (Iterable<IEntity>) getEntitiesImpl(start, howMany, comparator,
                         evaluator);
@@ -123,7 +123,7 @@ public abstract class AbstractEntitiesContainer extends AbstractEntity
     }
 
     protected abstract int countEntitiesImpl(IEntityEvaluator evaluator,
-                                             boolean deep);
+            boolean deep);
 
     @Override
     public final int countEntities(IEntityEvaluator evaluator, boolean deep) {
@@ -152,8 +152,8 @@ public abstract class AbstractEntitiesContainer extends AbstractEntity
             throws GeneralDOAException {
         if (hasEntity(doaEntity.getName())) {
             throw new GeneralDOAException(MessageFormat.format(
-                    "entity with name [{0}] already exists in this container!",
-                    doaEntity.getName()));
+                    "Entity with name [{0}] already exists in container under location {1}!",
+                    doaEntity.getName(), getLocation()));
         }
         if (doaEntity instanceof DetachedEntity) {
             DetachedEntity detached = (DetachedEntity) doaEntity;
@@ -176,7 +176,7 @@ public abstract class AbstractEntitiesContainer extends AbstractEntity
 
     @Override
     public final IEntity lookupForEntity(IEntityEvaluator evaluator,
-                                         boolean lookupDeep) {
+            boolean lookupDeep) {
         return getDoa().lookupEntityFromLocation(getLocation(), evaluator,
                 lookupDeep);
     }
@@ -189,7 +189,7 @@ public abstract class AbstractEntitiesContainer extends AbstractEntity
     }
 
     public final IEntity lookup(String startLocation,
-                                IEntityEvaluator returnableEvaluator) {
+            IEntityEvaluator returnableEvaluator) {
         return getDoa().lookup(startLocation, returnableEvaluator);
     }
 
@@ -264,9 +264,9 @@ public abstract class AbstractEntitiesContainer extends AbstractEntity
     }
 
     public final IEntity lookupEntityFromLocation(String fromLocation,
-                                                  IEntityEvaluator evaluator, boolean lookupDeep) {
+            IEntityEvaluator evaluator, boolean lookupDeep) {
         /*if (fromLocation.startsWith("/")) {
-			return getDoa().lookupEntityFromLocation(fromLocation, evaluator,
+            return getDoa().lookupEntityFromLocation(fromLocation, evaluator,
 					lookupDeep);
 		}*/
         String relativeLocation = fromLocation;
@@ -322,7 +322,7 @@ public abstract class AbstractEntitiesContainer extends AbstractEntity
 
     @Override
     public final <T extends IEntity> T getEntityByName(final String name,
-                                                       final Class<T> entityType) {
+            final Class<T> entityType) {
         IEntity entity = lookupEntityFromLocation("./", new IEntityEvaluator() {
 
             @Override

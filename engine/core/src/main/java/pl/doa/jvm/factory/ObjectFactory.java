@@ -2,11 +2,12 @@ package pl.doa.jvm.factory;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import pl.doa.IDOA;
 import pl.doa.artifact.IArtifact;
 import pl.doa.entity.IEntityEvaluator;
 import pl.doa.jvm.DOAClassLoader;
+
+import static pl.doa.entity.evaluator.EntityArtifactDependenciesEvaluator.withArtifactDependencies;
 
 public class ObjectFactory {
 
@@ -35,9 +36,12 @@ public class ObjectFactory {
 
 	public static <T extends Object> T instantiateObjectWithArtifactDependencies(
 			IDOA doa, String className, IArtifact artifactWithDependencies) {
+        if (className == null) {
+            return null;
+        }
         DOAClassLoader loader = new DOAClassLoader(doa, ObjectFactory.class.getClassLoader());
         if (artifactWithDependencies != null) {
-            loader.loadArtifacts(new EntityArtifactDependenciesEvaluator(artifactWithDependencies));
+            loader.loadArtifacts(withArtifactDependencies(artifactWithDependencies));
         }
 		Class<?> clazz = null;
 		try {

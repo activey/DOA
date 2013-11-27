@@ -1,7 +1,5 @@
 package pl.doa.servlet.filter.processor.rest.processor;
 
-import java.util.Map;
-
 import pl.doa.GeneralDOAException;
 import pl.doa.IDOA;
 import pl.doa.container.IEntitiesContainer;
@@ -19,13 +17,13 @@ import pl.doa.servlet.filter.processor.rest.json.entity.JsonEntityResponse;
 import pl.doa.servlet.filter.processor.rest.json.entity.JsonResourceResponse;
 import pl.doa.servlet.filter.processor.rest.json.simple.SimpleValueResponse;
 
+import java.util.Map;
+
 public class BasicRestProcessor extends BasicMappingProcessor {
 
     private enum MethodType {
         GET, POST, PUT, DELETE
     }
-
-    ;
 
     public BasicRestProcessor(String uriPattern, String modifyPattern) {
         super(uriPattern, modifyPattern);

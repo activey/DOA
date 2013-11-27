@@ -50,7 +50,7 @@ import pl.doa.GeneralDOAException;
 import pl.doa.IDOA;
 import pl.doa.agent.IAgent;
 import pl.doa.document.IDocument;
-import pl.doa.jvm.factory.EntityArtifactDependenciesEvaluator;
+import pl.doa.entity.evaluator.EntityArtifactDependenciesEvaluator;
 import pl.doa.service.*;
 
 import static pl.doa.jvm.factory.ObjectFactory.instantiateObject;
@@ -81,7 +81,8 @@ public abstract class AbstractServicesManager implements IServicesManager {
                     public void run() {
                         try {
                             AbstractServiceDefinitionLogic logicInstance = instantiateObject(doa,
-                                    definition.getLogicClass(), new EntityArtifactDependenciesEvaluator(definition));
+                                    definition.getLogicClass(), EntityArtifactDependenciesEvaluator
+                                    .withEntityDependencies(definition));
                             logicInstance.setRunningService(runningService);
                             logicInstance.setDoa(doa);
                             try {

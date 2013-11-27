@@ -23,8 +23,10 @@ public class HttpExcludedEvaluator implements IEntityEvaluator {
         if ((artifactId != null && artifactId.contains("servlet-api"))
                 || (groupId != null && groupId
                 .startsWith("org.apache.tomcat"))) {
-            LOG.debug(MessageFormat.format(
-                    "Ignoring [{0}] artifact ...", artifactId));
+            if (LOG.isTraceEnabled()) {
+                LOG.trace(MessageFormat.format(
+                        "Ignoring [{0}] artifact ...", artifactId));
+            }
             return false;
         }
         return true;

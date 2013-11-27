@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <deploy xmlns="http://doaplatform.org/deploy" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://doaplatform.org/deploy http://doaplatform.org/schema/deploy.xsd"
-        defaultContainer="/applications">
+        xsi:schemaLocation="http://doaplatform.org/deploy http://doaplatform.org/schema/deploy.xsd">
 
     <!-- the main app container where app resides -->
     <container name="olender-frontpage">

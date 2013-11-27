@@ -12,7 +12,6 @@ import org.apache.ivy.core.report.DownloadStatus;
 import org.apache.ivy.core.resolve.DownloadOptions;
 import org.apache.ivy.core.resolve.ResolvedModuleRevision;
 import org.apache.ivy.core.settings.IvySettings;
-import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Model;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,23 +49,21 @@ public class IvyMavenResolver implements IMavenResolver {
         ivy.bind();
     }
 
-    private ResolvedModuleRevision resolveRevision(Dependency dependency) {
-        ModuleId moduleId = new ModuleId(dependency.getGroupId(), dependency.getArtifactId());
-        ModuleRevisionId revisionId = new ModuleRevisionId(moduleId, dependency.getVersion());
+    private ResolvedModuleRevision resolveRevision(String groupId, String artifactId, String version) {
+        ModuleId moduleId = new ModuleId(groupId, artifactId);
+        ModuleRevisionId revisionId = new ModuleRevisionId(moduleId, version);
         return ivy.findModule(revisionId);
     }
 
     @Override
-    public Model resolveArtifactModel(Dependency dependency) {
-        if (dependency.getVersion() == null) {
+    public Model resolveArtifactModel(String groupId, String artifactId, String version) {
+        if (version == null) {
             LOG.warn("Dependency version is not provided, checking available revisions...");
-            String[] possibleRevisions = ivy.listRevisions(dependency.getGroupId(), dependency.getArtifactId());
+            String[] possibleRevisions = ivy.listRevisions(groupId, artifactId);
             for (int i = possibleRevisions.length - 1; i >= 0; i--) {
                 String possibleRevision = possibleRevisions[i];
                 LOG.debug(String.format("Trying to resolve dependency with revision: -> %s", possibleRevision));
-                dependency.setVersion(possibleRevision);
-
-                Model resolved = resolveArtifactModel(dependency);
+                Model resolved = resolveArtifactModel(groupId, artifactId, possibleRevision);
                 if (resolved != null) {
                     LOG.debug(String.format("Dependency with revision %s resolved", possibleRevision));
                     return resolved;
@@ -75,7 +72,7 @@ public class IvyMavenResolver implements IMavenResolver {
                 }
             }
         }
-        ResolvedModuleRevision revision = resolveRevision(dependency);
+        ResolvedModuleRevision revision = resolveRevision(groupId, artifactId, version);
         if (revision == null) {
             LOG.error("Dependend artifact not found ...");
             return null;
@@ -84,8 +81,8 @@ public class IvyMavenResolver implements IMavenResolver {
     }
 
     @Override
-    public File resolveArtifactFile(Dependency dependency) {
-        ResolvedModuleRevision revision = resolveRevision(dependency);
+    public File resolveArtifactFile(String groupId, String artifactId, String version) {
+        ResolvedModuleRevision revision = resolveRevision(groupId, artifactId, version);
         ModuleDescriptor descriptor = revision.getDescriptor();
 
         Artifact[] artifacts = descriptor.getAllArtifacts();
@@ -106,9 +103,7 @@ public class IvyMavenResolver implements IMavenResolver {
             File dependencyFile = downloadRep.getLocalFile();
             return dependencyFile;
         }
-
-
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;
     }
 
 }

@@ -48,6 +48,7 @@ import pl.doa.GeneralDOAException;
 import pl.doa.artifact.deploy.IDeploymentProcessor;
 import pl.doa.container.IEntitiesContainer;
 import pl.doa.entity.IEntity;
+import pl.doa.templates.xml.element.BaseElement;
 
 public abstract class EntityTag<T extends IEntity> extends DeploymentProcessorSupportTag {
 
@@ -70,7 +71,10 @@ public abstract class EntityTag<T extends IEntity> extends DeploymentProcessorSu
 
     @Override
     public final Nodes processTagEnd() throws Exception {
-        return null;
+        BaseElement deployedEntityElement = createElement("entity");
+        deployedEntityElement.addAttribute("class", entity.getClass().getName());
+        deployedEntityElement.appendChildren(element.getChildNodes());
+        return new Nodes(deployedEntityElement);
     }
 
     public String getName() {

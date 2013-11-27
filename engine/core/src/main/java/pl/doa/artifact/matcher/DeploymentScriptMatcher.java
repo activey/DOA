@@ -1,4 +1,4 @@
-package pl.doa.artifact;
+package pl.doa.artifact.matcher;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -6,13 +6,13 @@ import org.slf4j.LoggerFactory;
 import java.text.MessageFormat;
 import java.util.jar.JarEntry;
 
-public class ArtifactPropertiesMatcher extends JarEntryNameMatcher {
+public class DeploymentScriptMatcher extends JarEntryNameMatcher {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ArtifactPropertiesMatcher.class);
+    private static final Logger LOG = LoggerFactory.getLogger(DeploymentScriptMatcher.class);
 
     private static final String JAR_ENTRY_ARTIFACT_PROPERTIES = "artifact.properties";
 
-    public ArtifactPropertiesMatcher() {
+    public DeploymentScriptMatcher() {
         super(JAR_ENTRY_ARTIFACT_PROPERTIES);
     }
 

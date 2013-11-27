@@ -185,6 +185,7 @@ public class HTTPChannelLogic extends AbstractIncomingChannelLogic implements
                 .getContainer();
         // tworzenie nowego kontekstu
         Context context = new StandardContext();
+        context.setReloadable(true);
 
         // ustawianie custom classloadera
         WebappLoader loader = new WebappLoader(new WebAppClassLoader(doa, getClass().getClassLoader()));

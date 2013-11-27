@@ -1,5 +1,6 @@
 package pl.doa.artifact.deploy;
 
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pl.doa.GeneralDOAException;
@@ -8,9 +9,11 @@ import pl.doa.container.IEntitiesContainer;
 import pl.doa.templates.TemplateContext;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
+import java.io.OutputStream;
+
+import static pl.doa.utils.JarUtils.findJarEntry;
 
 /**
  * @author activey
@@ -18,32 +21,28 @@ import java.util.jar.JarFile;
  */
 public class XMLDeploymentProcessor extends AbstractDeploymentProcessor {
 
-    private final static Logger log = LoggerFactory.getLogger(XMLDeploymentProcessor.class);
+    private final static Logger LOG = LoggerFactory.getLogger(XMLDeploymentProcessor.class);
 
     @Override
-    public void deployArtifact(File deployedFile, IEntitiesContainer root) throws Exception {
-        JarFile jarFile = new JarFile(deployedFile);
-        JarEntry deployScriptEntry = jarFile.getJarEntry("deploy.xml");
-        if (deployScriptEntry == null) {
-            log.warn("Unable to find deployment script, skipping ...");
-            return;
-        }
+    public void deployArtifact(File artifactFile, IEntitiesContainer root) throws Exception {
         try {
-            InputStream deployFile =
-                    jarFile.getInputStream(deployScriptEntry);
-            TemplateContext context = new DeploymentContext(this, deployedFile, root);
+            InputStream deployFile = findJarEntry(artifactFile, new DeploymentScriptMatcher());
+            TemplateContext context = new DeploymentContext(this, artifactFile, root);
             try {
                 context.registerTagLibrary(new DeploymentTagLibrary());
             } catch (Exception e) {
                 throw new GeneralDOAException(e);
             }
-            log.debug("Executing deployment script ...");
+            LOG.debug("Executing deployment script ...");
             try {
                 String renderedContent = context.execute(deployFile);
+                OutputStream output = new FileOutputStream(File.createTempFile("deployment", "-history"));
+                IOUtils.write(renderedContent, output);
             } catch (Exception e) {
                 throw new GeneralDOAException(e);
+            } finally {
+                deployFile.close();
             }
-            deployFile.close();
         } catch (Exception e) {
             throw new GeneralDOAException(
                     "Error while processing deployment script ...", e);

@@ -39,14 +39,19 @@ public abstract class AbstractDeploymentProcessor implements IDeploymentProcesso
     private IDOA doa;
     private List<IStartableEntity> startableEntities = new ArrayList();
 
-     public final IEntitiesContainer createEntitiesContainer(String name, IEntitiesContainer parent) throws GeneralDOAException {
-        IEntitiesContainer container = doa.createContainer(name, parent);
-        artifact.registerEntity(container);
+    public final IEntitiesContainer createEntitiesContainer(String name, IEntitiesContainer parent)
+            throws GeneralDOAException {
+        IEntitiesContainer container = (IEntitiesContainer) parent.getEntityByName(name);
+        if (container == null) {
+            container = doa.createContainer(name, parent);
+            artifact.registerEntity(container);
+        }
         return container;
     }
 
     @Override
-    public final IEntityReference createReference(String name, IEntity entity, IEntitiesContainer parent) throws GeneralDOAException {
+    public final IEntityReference createReference(String name, IEntity entity, IEntitiesContainer parent)
+            throws GeneralDOAException {
         IEntityReference reference = doa.createReference(name, entity);
         parent.addEntity(reference);
         artifact.registerEntity(reference);
@@ -61,14 +66,16 @@ public abstract class AbstractDeploymentProcessor implements IDeploymentProcesso
     }
 
     @Override
-    public IDocumentDefinition createDocumentDefinition(String name, IEntitiesContainer parent) throws GeneralDOAException {
+    public IDocumentDefinition createDocumentDefinition(String name, IEntitiesContainer parent)
+            throws GeneralDOAException {
         IDocumentDefinition definition = doa.createDocumentDefinition(name, parent);
         artifact.registerEntity(definition);
         return definition;
     }
 
     @Override
-    public IDocumentDefinition createDocumentDefinition(String name, IEntitiesContainer container, IDocumentDefinition ancestor) throws GeneralDOAException {
+    public IDocumentDefinition createDocumentDefinition(String name, IEntitiesContainer container,
+            IDocumentDefinition ancestor) throws GeneralDOAException {
         IDocumentDefinition definition = doa.createDocumentDefinition(name, container, ancestor);
         artifact.registerEntity(definition);
         return definition;
@@ -83,7 +90,8 @@ public abstract class AbstractDeploymentProcessor implements IDeploymentProcesso
     }
 
     @Override
-    public IDocumentAligner createDocumentAligner(String name, IDocumentDefinition from, IDocumentDefinition to, IEntitiesContainer parent) throws GeneralDOAException {
+    public IDocumentAligner createDocumentAligner(String name, IDocumentDefinition from, IDocumentDefinition to,
+            IEntitiesContainer parent) throws GeneralDOAException {
         IDocumentAligner aligner = doa.createDocumentAligner(name, from, to);
         parent.addEntity(aligner);
         artifact.registerEntity(aligner);
@@ -91,7 +99,8 @@ public abstract class AbstractDeploymentProcessor implements IDeploymentProcesso
     }
 
     @Override
-    public IDocument createDocument(IDocumentDefinition definition, String name, IEntitiesContainer parent) throws GeneralDOAException {
+    public IDocument createDocument(IDocumentDefinition definition, String name, IEntitiesContainer parent)
+            throws GeneralDOAException {
         IDocument document = definition.createDocumentInstance(name);
         parent.addEntity(document);
         artifact.registerEntity(document);
@@ -99,14 +108,16 @@ public abstract class AbstractDeploymentProcessor implements IDeploymentProcesso
     }
 
     @Override
-    public IServiceDefinition createServiceDefinition(String name, String logicClass, IEntitiesContainer parent) throws GeneralDOAException {
+    public IServiceDefinition createServiceDefinition(String name, String logicClass, IEntitiesContainer parent)
+            throws GeneralDOAException {
         IServiceDefinition definition = doa.createServiceDefinition(name, logicClass, parent);
         artifact.registerEntity(definition);
         return definition;
     }
 
     @Override
-    public IServiceDefinition createServiceDefinition(IServiceDefinition ancestor, String name, IEntitiesContainer parent) throws GeneralDOAException {
+    public IServiceDefinition createServiceDefinition(IServiceDefinition ancestor, String name,
+            IEntitiesContainer parent) throws GeneralDOAException {
         IServiceDefinition definition = doa.createServiceDefinition(ancestor, name);
         parent.addEntity(definition);
         artifact.registerEntity(definition);
@@ -114,42 +125,48 @@ public abstract class AbstractDeploymentProcessor implements IDeploymentProcesso
     }
 
     @Override
-    public IRenderer createRenderer(String name, String logicClass, String mimetype, IEntitiesContainer parent) throws GeneralDOAException {
+    public IRenderer createRenderer(String name, String logicClass, String mimetype, IEntitiesContainer parent)
+            throws GeneralDOAException {
         IRenderer renderer = doa.createRenderer(name, logicClass, mimetype, parent);
         artifact.registerEntity(renderer);
         return renderer;
     }
 
     @Override
-    public IChannel createChannel(String name, String logicClass, IEntitiesContainer parent) throws GeneralDOAException {
+    public IChannel createChannel(String name, String logicClass, IEntitiesContainer parent)
+            throws GeneralDOAException {
         IChannel channel = doa.createChannel(name, logicClass, parent);
         artifact.registerEntity(channel);
         return channel;
     }
 
     @Override
-    public IIncomingChannel createIncomingChannel(String name, String logicClass, IEntitiesContainer parent) throws GeneralDOAException {
+    public IIncomingChannel createIncomingChannel(String name, String logicClass, IEntitiesContainer parent)
+            throws GeneralDOAException {
         IIncomingChannel channel = doa.createIncomingChannel(name, logicClass, parent);
         artifact.registerEntity(channel);
         return channel;
     }
 
     @Override
-    public IOutgoingChannel createOutgoingChannel(String name, String logicClass, IEntitiesContainer parent) throws GeneralDOAException {
+    public IOutgoingChannel createOutgoingChannel(String name, String logicClass, IEntitiesContainer parent)
+            throws GeneralDOAException {
         IOutgoingChannel channel = doa.createOutgoingChannel(name, logicClass, parent);
         artifact.registerEntity(channel);
         return channel;
     }
 
     @Override
-    public IStaticResource createStaticResource(String name, String mimetype, IEntitiesContainer parent) throws GeneralDOAException {
+    public IStaticResource createStaticResource(String name, String mimetype, IEntitiesContainer parent)
+            throws GeneralDOAException {
         IStaticResource resource = doa.createStaticResource(name, mimetype, parent);
         artifact.registerEntity(resource);
         return resource;
     }
 
     @Override
-    public IEntityEventListener createEntityEventListener(IEntity sourceEntity, IEntityEventReceiver receiver, EntityEventType eventType, IEntitiesContainer parent) throws GeneralDOAException {
+    public IEntityEventListener createEntityEventListener(IEntity sourceEntity, IEntityEventReceiver receiver,
+            EntityEventType eventType, IEntitiesContainer parent) throws GeneralDOAException {
         IEntityEventListener listener = doa.createEntityEventListener(sourceEntity, receiver, eventType);
         parent.addEntity(listener);
         artifact.registerEntity(listener);
@@ -167,9 +184,9 @@ public abstract class AbstractDeploymentProcessor implements IDeploymentProcesso
     }
 
     @Override
-    public void process(File deployedFile, IEntitiesContainer deploymentRoot) throws Exception {
+    public void process(File artifactFile, IEntitiesContainer deploymentRoot) throws Exception {
         artifact.setBaseContainer(deploymentRoot);
-        deployArtifact(deployedFile, deploymentRoot);
+        deployArtifact(artifactFile, deploymentRoot);
         processingDone();
     }
 
@@ -179,7 +196,7 @@ public abstract class AbstractDeploymentProcessor implements IDeploymentProcesso
         return null;
     }
 
-    public abstract void deployArtifact(File deployedFile, IEntitiesContainer deploymentRoot) throws Exception;
+    public abstract void deployArtifact(File artifactFile, IEntitiesContainer deploymentRoot) throws Exception;
 
     private void processingDone() {
         IEntitiesContainer autostart = (IEntitiesContainer) doa.lookupEntityByLocation(IDOA.AUTOSTART_CONTAINER);

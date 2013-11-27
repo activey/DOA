@@ -4,8 +4,10 @@
 package pl.doa.artifact.tag;
 
 
-import nu.xom.Element;
 import nu.xom.Nodes;
+import pl.doa.templates.xml.element.BaseElement;
+
+import java.util.Date;
 
 /**
  * @author activey
@@ -25,8 +27,9 @@ public class DeployTag extends DeploymentProcessorSupportTag {
      */
     @Override
     public Nodes processTagEnd() throws Exception {
-        Element result = new Element("result");
-        result.appendChild("done");
+        BaseElement result = createElement("deployment");
+        result.addAttribute("time", new Date().getTime() + "");
+        result.appendChildren(element.getChildNodes());
         return new Nodes(result);
     }
 }

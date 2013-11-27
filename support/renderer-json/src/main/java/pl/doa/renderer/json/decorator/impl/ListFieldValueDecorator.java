@@ -95,7 +95,7 @@ public class ListFieldValueDecorator extends JSONFieldValueDecorator {
 				}
 				/*
 				 * list.put(documentFieldValue.getFieldName(),
-				 * decorated.get(documentFieldValue.getFieldName()));
+				 * decorated.build(documentFieldValue.getFieldName()));
 				 */
 				JSONObject object = new JSONObject();
 				object.put(documentFieldValue.getFieldName(), decorated);

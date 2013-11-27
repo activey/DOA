@@ -12,7 +12,7 @@
     <groupId>org.doa.support</groupId>
     <artifactId>channel-http</artifactId>
     <version>0.0.1</version>
-    <name>DOA Channel - HTTP</name>
+    <name>DOA Channel - HTTP - Tomcat</name>
 
     <dependencies>
         <dependency>

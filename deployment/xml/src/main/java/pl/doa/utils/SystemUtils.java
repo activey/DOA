@@ -79,10 +79,10 @@ public class SystemUtils {
             field.set(null, tmp);
         } catch (IllegalAccessException e) {
             throw new IOException(
-                    "Failed to get permissions to set library path");
+                    "Failed to build permissions to set library path");
         } catch (NoSuchFieldException e) {
             throw new IOException(
-                    "Failed to get field handle to set library path");
+                    "Failed to build field handle to set library path");
         }
         System.setProperty("java.library.path", System
                 .getProperty("java.library.path")

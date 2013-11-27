@@ -148,7 +148,7 @@ public class ClassBytesLoader {
             }
         }
 
-        // get the class bytes through a regular method that works on any JVM
+        // build the class bytes through a regular method that works on any JVM
         if (null == raw_bytes) {
             if (null == classResource && classFileName != null) {
                 classResource = mClassLoader.getResource(classFileName);

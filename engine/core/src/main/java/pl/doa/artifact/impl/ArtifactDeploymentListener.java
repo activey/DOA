@@ -22,6 +22,7 @@ public class ArtifactDeploymentListener implements IvyListener {
         Map<String, String> attrs = event.getAttributes();
 
         if ("post-download-artifact".equals(eventName)) {
+            LOG.debug(">>>>>> " + event.toString());
             String status = attrs.get("status");
             LOG.debug(MessageFormat.format(
                     "Artifact downloaded with status \"{0}\"", status));
@@ -30,6 +31,7 @@ public class ArtifactDeploymentListener implements IvyListener {
                 String size = attrs.get("size");
                 String duration = attrs.get("duration");
                 String file = attrs.get("file");
+
                 LOG.debug(MessageFormat
                         .format("download statistics: file size = {0} bytes, download time = {1} ms, download location = {2}",
                                 size, duration, file));

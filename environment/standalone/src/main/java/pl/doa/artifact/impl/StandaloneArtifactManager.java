@@ -114,7 +114,7 @@ public class StandaloneArtifactManager extends AbstractMavenArtifactManager {
     }
 
     @Override
-    protected IMavenResolver getMavenResolver() {
+    protected IMavenResolver getDependencyResolver() {
         return this.dependencyResolver;
     }
 

@@ -59,7 +59,6 @@ import pl.doa.entity.IEntity;
 import pl.doa.entity.IEntityEvaluator;
 import pl.doa.entity.IEntityReference;
 import pl.doa.entity.ITransactionCallback;
-import pl.doa.entity.evaluator.EntityTypeEvaluator;
 import pl.doa.entity.sort.IEntitiesSortComparator;
 import pl.doa.entity.startable.IStartableEntity;
 import pl.doa.resource.IStaticResource;
@@ -71,6 +70,8 @@ import pl.doa.service.impl.DetachedRunningService;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
+
+import static pl.doa.entity.evaluator.EntityTypeEvaluator.typeOfArtifact;
 
 /**
  * @author activey
@@ -444,9 +445,7 @@ public abstract class AbstractDOALogic implements IDOALogic {
     @Override
     public Iterable<IArtifact> getArtifacts(IEntityEvaluator evaluator) {
         List<IArtifact> artifacts = new ArrayList<IArtifact>();
-        for (IEntity entity : lookupEntitiesByLocation(
-                IDOA.ARTIFACTS_CONTAINER, new EntityTypeEvaluator(
-                IArtifact.class, evaluator))) {
+        for (IEntity entity : lookupEntitiesByLocation(IDOA.ARTIFACTS_CONTAINER, typeOfArtifact(evaluator))) {
             IArtifact artifact = (IArtifact) entity;
             artifacts.add(artifact);
         }

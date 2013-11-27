@@ -1,4 +1,4 @@
-package pl.doa.jvm.factory;
+package pl.doa.entity.evaluator;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,13 +13,14 @@ import java.util.List;
 public class EntityArtifactDependenciesEvaluator implements IEntityEvaluator {
 
     private final static Logger LOG = LoggerFactory.getLogger(EntityArtifactDependenciesEvaluator.class);
+
     private final List<IArtifact> classpath = new ArrayList<IArtifact>();
 
-    public EntityArtifactDependenciesEvaluator(IEntity entity) {
+    private EntityArtifactDependenciesEvaluator(IEntity entity) {
         collectEntityArtifactDependencies(entity);
     }
 
-    public EntityArtifactDependenciesEvaluator(IArtifact entityArtifact) {
+    private EntityArtifactDependenciesEvaluator(IArtifact entityArtifact) {
         collectArtifactDependencies(entityArtifact);
     }
 
@@ -39,8 +40,10 @@ public class EntityArtifactDependenciesEvaluator implements IEntityEvaluator {
         if (!oneOf) {
             return false;
         }
-        LOG.debug(MessageFormat.format("Using artifact dependency: [{0}.{1}.{2}]", artifact.getGroupId(),
-                artifact.getArtifactId(), artifact.getVersion()));
+        if (LOG.isTraceEnabled()) {
+            LOG.trace(MessageFormat.format("Using artifact dependency: [{0}.{1}.{2}]", artifact.getGroupId(),
+                    artifact.getArtifactId(), artifact.getVersion()));
+        }
         return true;
     }
 
@@ -54,12 +57,22 @@ public class EntityArtifactDependenciesEvaluator implements IEntityEvaluator {
 
     private void collectArtifactDependencies(IArtifact artifact) {
         classpath.add(artifact);
-        LOG.debug(MessageFormat.format("Analyzing dependencies for artifact: [{0}.{1}.{2}]", artifact.getGroupId(),
-                artifact.getArtifactId(), artifact.getVersion()));
+        if (LOG.isTraceEnabled()) {
+            LOG.trace(MessageFormat.format("Analyzing dependencies for artifact: [{0}.{1}.{2}]", artifact.getGroupId(),
+                    artifact.getArtifactId(), artifact.getVersion()));
+        }
         List<IArtifact> dependencies = artifact.getDependencies();
         for (IArtifact dependency : dependencies) {
             collectArtifactDependencies(dependency);
         }
+    }
+
+    public static EntityArtifactDependenciesEvaluator withEntityDependencies(IEntity entityWithArtifact) {
+        return new EntityArtifactDependenciesEvaluator(entityWithArtifact);
+    }
+
+    public static EntityArtifactDependenciesEvaluator withArtifactDependencies(IArtifact artifact) {
+        return new EntityArtifactDependenciesEvaluator(artifact);
     }
 
 }

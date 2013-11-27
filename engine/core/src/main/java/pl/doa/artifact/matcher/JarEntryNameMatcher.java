@@ -1,4 +1,6 @@
-package pl.doa.artifact;
+package pl.doa.artifact.matcher;
+
+import pl.doa.artifact.matcher.IJarEntryMatcher;
 
 import java.util.jar.JarEntry;
 

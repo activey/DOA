@@ -39,11 +39,19 @@
  * Contributors:
  *    Inhibi Ltd - initial API and implementation
  *******************************************************************************/
-package pl.doa.artifact;
+package pl.doa.http.jetty;
 
-import java.util.jar.JarEntry;
+public interface HttpChannelConstants {
 
-public interface IJarEntryMatcher {
+	public static final String CHANNEL_LOCATION_PARAM = "channelLocation";
 
-    public boolean entryMatch(JarEntry entry);
+	public static final String SESSION_KEY_CACHE = "__CACHE";
+
+	public static final String SESSION_KEY_DOA = "__DOA";
+
+	public static final String CONFIG_USE_2ND_LEVEL_CACHE = "__DOA";
+
+	public static final int HTTP_STATUS_OK = 200;
+
+	public static final int HTTP_STATUS_ERROR_INTERNAL = 500;
 }

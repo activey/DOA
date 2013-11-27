@@ -52,7 +52,7 @@ public interface IEntitiesContainer extends IEntity {
     public static final String DEFINITION_ATTR = "definition";
 
     public void iterateEntities(IEntitiesIterator iterator,
-                                IEntityEvaluator evaluator) throws GeneralDOAException;
+            IEntityEvaluator evaluator) throws GeneralDOAException;
 
     public void iterateEntities(IEntitiesIterator iterator)
             throws GeneralDOAException;
@@ -62,12 +62,12 @@ public interface IEntitiesContainer extends IEntity {
     public Iterable<? extends IEntity> getEntities(IEntityEvaluator evaluator);
 
     public Iterable<? extends IEntity> getEntities(int start, int howMany,
-                                                   IEntitiesSortComparator<? extends IEntity> comparator,
-                                                   IEntityEvaluator evaluator);
+            IEntitiesSortComparator<? extends IEntity> comparator,
+            IEntityEvaluator evaluator);
 
     public Iterable<? extends IEntity> getEntities(int start, int howMany,
-                                                   IEntitiesSortComparator<? extends IEntity> comparator,
-                                                   IEntityEvaluator evaluator, boolean deep);
+            IEntitiesSortComparator<? extends IEntity> comparator,
+            IEntityEvaluator evaluator, boolean deep);
 
     public int countEntities();
 
@@ -83,19 +83,18 @@ public interface IEntitiesContainer extends IEntity {
 
     public boolean hasEntity(String entityName);
 
-    public <T extends IEntity> T getEntityByName(final String name,
-                                                 Class<T> entityType);
+    public <T extends IEntity> T getEntityByName(final String name, Class<T> entityType);
 
     public IEntity getEntityByName(final String name);
 
     public IEntity lookupForEntity(IEntityEvaluator evaluator,
-                                   boolean lookupDeep);
+            boolean lookupDeep);
 
     public Iterable<IEntity> lookupForEntities(IEntityEvaluator evaluator,
-                                               boolean lookupDeep);
+            boolean lookupDeep);
 
     public IEntity lookup(String startLocation,
-                          IEntityEvaluator returnableEvaluator);
+            IEntityEvaluator returnableEvaluator);
 
     public Iterable<? extends IEntity> lookupEntitiesByLocation(
             String entityLocation, int start, int howMany);
@@ -114,10 +113,10 @@ public interface IEntitiesContainer extends IEntity {
     public IEntity lookupEntityByLocation(String entityLocation);
 
     public IEntity lookupEntityFromLocation(String fromLocation,
-                                            IEntityEvaluator evaluator, boolean lookupDeep);
+            IEntityEvaluator evaluator, boolean lookupDeep);
 
     public Iterable<IEntity> lookupEntitiesFromLocation(String fromLocation,
-                                                        IEntityEvaluator evaluator, boolean lookupDeep);
+            IEntityEvaluator evaluator, boolean lookupDeep);
 
     public IEntity lookupEntityByLocation(PathIterator<String> locationEntries);
 

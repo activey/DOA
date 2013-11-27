@@ -4,7 +4,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mock;
 import pl.doa.AbstractUnitTest;
-import pl.doa.artifact.IJarEntryMatcher;
+import pl.doa.artifact.matcher.IJarEntryMatcher;
 
 import java.io.IOException;
 import java.io.InputStream;

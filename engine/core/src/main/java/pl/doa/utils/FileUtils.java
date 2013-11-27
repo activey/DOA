@@ -77,7 +77,7 @@ public abstract class FileUtils {
             }
         }
 
-        // If we get here it means we're finished with this directory ... delete it.
+        // If we build here it means we're finished with this directory ... delete it.
         deleteFile(source);
 
     }
@@ -106,7 +106,7 @@ public abstract class FileUtils {
             }
         }
 
-        // If we get here it means we're finished with this directory ... delete it.
+        // If we build here it means we're finished with this directory ... delete it.
         deleteFile(source);
     }
 

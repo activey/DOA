@@ -51,10 +51,10 @@ import pl.doa.IDOA;
 import pl.doa.entity.impl.AbstractEntity;
 import pl.doa.entity.startable.IStartableEntity;
 import pl.doa.entity.startable.IStartableEntityLogic;
-import pl.doa.jvm.factory.EntityArtifactDependenciesEvaluator;
 
 import java.text.MessageFormat;
 
+import static pl.doa.entity.evaluator.EntityArtifactDependenciesEvaluator.withEntityDependencies;
 import static pl.doa.jvm.factory.ObjectFactory.instantiateObject;
 
 /**
@@ -86,7 +86,7 @@ public abstract class AbstractStartableEntity extends AbstractEntity implements
             throw new GeneralDOAException("Logic class name can't be null!");
         }
         try {
-            return instantiateObject(getDoa(), logicClass, new EntityArtifactDependenciesEvaluator(this));
+            return instantiateObject(getDoa(), logicClass, withEntityDependencies(this));
         } catch (Exception e) {
             throw new GeneralDOAException(e);
         }

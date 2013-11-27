@@ -1,15 +1,12 @@
 package pl.doa.artifact.impl.maven;
 
-import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Model;
-import pl.doa.GeneralDOAException;
-import pl.doa.artifact.IArtifact;
 
 import java.io.File;
 
 public interface IMavenResolver {
 
-    public Model resolveArtifactModel(Dependency artifactDependency);
+    public Model resolveArtifactModel(String groupId, String artifactId, String version);
 
-    public File resolveArtifactFile(Dependency artifactDependency);
+    public File resolveArtifactFile(String groupId, String artifactId, String version);
 }

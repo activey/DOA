@@ -18,7 +18,7 @@
 
     <modules>
         <module>servlet-commons</module>
-        <module>http-tomcat-channel</module>
+        <module>http-jetty-channel</module>
         <module>http-ext-webdav-channel</module>
         <module>json-entity-mapper</module>
         <module>xml-templates</module>

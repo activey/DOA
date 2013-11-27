@@ -44,11 +44,8 @@
  */
 package pl.doa.document.alignment.impl;
 
-import java.text.MessageFormat;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import pl.doa.GeneralDOAException;
 import pl.doa.IDOA;
 import pl.doa.document.IDocument;
@@ -56,9 +53,10 @@ import pl.doa.document.IDocumentDefinition;
 import pl.doa.document.alignment.IDocumentAligner;
 import pl.doa.document.alignment.IDocumentAlignerLogic;
 import pl.doa.entity.impl.AbstractEntity;
-import pl.doa.jvm.factory.EntityArtifactDependenciesEvaluator;
-import pl.doa.jvm.factory.ObjectFactory;
 
+import java.text.MessageFormat;
+
+import static pl.doa.entity.evaluator.EntityArtifactDependenciesEvaluator.withEntityDependencies;
 import static pl.doa.jvm.factory.ObjectFactory.instantiateObject;
 
 /**
@@ -133,7 +131,7 @@ public abstract class AbstractDocumentAligner extends AbstractEntity implements
         }
         try {
             IDocumentAlignerLogic logicInstance =
-                    instantiateObject(getDoa(), logicClass, new EntityArtifactDependenciesEvaluator(this));
+                    instantiateObject(getDoa(), logicClass, withEntityDependencies(this));
             logicInstance.setAligner(this);
             logicInstance.setDoa(getDoa());
             return logicInstance;

@@ -26,14 +26,13 @@ import static pl.doa.utils.JarUtils.findJarEntry;
 public abstract class AbstractMavenArtifactManager extends AbstractArtifactManager {
 
     private static final Logger LOG = LoggerFactory.getLogger(AbstractMavenArtifactManager.class);
-
     private ThreadLocal<List<Exclusion>> exclusions = new ThreadLocal<List<Exclusion>>();
 
     public AbstractMavenArtifactManager(IDOA doa) {
         super(doa);
     }
 
-    protected abstract IMavenResolver getMavenResolver();
+    protected abstract IMavenResolver getDependencyResolver();
 
     @Override
     protected IArtifact resolveArtifact(File artifactFile) throws GeneralDOAException {
@@ -66,12 +65,16 @@ public abstract class AbstractMavenArtifactManager extends AbstractArtifactManag
             LOG.error("Unable to find artifact file, resolving canceled");
             return null;
         }
-        IArtifact newArtifact = createArtifactWithFile(mavenArtifactModel.getGroupId(),
-                mavenArtifactModel.getArtifactId(),
-                mavenArtifactModel.getVersion(), artifactFile);
-        newArtifact.setDescription(mavenArtifactModel.getDescription());
+        IArtifact newArtifact = newArtifact().
+                setArtifactId(mavenArtifactModel.getArtifactId()).
+                setDescription(mavenArtifactModel.getDescription()).
+                setGroupId(mavenArtifactModel.getGroupId()).
+                setVersion(mavenArtifactModel.getVersion()).
+                setArtifactSourceFile(artifactFile).
+                setNameFromRevision().
+                build();
 
-        List<Dependency> notResolved = resolveAndDeployDependencies(mavenArtifactModel, newArtifact);
+        List<Dependency> notResolved = resolveDependencies(mavenArtifactModel, newArtifact);
         if (notResolved != null && !notResolved.isEmpty()) {
             LOG.debug(String.format("Not resolved rependencies for artifact [%s.%s.%s]: ",
                     mavenArtifactModel.getGroupId(), mavenArtifactModel.getArtifactId(),
@@ -87,7 +90,7 @@ public abstract class AbstractMavenArtifactManager extends AbstractArtifactManag
         return newArtifact;
     }
 
-    private List<Dependency> resolveAndDeployDependencies(ModelBase mavenArtifactModel, IArtifact artifact)
+    private List<Dependency> resolveDependencies(ModelBase mavenArtifactModel, IArtifact artifact)
             throws GeneralDOAException {
         List<Dependency> notResolved = new ArrayList<Dependency>();
         List<Dependency> artifactDependencies = mavenArtifactModel.getDependencies();
@@ -99,7 +102,7 @@ public abstract class AbstractMavenArtifactManager extends AbstractArtifactManag
             String artifactVersion = artifactDependency.getVersion();
 
             // checking exclusions
-            if (artifactDependency.isOptional() || isExcluded(artifactDependency)) {
+            if (isExcluded(artifactDependency)) {
                 LOG.debug(MessageFormat
                         .format("Skipping dependency: [{0}.{1}.{2}]", groupId, artifactId, artifactVersion));
                 continue;
@@ -111,7 +114,7 @@ public abstract class AbstractMavenArtifactManager extends AbstractArtifactManag
                     (artifactVersion == null) ? "[newest]" : artifactVersion,
                     (dependendArtifact != null) ? "YES" : "NO"));
             if (dependendArtifact == null) {
-                IMavenResolver dependencyResolver = getMavenResolver();
+                IMavenResolver dependencyResolver = getDependencyResolver();
                 if (dependencyResolver == null) {
                     LOG.debug("No dependency resolver set, skipping ...");
                     continue;
@@ -142,6 +145,9 @@ public abstract class AbstractMavenArtifactManager extends AbstractArtifactManag
      * @param dependency Dependency from currently analyzed artifact.
      */
     private boolean isExcluded(Dependency dependency) {
+        if (dependency.isOptional()) {
+            return true;
+        }
         String scope = dependency.getScope();
         boolean runtimeScope = false;
         if (scope == null || scope.trim().length() == 0 || "runtime".equals(scope)) {

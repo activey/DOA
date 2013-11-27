@@ -1,6 +1,6 @@
 package pl.doa.utils;
 
-import pl.doa.artifact.IJarEntryMatcher;
+import pl.doa.artifact.matcher.IJarEntryMatcher;
 
 import java.io.File;
 import java.io.IOException;
